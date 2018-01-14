@@ -1,0 +1,271 @@
+/* colors: mostly gray, except link hover */
+html {
+  font-size: 1em;
+  box-sizing: border-box;
+  font-kerning: normal;
+  font-variant-ligatures: common-ligatures contextual;
+  font-feature-settings: "kern", "liga", "clig", "calt"; }
+
+body {
+  left: 0;
+  top: 0;
+  margin: 0;
+  padding: 0;
+  background-color: #fff;
+  color: #222;
+  font-family: 'Source Sans Pro', sans-serif;
+  font-weight: normal;
+  line-height: 1.4; }
+
+h1, h2, h3, h4 {
+  margin: 1.75rem 0 0.875rem 0;
+  font-weight: 600;
+  line-height: 1; }
+
+p, ol, ul {
+  margin: 0.875rem 0; }
+
+h1 {
+  font-size: 1.331em; }
+
+h2 {
+  font-size: 1.21em; }
+
+h3 {
+  font-size: 1.1em; }
+
+h4 {
+  font-size: 1em; }
+
+small, .font_small {
+  font-size: 0.833em; }
+
+#smallscreenwarning {
+  display: none; }
+  @media screen and (max-width: 41em) {
+    #smallscreenwarning {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      z-index: 9998;
+      width: 100%;
+      display: block;
+      background-color: #b22222;
+      color: #fff;
+      text-align: left;
+      padding: 0 0.5em; } }
+
+#navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 9999;
+  width: 100%;
+  background-color: #333;
+  text-align: center;
+  padding-bottom: 0.5em;
+  float: right; }
+  #navbar a {
+    display: inline-block;
+    color: #eee;
+    text-align: center;
+    margin: 0.5em 1.5em 0 1.5em;
+    text-decoration: none; }
+    #navbar a img.feedicon {
+      height: 1em;
+      vertical-align: -0.1em; }
+  #navbar a:hover {
+    color: #4f93cc; }
+  #navbar .dropdown {
+    position: relative;
+    display: inline; }
+    #navbar .dropdown a.dropdown-button {
+      display: inline-block;
+      color: #aaa;
+      text-align: center;
+      margin: 0.5em 1.5em 0 1.5em;
+      text-decoration: none;
+      cursor: pointer; }
+    #navbar .dropdown .dropdown-content {
+      display: none;
+      position: absolute;
+      background-color: #aaa;
+      color: #222;
+      padding: 0.5em;
+      width: 37em;
+      text-align: center;
+      right: 0;
+      top: 0;
+      z-index: 1; }
+      @media screen and (max-width: 41em) {
+        #navbar .dropdown .dropdown-content {
+          position: fixed;
+          left: 1em;
+          top: 0em;
+          right: 1em;
+          width: calc(100vw - 3em); } }
+      #navbar .dropdown .dropdown-content a {
+        display: inline-block;
+        padding: 0.3ex;
+        margin: 0.3ex;
+        color: #222;
+        background-color: #fff;
+        border-style: solid;
+        border-width: 0.5px;
+        border-color: #aaa; }
+      #navbar .dropdown .dropdown-content a:hover {
+        color: #3c6e99; }
+      #navbar .dropdown .dropdown-content p .dropdown-header {
+        color: #eee;
+        text-align: center;
+        margin: 0.5em 0 1em 0; }
+  #navbar .dropdown:hover .dropdown-content {
+    display: block; }
+
+#navbarplaceholder {
+  visibility: hidden;
+  width: 100%;
+  text-align: center;
+  padding-bottom: 0.5em; }
+  #navbarplaceholder a {
+    display: inline-block;
+    text-align: center;
+    margin: 0.5em 2em 0 2em;
+    text-decoration: none; }
+    #navbarplaceholder a img.feedicon {
+      height: 1em;
+      vertical-align: -0.1em; }
+  #navbarplaceholder .dropdown {
+    position: relative;
+    display: inline; }
+    #navbarplaceholder .dropdown .dropdown-content {
+      display: none; }
+
+#mainbody {
+  margin: 0;
+  clear: left; }
+
+#content {
+  padding-top: 0;
+  padding-bottom: 1.75rem;
+  padding-left: calc((100% - 40em) / 2);
+  padding-right: calc((100% - 40em) / 2);
+  max-width: 40em; }
+  @media screen and (max-width: 41em) {
+    #content {
+      max-width: calc(100% - 1em);
+      padding-left: 0.5em;
+      padding-right: 0.5em; } }
+  #content p {
+    text-align: justify; }
+  #content a {
+    color: #222;
+    text-decoration: underline;
+    text-decoration-color: #aaa;
+    text-decoration-skip: ink; }
+  #content a:hover {
+    color: #3c6e99; }
+  #content .tags {
+    overflow: hidden; }
+    #content .tags a {
+      text-decoration: none;
+      color: #aaa;
+      padding: 0; }
+    #content .tags a:hover {
+      color: #4682b4; }
+  #content #pagenav {
+    margin: 1em 0; }
+    #content #pagenav .pagenav-label {
+      color: #aaa; }
+  #content figure {
+    padding: 0;
+    margin: 0;
+    text-align: center; }
+    #content figure figcaption h4 {
+      padding: 0;
+      margin: 0em 0em 2em 0em;
+      font-size: 1em;
+      font-style: italic; }
+  #content img {
+    display: block;
+    max-width: 100%;
+    width: 32em;
+    padding: 0;
+    margin: 0 auto; }
+    @media screen and (max-width: 41em) {
+      #content img {
+        width: 100%; } }
+  #content table {
+    margin: 1em; }
+  #content .codedisplay .codeheader {
+    margin-top: 1em;
+    background-color: #333;
+    color: #eee;
+    width: 100%;
+    border-radius: 0.4em 0.4em 0 0;
+    font-size: 0.833em; }
+    #content .codedisplay .codeheader p {
+      text-align: center;
+      padding: 3px 8px;
+      margin: 0; }
+      #content .codedisplay .codeheader p a, #content .codedisplay .codeheader p a:hover {
+        background-color: #333;
+        color: #eee; }
+  #content .codedisplay pre {
+    margin: 0; }
+  #content .codedownload {
+    margin-top: 1em;
+    background-color: #333;
+    color: #eee;
+    width: 100%;
+    border-radius: 0.4em;
+    font-size: 0.833em; }
+    #content .codedownload p {
+      text-align: center;
+      padding: 3px 8px;
+      margin: 0; }
+      #content .codedownload p a, #content .codedownload p a:hover {
+        background-color: #333;
+        color: #eee; }
+  #content pre {
+    margin: 0.875rem 0;
+    padding: 3px;
+    overflow: auto;
+    font-family: 'Ubuntu Mono', monospace; }
+    #content pre code {
+      color: #222; }
+  #content code {
+    font-family: 'Ubuntu Mono', monospace;
+    color: #3c6e99; }
+  #content ul.mainlist {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    text-align: left; }
+    #content ul.mainlist li {
+      margin: 0.875rem 0; }
+      #content ul.mainlist li p.additionalinfo {
+        padding: 0;
+        margin: 0;
+        font-size: 0.833em; }
+  #content img#chadscherrer {
+    float: right;
+    width: 10em;
+    margin: 1em; }
+  #content .date {
+    color: #aaa; }
+  #content .footnotes {
+    font-size: 0.8em; }
+    #content .footnotes hr {
+      border: none;
+      height: 1px;
+      background-color: #aaa;
+      margin: 1.5em 0 0.2em 0;
+      width: 10em; }
+    #content .footnotes a {
+      /* fix links for sup */
+      text-decoration: none; }
+    #content .footnotes ol {
+      margin: 0.2em 0; }
+
+/*# sourceMappingURL=style.css.map */

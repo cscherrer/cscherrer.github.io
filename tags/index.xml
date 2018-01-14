@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>Tags on Chad Scherrer&#39;s website</title>
+  <link href="https://cscherrer.github.io/index.xml" rel="self"/>
+  <link href="https://cscherrer.github.io/tags/"/>
+  <updated>2018-01-14T12:25:49-08:00</updated>
+  
+  <id>https://cscherrer.github.io/tags/</id>
+  <author>
+    <name>Chad Scherrer</name>
+  </author>
+  <generator>Hugo -- gohugo.io</generator>
+  
+  <entry>
+    <title type="html"></title>
+    <link href="https://cscherrer.github.io/tags/"/>
+    <id>https://cscherrer.github.io/tags/</id>
+    <published>2018-01-14T12:25:49-08:00</published>
+    <updated>2018-01-14T12:25:49-08:00</updated>
+    
+    <content type="html" xml:base="https://cscherrer.github.io/tags/"></content>
+  </entry>
+  
+</feed>

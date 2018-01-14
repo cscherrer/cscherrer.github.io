@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>Research on Chad Scherrer&#39;s website</title>
+  <link href="https://cscherrer.github.io/index.xml" rel="self"/>
+  <link href="https://cscherrer.github.io/research/"/>
+  <updated>2017-06-11T14:48:06+02:00</updated>
+  
+  <id>https://cscherrer.github.io/research/</id>
+  <author>
+    <name>Chad Scherrer</name>
+  </author>
+  <generator>Hugo -- gohugo.io</generator>
+  
+</feed>
