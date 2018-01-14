@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <feed xmlns="http://www.w3.org/2005/Atom">
-  <title>Chad Scherrer&#39;s website</title>
+  <title>Categories on Chad Scherrer&#39;s website</title>
   <link href="https://cscherrer.github.io/index.xml" rel="self"/>
   <link href="https://cscherrer.github.io/categories/"/>
   <updated>2018-01-14T12:25:49-08:00</updated>
@@ -12,13 +12,17 @@
   <generator>Hugo -- gohugo.io</generator>
   
   <entry>
-    <title type="html">First post!</title>
-    <link href="https://cscherrer.github.io/post/test/"/>
-    <id>https://cscherrer.github.io/post/test/</id>
+    <title type="html"></title>
+    <link href="https://cscherrer.github.io/categories/"/>
+    <id>https://cscherrer.github.io/categories/</id>
     <published>2018-01-14T12:25:49-08:00</published>
     <updated>2018-01-14T12:25:49-08:00</updated>
     
-    <content type="html" xml:base="https://cscherrer.github.io/post/test/">&lt;p&gt;Julia code (syntax highlighting not working yet)&lt;/p&gt;
+    <content type="html" xml:base="https://cscherrer.github.io/categories/"></content>
+  </entry>
+  
+</feed>
+g not working yet)&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre&gt;&lt;code class=&#34;language-julia&#34; data-lang=&#34;julia&#34;&gt;&lt;span&gt;&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;linReg1D&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;nd&#34;&gt;@model&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;N&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;begin&lt;/span&gt;
     &lt;span class=&#34;c&#34;&gt;# Priors chosen following Gelman(2008)&lt;/span&gt;
     &lt;span class=&#34;n&#34;&gt;α&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;~&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Cauchy&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;0&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;10&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
