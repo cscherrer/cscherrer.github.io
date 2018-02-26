@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Chad Scherrer</title>
-    <link>https://cscherrer.github.io/</link>
-    <description>Recent content on Chad Scherrer</description>
+    <title>Pymc3 on Chad Scherrer</title>
+    <link>https://cscherrer.github.io/tags/pymc3/</link>
+    <description>Recent content in Pymc3 on Chad Scherrer</description>
     <generator>Hugo -- gohugo.io</generator>
     <managingEditor>chad.scherrer@gmail.com (Chad Scherrer)</managingEditor>
     <webMaster>chad.scherrer@gmail.com (Chad Scherrer)</webMaster>
     <lastBuildDate>Sun, 25 Feb 2018 00:00:00 -0800</lastBuildDate>
     
-	<atom:link href="https://cscherrer.github.io/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://cscherrer.github.io/tags/pymc3/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
@@ -21,16 +21,6 @@
       <description>A client comes to you with this problem:
  The coal company I work for is trying to make mining safer. We made some change around 1900 that seemed to improve things, but the records are all archived. Tracking down such old records can be expensive, and it would help a lot if we could narrow the search. Can you tell us what year we should focus on?
 Also, it would really help to know this is a real effect, and not just due to random variability - we don&#39;t want to waste resources digging up the records if there&#39;s not really anything there.</description>
-    </item>
-    
-    <item>
-      <title>About me</title>
-      <link>https://cscherrer.github.io/page/about/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <author>chad.scherrer@gmail.com (Chad Scherrer)</author>
-      <guid>https://cscherrer.github.io/page/about/</guid>
-      <description>Senior Data Scientist at Metis
-Under construction - more coming soon!</description>
     </item>
     
   </channel>

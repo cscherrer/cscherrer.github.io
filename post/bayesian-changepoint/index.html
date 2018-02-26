@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+
+  <title>Bayesian Changepoint Detection with PyMC3</title>
+  <meta property="og:title" content="Bayesian Changepoint Detection with PyMC3" />
+  <meta name="twitter:title" content="Bayesian Changepoint Detection with PyMC3" />
+  <meta name="description" content="A client comes to you with this problem:
+ The coal company I work for is trying to make mining safer. We made some change around 1900 that seemed to improve things, but the records are all archived. Tracking down such old records can be expensive, and it would help a lot if we could narrow the search. Can you tell us what year we should focus on?
+Also, it would really help to know this is a real effect, and not just due to random variability - we don&#39;t want to waste resources digging up the records if there&#39;s not really anything there.">
+  <meta property="og:description" content="A client comes to you with this problem:
+ The coal company I work for is trying to make mining safer. We made some change around 1900 that seemed to improve things, but the records are all archived. Tracking down such old records can be expensive, and it would help a lot if we could narrow the search. Can you tell us what year we should focus on?
+Also, it would really help to know this is a real effect, and not just due to random variability - we don&#39;t want to waste resources digging up the records if there&#39;s not really anything there.">
+  <meta name="twitter:description" content="A client comes to you with this problem:
+ The coal company I work for is trying to make mining safer. We made some change around 1900 that seemed to improve things, but the records are all archived. …">
+  <meta name="author" content="Chad Scherrer"/>
+  <link href='https://cscherrer.github.io/img/favicon.ico' rel='icon' type='image/x-icon'/>
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:site" content="@@ChadScherrer" />
+  <meta name="twitter:creator" content="@@ChadScherrer" />
+  <meta property="og:url" content="https://cscherrer.github.io/post/bayesian-changepoint/" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Chad Scherrer" />
+
+  <meta name="generator" content="Hugo 0.25.1" />
+  <link rel="canonical" href="https://cscherrer.github.io/post/bayesian-changepoint/" />
+  <link rel="alternate" href="https://cscherrer.github.io/index.xml" type="application/rss+xml" title="Chad Scherrer">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.7.1/katex.min.css" integrity="sha384-wITovz90syo1dJWVh32uuETPVEtGigN07tkttEqPv+uR2SE/mbQcG7ATL28aI9H0" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cscherrer.github.io/css/main.css" /><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" />
+  <link rel="stylesheet" href="https://cscherrer.github.io/css/codeblock.css" />
+  <link rel="stylesheet" href="https://cscherrer.github.io/css/highlight.min.css" />
+
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.1/photoswipe.min.css" integrity="sha256-sCl5PUOGMLfFYctzDW3MtRib0ctyUvI9Qsmq2wXOeBY=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.1/default-skin/default-skin.min.css" integrity="sha256-BFeI1V+Vh1Rk37wswuOYn5lsTcaU96hGaI7OUVCLjPc=" crossorigin="anonymous" />
+
+
+
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+<div class="pswp__bg"></div>
+
+<div class="pswp__scroll-wrap">
+    
+    <div class="pswp__container">
+      <div class="pswp__item"></div>
+      <div class="pswp__item"></div>
+      <div class="pswp__item"></div>
+    </div>
+    
+    <div class="pswp__ui pswp__ui--hidden">
+    <div class="pswp__top-bar">
+      
+      <div class="pswp__counter"></div>
+      <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+      <button class="pswp__button pswp__button--share" title="Share"></button>
+      <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+      <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+      
+      
+      <div class="pswp__preloader">
+        <div class="pswp__preloader__icn">
+          <div class="pswp__preloader__cut">
+            <div class="pswp__preloader__donut"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+      <div class="pswp__share-tooltip"></div>
+    </div>
+    <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+    </button>
+    <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+    </button>
+    <div class="pswp__caption">
+      <div class="pswp__caption__center"></div>
+    </div>
+    </div>
+    </div>
+</div>
+
+</head>
+
+  <body>
+    <nav class="navbar navbar-default navbar-fixed-top navbar-custom">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#main-navbar">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="https://cscherrer.github.io">Chad Scherrer</a>
+    </div>
+
+    <div class="collapse navbar-collapse" id="main-navbar">
+      <ul class="nav navbar-nav navbar-right">
+        
+          
+            <li>
+              <a title="Blog" href="/">Blog</a>
+            </li>
+          
+        
+          
+            <li>
+              <a title="Tags" href="/tags">Tags</a>
+            </li>
+          
+        
+
+        
+
+        
+      </ul>
+    </div>
+
+    <div class="avatar-container">
+      <div class="avatar-img-border">
+        
+      </div>
+    </div>
+
+  </div>
+</nav>
+
+
+
+
+    
+  
+  
+  
+
+
+
+
+  
+
+  <header class="header-section ">
+    
+    <div class="intro-header no-img">
+      
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+            <div class="post-heading">
+              <h1>Bayesian Changepoint Detection with PyMC3</h1>
+                
+                
+                  <span class="post-meta">
+  
+  
+  <i class="fa fa-calendar-o"></i>&nbsp;Posted on February 25, 2018
+  
+  
+  &nbsp;|&nbsp;
+  <i class="fa fa-clock-o"></i> 5 minutes (877 words)
+  
+  
+</span>
+
+
+                
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+
+    
+<div class="container" role="main">
+  <div class="row">
+    <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+      <article role="main" class="blog-post">
+        <p>A client comes to you with this problem:</p>
+
+<blockquote>
+<p><em>The coal company I work for is trying to make mining safer. We made some change around 1900 that seemed to improve things, but the records are all archived. Tracking down such old records can be expensive, and it would help a lot if we could narrow the search. Can you tell us what year we should focus on?</em></p>
+
+<p><em>Also, it would really help to know this is a real effect, and not just due to random variability - we don't want to waste resources digging up the records if there's not really anything there.</em></p>
+</blockquote>
+
+<p>Here's the data:</p>
+
+<p><figure><img src="output_5_0.svg" alt="svg"></figure></p>
+
+<p>We could start with some guess of when the change happened, but let's keep this pretty broad. Let's just assume it's was chosen from a uniform distribution from 1860 to 1960.</p>
+
+<p>Assuming there's no foul play involved, it seems safe to assume incidents are independent. And since this is count data, our natural place to start is with a Poisson distribution. We'll have two of these, one on each side of the changepoint. Let's assume these are drawn from the &quot;positive half&quot; of a normal distribution with mean zero and standard deviation 4.</p>
+
+<p>Why not something else? Well sure, there are lots of other choices that could work just fine. the most important thing is that whatever we choose not constrain the distribution any more than needed. Overconstraint can lead to a posterior that &quot;listens&quot; more to you than to the data, while underconstraint can sometimes lead to convergence difficulties. If you &quot;go big&quot; with the prior and it still converges, there's usually no concern.</p>
+
+<p>Back to the model. Given the changepoint and the two means, the count for each year is Poisson-distributed, with mean according to whether the year is before or after the changepoint.</p>
+
+<p>Mathematically, we would write it something like this:</p>
+
+<p><span  class="math">\[
+\begin{aligned}
+   T &\sim \text{Uniform}(1860, 1960) \\
+   \mu_0 &\sim \text{Normal}^+(0,4) \\
+   \mu_1 &\sim \text{Normal}^+(0,4) \\
+   n_t &\sim \text{Poisson}(\mu_{[t>T]})
+\end{aligned}
+\]</span></p>
+
+<p>The <span  class="math">\([t>T]\)</span> notation is the <a href="https://en.wikipedia.org/wiki/Iverson_bracket">Iverson bracket</a>, which is convenient for the situation of a single changepoint (though we'd find something else if we had more than one).</p>
+
+<p>Let's cast this as <em>Poisson regression</em> - independent events, with the event rate changing over time.</p>
+
+<p>Expressing this in PyMC3 is easy:</p>
+<div class="highlight"><pre><code class="language-python" data-lang="python"><span></span><span class="kn">import</span> <span class="nn">PyMC3</span> <span class="kn">as</span> <span class="nn">pm</span>
+
+<span class="n">mod</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">Model</span><span class="p">()</span>
+<span class="k">with</span> <span class="n">mod</span><span class="p">:</span>
+    <span class="n">d0</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">Uniform</span><span class="p">(</span><span class="s1">&#39;changepoint&#39;</span><span class="p">,</span> <span class="mi">1860</span><span class="p">,</span> <span class="mi">1960</span><span class="p">)</span>    
+    <span class="err">μ</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">HalfNormal</span><span class="p">(</span><span class="s1">&#39;μ&#39;</span><span class="p">,</span> <span class="n">sd</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">grp</span> <span class="o">=</span> <span class="p">(</span><span class="n">coal</span><span class="p">[</span><span class="s1">&#39;date&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span> <span class="o">&gt;</span> <span class="n">d0</span><span class="p">)</span> <span class="o">*</span> <span class="mi">1</span>
+    <span class="n">y_obs</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">Normal</span><span class="p">(</span><span class="s1">&#39;y_obs&#39;</span><span class="p">,</span> <span class="n">mu</span><span class="o">=</span><span class="err">μ</span><span class="p">[</span><span class="n">grp</span><span class="p">],</span> <span class="n">observed</span> <span class="o">=</span> <span class="n">coal</span><span class="p">[</span><span class="s1">&#39;count&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
+</code></pre></div>
+
+<p>With the model in hand, we can move ahead to fitting. Since we're doing Bayesian modeling, we won't just find a point estimate (as in MLE or MAP estimation). Rather, we'll sample from the posterior distribution - the distribution of the parameters, given the data.</p>
+
+<p>There are lots of approaches to this, and PyMC3 makes it easy. Let's use <em>slice sampling</em> - for now don't worry too much about why this is a good way to go.</p>
+<div class="highlight"><pre><code class="language-python" data-lang="python"><span></span><span class="k">with</span> <span class="n">mod</span><span class="p">:</span>
+    <span class="n">step</span> <span class="o">=</span>  <span class="n">pm</span><span class="o">.</span><span class="n">Slice</span><span class="p">()</span>
+    <span class="n">trace</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">step</span><span class="o">=</span><span class="n">step</span><span class="p">)</span>
+</code></pre></div>
+
+<p>Here's  a plot of the results.</p>
+<div class="highlight"><pre><code class="language-python" data-lang="python"><span></span><span class="n">pm</span><span class="o">.</span><span class="n">traceplot</span><span class="p">(</span><span class="n">trace</span><span class="p">);</span>
+</code></pre></div>
+
+<p><figure><img src="output_11_0.svg" alt="svg"></figure></p>
+
+<p>On the left we have posterior density estimates for each variable; on the right are plots of the results.</p>
+
+<p>PyMC3 samples in multiple <em>chains</em>, or independent processes. Here we used 4 chains. In a good fit, the density estimates across chains should be similar. Ideally, time-dependent plots look like random noise, with very little autocorrelation.</p>
+
+<p>Remember, <span  class="math">\(\mu\)</span> is a vector. We have two mean values, one on each side of the changepoint.</p>
+
+<p>We see some interesting bimodality in the changepoint estimate; let's get back to that. Also, the poterior distributions two means are very well-separated. It's almost certain there was a real change in the rate of disasters - it's not just faulty perception on our part.</p>
+
+<p>One thing we might be concerned with is the potential for strong correlations in our posterior estimates. If the changepoint occurred very early, the second group would include some of the higher counts, potentially inflating its mean. This wouldn't necessarily be cause for alarm, but it's something we should be sure to understand.</p>
+
+<p>Let's visualize the dependency, to see if this is the case.</p>
+<div class="highlight"><pre><code class="language-python" data-lang="python"><span></span><span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">trace</span><span class="p">[</span><span class="s1">&#39;changepoint&#39;</span><span class="p">],</span> <span class="n">trace</span><span class="p">[</span><span class="s1">&#39;μ&#39;</span><span class="p">],</span> <span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.3</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Changepoint&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">([</span><span class="s2">&quot;Before&quot;</span><span class="p">,</span> <span class="s2">&quot;After&quot;</span><span class="p">])</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Group means&#39;</span><span class="p">);</span>
+</code></pre></div>
+
+<p><figure><img src="output_13_0.svg" alt="svg"></figure></p>
+
+<p>We do see some slight dependency. For very early changepoints, the <code>After</code> group is inflated, and for very late changepoints, the <code>Before</code> group is supressed. But the effect appears to be minimal.</p>
+<div class="highlight"><pre><code class="language-python" data-lang="python"><span></span><span class="n">plt</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">trace</span><span class="p">[</span><span class="s1">&#39;changepoint&#39;</span><span class="p">]),</span> <span class="n">bins</span><span class="o">=</span><span class="mi">13</span><span class="p">,</span> <span class="n">normed</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span><span class="n">align</span><span class="o">=</span><span class="s1">&#39;left&#39;</span><span class="p">);</span>
+</code></pre></div>
+
+<p><figure><img src="output_15_0.svg" alt="svg"></figure></p>
+<div class="highlight"><pre><code class="language-python" data-lang="python"><span></span><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span>
+  <span class="s1">&#39;changepoint&#39;</span><span class="p">:</span> <span class="n">trace</span><span class="p">[</span><span class="s1">&#39;changepoint&#39;</span><span class="p">],</span> 
+  <span class="s1">&#39;μ0&#39;</span><span class="p">:</span> <span class="n">trace</span><span class="p">[</span><span class="s1">&#39;μ&#39;</span><span class="p">][:,</span><span class="mi">0</span><span class="p">],</span> 
+  <span class="s1">&#39;μ1&#39;</span><span class="p">:</span> <span class="n">trace</span><span class="p">[</span><span class="s1">&#39;μ&#39;</span><span class="p">][:,</span><span class="mi">1</span><span class="p">]})</span>
+</code></pre></div>
+<div class="highlight"><pre><code class="language-python" data-lang="python"><span></span><span class="n">plt</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="n">coal</span><span class="p">[</span><span class="s1">&#39;date&#39;</span><span class="p">],</span> <span class="n">coal</span><span class="p">[</span><span class="s1">&#39;count&#39;</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;count&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Year&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Incidents&#39;</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">pl</span><span class="p">(</span><span class="n">pt</span><span class="p">):</span>
+    <span class="n">grp</span> <span class="o">=</span> <span class="p">(</span><span class="n">coal</span><span class="p">[</span><span class="s1">&#39;date&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">pt</span><span class="p">[</span><span class="s1">&#39;changepoint&#39;</span><span class="p">])</span> <span class="o">*</span> <span class="mi">1</span>
+    <span class="n">line</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">coal</span><span class="p">[</span><span class="s1">&#39;date&#39;</span><span class="p">],</span><span class="n">pt</span><span class="p">[</span><span class="s1">&#39;μ0&#39;</span><span class="p">]</span><span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">grp</span><span class="p">)</span> <span class="o">+</span> <span class="n">pt</span><span class="p">[</span><span class="s1">&#39;μ1&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="n">grp</span><span class="p">,</span> 
+      <span class="n">color</span><span class="o">=</span><span class="s1">&#39;red&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.005</span><span class="p">)</span>    
+
+    
+<span class="n">df</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">pl</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">);</span>
+</code></pre></div>
+
+<p><figure><img src="output_18_0.png" alt="png"></figure></p>
+
+<p>Let's zoom in near the change point:</p>
+
+<p><figure><img src="output_20_0.png" alt="png"></figure></p>
+
+<p>This last plot helps explain the bimodality we were seeing before. Counts in 1885-86 are higher than surrounding years. Maybe the changepoint is just before them, and the higher counts are due to randomness. Or maybe the changepoint is immediately after, and the high counts are because the change has not yet occurred. Either scenario is plausible, though the latter is much more likely.</p>
+
+<p>There's so much beyond this, in PyMC3, other probabilistic programming systems, and Bayesian modeling in general. If you haven't used these methods before, I hope this might give you some glimpse of the power and fexibility of this modeling approach.</p>
+
+      </article>
+
+      
+        <ul class="pager blog-pager">
+          
+          
+        </ul>
+      
+
+
+      
+        
+        
+      
+
+    </div>
+  </div>
+</div>
+
+    <footer>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        <ul class="list-inline text-center footer-links">
+          
+              <li>
+                <a href="mailto:chad.scherrer@gmail.com" title="Email me">
+                  <span class="fa-stack fa-lg">
+                    <i class="fa fa-circle fa-stack-2x"></i>
+                    <i class="fa fa-envelope fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+                <a href="https://plus.google.com/&#43;chad.scherrer" title="Google&#43;">
+                  <span class="fa-stack fa-lg">
+                    <i class="fa fa-circle fa-stack-2x"></i>
+                    <i class="fa fa-google-plus fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+                <a href="https://github.com/cscherrer" title="GitHub">
+                  <span class="fa-stack fa-lg">
+                    <i class="fa fa-circle fa-stack-2x"></i>
+                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+                <a href="https://twitter.com/@ChadScherrer" title="Twitter">
+                  <span class="fa-stack fa-lg">
+                    <i class="fa fa-circle fa-stack-2x"></i>
+                    <i class="fa fa-twitter fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+                <a href="https://reddit.com/u/cscherrer" title="Reddit">
+                  <span class="fa-stack fa-lg">
+                    <i class="fa fa-circle fa-stack-2x"></i>
+                    <i class="fa fa-reddit-alien fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+                <a href="https://linkedin.com/in/username" title="LinkedIn">
+                  <span class="fa-stack fa-lg">
+                    <i class="fa fa-circle fa-stack-2x"></i>
+                    <i class="fa fa-linkedin fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+                <a href="https://stackoverflow.com/users/XXXXXXX/username" title="StackOverflow">
+                  <span class="fa-stack fa-lg">
+                    <i class="fa fa-circle fa-stack-2x"></i>
+                    <i class="fa fa-stack-overflow fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+          
+          <li>
+            
+            <a href="https://cscherrer.github.io/index.xml" title="RSS">
+            
+              <span class="fa-stack fa-lg">
+                <i class="fa fa-circle fa-stack-2x"></i>
+                <i class="fa fa-rss fa-stack-1x fa-inverse"></i>
+              </span>
+            </a>
+          </li>
+          
+        </ul>
+        <p class="credits copyright text-muted">
+          
+            
+              <a href="yourwebsite.com">Chad Scherrer</a>
+            
+          
+
+          &nbsp;&bull;&nbsp;
+          2018
+
+          
+            &nbsp;&bull;&nbsp;
+            <a href="https://cscherrer.github.io">Chad Scherrer</a>
+          
+        </p>
+        
+        <p class="credits theme-by text-muted">
+          <a href="http://gohugo.io">Hugo v0.25.1</a> powered &nbsp;&bull;&nbsp; Theme by <a href="http://deanattali.com/beautiful-jekyll/">Beautiful Jekyll</a> adapted to <a href="https://github.com/halogenica/beautifulhugo">Beautiful Hugo</a>
+          
+        </p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.7.1/katex.min.js" integrity="sha384-/y1Nn9+QQAipbNQWU65krzJralCnuOasHncUFXGkdwntGeSvQicrYkiUBwsgUqc1" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.7.1/contrib/auto-render.min.js" integrity="sha384-dq1/gEHSxPZQ7DdrM82ID4YVol9BYyU7GbWlIwnwyPzotpoc57wDw/guX8EaYGPx" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ=" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<script src="https://cscherrer.github.io/js/main.js"></script>
+<script src="https://cscherrer.github.io/js/highlight.min.js"></script>
+<script> hljs.initHighlightingOnLoad(); </script><script> renderMathInElement(document.body); </script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.1/photoswipe.min.js" integrity="sha256-UplRCs9v4KXVJvVY+p+RSo5Q4ilAUXh7kpjyIP5odyc=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.1/photoswipe-ui-default.min.js" integrity="sha256-PWHOlUzc96pMc8ThwRIXPn8yH4NOLu42RQ0b9SpnpFk=" crossorigin="anonymous"></script>
+<script src="https://cscherrer.github.io/js/load-photoswipe.js"></script>
+
+
+
+
+
+
+  </body>
+</html>
+

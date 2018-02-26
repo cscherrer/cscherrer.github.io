@@ -3,52 +3,64 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
-    <loc>https://cscherrer.github.io/post/test/</loc>
-    <lastmod>2018-01-14T12:25:49-08:00</lastmod>
+    <loc>https://cscherrer.github.io/post/bayesian-changepoint/</loc>
+    <lastmod>2018-02-25T00:00:00-08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://cscherrer.github.io/categories/</loc>
+    <lastmod>2018-02-25T00:00:00-08:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://cscherrer.github.io/page/about/</loc>
+  </url>
+  
+  <url>
+    <loc>https://cscherrer.github.io/tags/bayes/</loc>
+    <lastmod>2018-02-25T00:00:00-08:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://cscherrer.github.io/categories/</loc>
+    <lastmod>2018-02-25T00:00:00-08:00</lastmod>
+    <priority>0</priority>
   </url>
   
   <url>
     <loc>https://cscherrer.github.io/</loc>
-    <lastmod>2017-06-11T14:48:06+02:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://cscherrer.github.io/research/</loc>
-    <lastmod>2017-06-11T14:48:06+02:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://cscherrer.github.io/about/</loc>
-    <lastmod>2015-06-20T14:02:37+02:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://cscherrer.github.io/tags/</loc>
-    <lastmod>2018-01-14T12:25:49-08:00</lastmod>
+    <lastmod>2018-02-25T00:00:00-08:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>https://cscherrer.github.io/categories/</loc>
-    <lastmod>2018-01-14T12:25:49-08:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>https://cscherrer.github.io/categories/</loc>
-    <lastmod>2018-01-14T12:25:49-08:00</lastmod>
+    <loc>https://cscherrer.github.io/page/</loc>
     <priority>0</priority>
   </url>
   
   <url>
     <loc>https://cscherrer.github.io/post/</loc>
-    <lastmod>2018-01-14T12:25:49-08:00</lastmod>
+    <lastmod>2018-02-25T00:00:00-08:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://cscherrer.github.io/tags/pymc3/</loc>
+    <lastmod>2018-02-25T00:00:00-08:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://cscherrer.github.io/tags/python/</loc>
+    <lastmod>2018-02-25T00:00:00-08:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
     <loc>https://cscherrer.github.io/tags/</loc>
-    <lastmod>2018-01-14T12:25:49-08:00</lastmod>
+    <lastmod>2018-02-25T00:00:00-08:00</lastmod>
     <priority>0</priority>
   </url>
   
