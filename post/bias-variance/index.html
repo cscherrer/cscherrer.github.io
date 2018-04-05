@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+
+  <title>The Bias-Variance Decomposition</title>
+  <meta property="og:title" content="The Bias-Variance Decomposition" />
+  <meta name="twitter:title" content="The Bias-Variance Decomposition" />
+  <meta name="description" content="Say there&#39;s some experiment that generates noisy data. You and I each go through the process independently, and model the results. Would the resulting models be exactly the same?
+Well no, of course not. That&#39;s the whole problem with noise. Instead, we&#39;ll usually end up with something like this (for a quadratic fit):
+
+The idea is that we&#39;d like to find an approximation to \(f(x)\), but we can never observe this function directly.">
+  <meta property="og:description" content="Say there&#39;s some experiment that generates noisy data. You and I each go through the process independently, and model the results. Would the resulting models be exactly the same?
+Well no, of course not. That&#39;s the whole problem with noise. Instead, we&#39;ll usually end up with something like this (for a quadratic fit):
+
+The idea is that we&#39;d like to find an approximation to \(f(x)\), but we can never observe this function directly.">
+  <meta name="twitter:description" content="Say there&#39;s some experiment that generates noisy data. You and I each go through the process independently, and model the results. Would the resulting models be exactly the same?
+Well no, of course …">
+  <meta name="author" content="Chad Scherrer"/>
+  <link href='https://cscherrer.github.io/img/favicon.ico' rel='icon' type='image/x-icon'/>
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:site" content="@@ChadScherrer" />
+  <meta name="twitter:creator" content="@@ChadScherrer" />
+  <meta property="og:url" content="https://cscherrer.github.io/post/bias-variance/" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Chad Scherrer" />
+
+  <meta name="generator" content="Hugo 0.37.1" />
+  <link rel="canonical" href="https://cscherrer.github.io/post/bias-variance/" />
+  <link rel="alternate" href="https://cscherrer.github.io/index.xml" type="application/rss+xml" title="Chad Scherrer">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.7.1/katex.min.css" integrity="sha384-wITovz90syo1dJWVh32uuETPVEtGigN07tkttEqPv+uR2SE/mbQcG7ATL28aI9H0" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cscherrer.github.io/css/main.css" /><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" /><link rel="stylesheet" href="https://cscherrer.github.io/css/syntax.css" /><link rel="stylesheet" href="https://cscherrer.github.io/css/codeblock.css" />
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-114923902-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-114923902-1');
+</script>
+
+
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe.min.css" integrity="sha384-h/L2W9KefUClHWaty3SLE5F/qvc4djlyR4qY3NUV5HGQBBW7stbcfff1+I/vmsHh" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/default-skin/default-skin.min.css" integrity="sha384-iD0dNku6PYSIQLyfTOpB06F2KCZJAKLOThS5HRe8b3ibhdEQ6eKsFf/EeFxdOt5R" crossorigin="anonymous">
+
+
+
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+<div class="pswp__bg"></div>
+
+<div class="pswp__scroll-wrap">
+    
+    <div class="pswp__container">
+      <div class="pswp__item"></div>
+      <div class="pswp__item"></div>
+      <div class="pswp__item"></div>
+    </div>
+    
+    <div class="pswp__ui pswp__ui--hidden">
+    <div class="pswp__top-bar">
+      
+      <div class="pswp__counter"></div>
+      <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+      <button class="pswp__button pswp__button--share" title="Share"></button>
+      <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+      <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+      
+      
+      <div class="pswp__preloader">
+        <div class="pswp__preloader__icn">
+          <div class="pswp__preloader__cut">
+            <div class="pswp__preloader__donut"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+      <div class="pswp__share-tooltip"></div>
+    </div>
+    <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+    </button>
+    <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+    </button>
+    <div class="pswp__caption">
+      <div class="pswp__caption__center"></div>
+    </div>
+    </div>
+    </div>
+</div>
+
+</head>
+
+  <body>
+    <nav class="navbar navbar-default navbar-fixed-top navbar-custom">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#main-navbar">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="https://cscherrer.github.io">Chad Scherrer</a>
+    </div>
+
+    <div class="collapse navbar-collapse" id="main-navbar">
+      <ul class="nav navbar-nav navbar-right">
+        
+          
+            <li>
+              <a title="Blog" href="/">Blog</a>
+            </li>
+          
+        
+          
+            <li>
+              <a title="Tags" href="/tags">Tags</a>
+            </li>
+          
+        
+
+        
+
+        
+      </ul>
+    </div>
+
+    <div class="avatar-container">
+      <div class="avatar-img-border">
+        
+      </div>
+    </div>
+
+  </div>
+</nav>
+
+
+
+
+    
+  
+  
+  
+
+
+
+
+  
+
+  <header class="header-section ">
+    
+    <div class="intro-header no-img">
+      
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+            <div class="post-heading">
+              <h1>The Bias-Variance Decomposition</h1>
+                
+                
+                  <span class="post-meta">
+  
+  
+  <i class="fa fa-calendar-o"></i>&nbsp;Posted on April 4, 2018
+  
+  
+  &nbsp;|&nbsp;
+  <i class="fa fa-clock-o"></i> 6 minutes (1074 words)
+  
+  
+</span>
+
+
+                
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+
+    
+<div class="container" role="main">
+  <div class="row">
+    <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+      <article role="main" class="blog-post">
+        <p>Say there's some experiment that generates noisy data. You and I each go through the process independently, and model the results. Would the resulting models be exactly the same?</p>
+
+<p>Well no, of course not. That's the whole problem with noise. Instead, we'll usually end up with something like this (for a quadratic fit):</p>
+
+<p><figure><img src="output_4_0.svg" alt=""></figure></p>
+
+<p>The idea is that we'd like to find an approximation to <span  class="math">\(f(x)\)</span>, but we can never observe this function directly. Instead, we observe some <em>training set</em> <span  class="math">\(\mathcal{T}\)</span> and use that to arrive at an approximation <span  class="math">\(\hat{f}_\mathcal{T}(x)\)</span>.</p>
+
+<p>In general, the approximation won't be a perfect fit; there are two sources of error, which we'll soon connect.</p>
+
+<ul>
+<li><em>Systematic error</em>, or <em>bias</em>, comes from the choice of model. In the current example, it's impossible for any quadratic function to exactly match the curve we're looking for.</li>
+<li><em>Random error</em>, or <em>variance</em>, comes from randomness inherent in the training set. In the graph above, our two experiments gave different observations, leading to different model fits.</li>
+</ul>
+
+<p>By the end of this post, we'll have a way to express the average error (over all training sets) in terms of these two sources.</p>
+
+<h2 id="mean-squared-error">Mean Squared Error</h2>
+
+<p>How should we measure &quot;average error&quot;? In regression, the most common approach (at least classically) is in terms of <em>squared loss</em>. After we use a training set <span  class="math">\(\mathcal{T}\)</span> to find an approximation <span  class="math">\(\hat{f}_\mathcal{T}\)</span>, we hope that for a given <span  class="math">\(x\)</span>,</p>
+
+<p><span  class="math">\[
+(\hat{f}_\mathcal{T}(x) - f(x))^2
+\]</span></p>
+
+<p>is small. To quantify this, we can average over lots of possible training sets, which leads to the <em>mean squared error</em>,</p>
+
+<p><span  class="math">\[
+\text{MSE}(x) = \mathbb{E}_\mathcal{T}[(\hat{f}_\mathcal{T}(x) - f(x))^2]\ .
+\]</span></p>
+
+<p>The <span  class="math">\(\mathbb{E}_\mathcal{T}\)</span> notation just means we're taking an average (or <em>expected value</em>) over different possibilities of the training set <span  class="math">\(\mathcal{T}\)</span>.</p>
+
+<p>In order to decompose the MSE, it's helpful to think in terms of the average prediction (again, over all training sets). Let's call this <span  class="math">\(\mu(x)\)</span>. So we can define</p>
+
+<p><span  class="math">\[
+\mu(x) = \mathbb{E}_\mathcal{T}[\hat{f}_\mathcal{T}(x)]\ .
+\]</span></p>
+
+<h2 id="bias">Bias</h2>
+
+<p>Informally, we think of <em>bias</em> as an opinion that skews our interpretation of observations. The current context is no different, just more precise. As with people, <strong>we can think of a biased model as one with a strong opinion</strong>.</p>
+
+<p>For example, in the graph above, the prediction function will have the shape of a parabola, no matter what training set is used. This shape is predetermined by the choice of model, and no data can possibly change its mind. In fact, even if we average over an infinite number of training sets, the result still won't be perfect.</p>
+
+<p>To make this precise, let's define <span  class="math">\(\text{Bias}(x)\)</span> as</p>
+
+<p><span  class="math">\[
+\begin{aligned}
+\text{Bias}(x) 
+  &= \mathbb{E}_\mathcal{T}[\hat{f}_\mathcal{T}(x) - f(x)] \\
+ &= \mu(x) - f(x) \ .
+\end{aligned}
+\]</span></p>
+
+<p>We get the second line by distributing the expectation over the two terms; we can do this because expectations are linear.</p>
+
+<p>Also, note that we're abusing the notation to keep it a bit simpler. To be really rigorous we should call it something like</p>
+
+<p><span  class="math">\[
+\text{Bias}_\mathcal{T}[\hat{f}_\mathcal{T}(x),f(x)]\ .
+\]</span></p>
+
+<p>This is too heavy to be useful, so we'll continue to write it as above, as a function of <span  class="math">\(x\)</span>.</p>
+
+<h2 id="variance">Variance</h2>
+
+<p>Variance in this context is no different than the usual statistical concept. We just ask, &quot;What's the average squared distance of these things from their average?&quot;.</p>
+
+<p>For the current discussion, &quot;these things&quot; are the <span  class="math">\(\hat{f}_\mathcal{T}(x)\)</span> values, and &quot;their average&quot; is <span  class="math">\(\mu(x)\)</span>. This leads us to</p>
+
+<p><span  class="math">\[
+\text{Var}(x) = \mathbb{E}_\mathcal{T}[(\hat{f}_\mathcal{T}(x) - \mu(x))^2]\ .
+\]</span></p>
+
+<p>The shorthand notation <span  class="math">\(\text{Var}(x)\)</span> is a bit unusual (<span  class="math">\(x\)</span> is not a random variable or a distribution), but we'll stick with it to keep it parallel with the way we're writing the bias.</p>
+
+<p>Note that just as with random variables, we can also write the variance as</p>
+
+<p><span  class="math">\[
+\text{Var}(x) = \mathbb{E}_\mathcal{T}[\hat{f}_\mathcal{T}(x)^2]- \mu(x)^2\ .
+\]</span></p>
+
+<h2 id="decomposing-the-mse">Decomposing the MSE</h2>
+
+<p>With all of the preliminaries out of the way, the decomposition becomes really easy. We can just expand the MSE, rearrange the terms and complete the square.</p>
+
+<p><span  class="math">\[
+\begin{aligned}
+\text{MSE}(x)
+  &= \mathbb{E}_\mathcal{T}[(\hat{f}_\mathcal{T}(x) - f(x))^2] \\
+  &= \mathbb{E}_\mathcal{T}[\hat{f}_\mathcal{T}(x)^2 - 2 \hat{f}_\mathcal{T}(x) f(x) + f(x)^2] \\
+  &= \mathbb{E}_\mathcal{T}[\hat{f}_\mathcal{T}(x)^2] - 2 \mu(x) f(x) + f(x)^2 \\
+  &= \mathbb{E}_\mathcal{T}[\hat{f}_\mathcal{T}(x)^2]- \mu(x)^2 + \mu(x)^2 - 2 \mu(x) f(x) + f(x)^2\\
+  &=  \mathbb{E}_\mathcal{T}[\hat{f}_\mathcal{T}(x)^2]- \mu(x)^2 + (\mu(x) - f(x))^2\\
+  &= \text{Var}(x) + \text{Bias}(x)^2
+\end{aligned}
+\]</span></p>
+
+<h2 id="example">Example</h2>
+
+<p>Let's consider our original example in a bit more detail. Starting with</p>
+
+<p><span  class="math">\[
+f(x) = x \sin x\ ,
+\]</span></p>
+
+<p>each training set consists of six <span  class="math">\((x_n, y_n)\)</span> pairs, with</p>
+
+<p><span  class="math">\[
+\begin{aligned}
+x_n &= n + 1 \\
+y_n &\sim \text{Normal}(f(x_n), 1)\ .
+\end{aligned}
+\]</span></p>
+
+<p>As we fit increasingly complex models, we can compare the bias, variance, and MSE. Note that to make the scale visually reasonable, the second column of graphs has a square-root scale for the <span  class="math">\(y\)</span>-axis. Because of this, the MSE, bias and variance are visusally related to the RMSE (<em>root</em> mean squared error), absolute bias, and standard deviation.</p>
+
+<p><figure><img src="output_6_0.svg" alt=""></figure></p>
+
+<p>As model complexity increases, more of the MSE can be attributed to variance. For complex models, this motivates the introduction of regularization, in which we artificially increase the bias in order to reduce variance.</p>
+
+<h2 id="irreducible-error">Irreducible Error</h2>
+
+<p>Though we're mostly interested in approximating <span  class="math">\(f(x)\)</span>, most applied problems don't give us access to this directly. Instead, we train on a set <span  class="math">\(\mathcal{T}_0\)</span>, and compute the loss on a test set <span  class="math">\(\mathcal{T}_1\)</span> from the same distribution.</p>
+
+<p>Similarly to our approach to this point, we can average this over all possible train/test sets, to arrive at the <em>expected prediction error</em>. For squared loss this has the form</p>
+
+<p><span  class="math">\[
+\text{EPE}(x) = \mathbb{E}_{\mathcal{T}_0,\mathcal{T}_1}[(y - \hat{f}_{\mathcal{T}_0}(x))^2]\ ,
+\]</span></p>
+
+<p>where <span  class="math">\((x,y)\)</span> are taken from the test set <span  class="math">\(\mathcal{T}_1\)</span>.</p>
+
+<p>Continuing as before, we can write the EPE as</p>
+
+<p><span  class="math">\[
+\text{EPE}(x) = \text{Bias}(x)^2 + \text{Var}(x) + \sigma^2\ .
+\]</span></p>
+
+<p>The new term <span  class="math">\(\sigma^2\)</span> is called the <em>irreducible error</em>, and is the same as the empirical MSE of the test set.</p>
+
+<h2 id="other-loss-functions">Other Loss Functions</h2>
+
+<p>Though all terms to this point are defined in the context of squared loss, it's common to hear them used more generally. This use is usually less rigorous, and only by analogy. But it doesn't have to be. For some more detail on this, check out this paper:</p>
+
+<p><a href="https://homes.cs.washington.edu/~pedrod/papers/mlc00a.pdf">Domingos, Pedro. &quot;A unified bias-variance decomposition.&quot; Proceedings of 17th International Conference on Machine Learning. 2000.</a></p>
+
+<h2 id="conclusion">Conclusion</h2>
+
+<p>An understanding of the bias-variance decomposition, and the corresponding tradeoff in modeling, are crucial for any data scientist to understand. This post has become much longer than I had originally planned, and I hope the discussion has been useful to you. Thanks for your time!</p>
+
+      </article>
+
+      
+        <ul class="pager blog-pager">
+          
+            <li class="previous">
+              <a href="https://cscherrer.github.io/post/bayesian-changepoint/" data-toggle="tooltip" data-placement="top" title="Bayesian Changepoint Detection with PyMC3">&larr; Previous Post</a>
+            </li>
+          
+          
+        </ul>
+      
+
+
+      
+        
+        
+      
+
+    </div>
+  </div>
+</div>
+
+    <footer>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        <ul class="list-inline text-center footer-links">
+          
+              <li>
+                <a href="mailto:chad.scherrer@gmail.com" title="Email me">
+                  <span class="fa-stack fa-lg">
+                    <i class="fa fa-circle fa-stack-2x"></i>
+                    <i class="fa fa-envelope fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+                <a href="https://plus.google.com/&#43;chad.scherrer" title="Google&#43;">
+                  <span class="fa-stack fa-lg">
+                    <i class="fa fa-circle fa-stack-2x"></i>
+                    <i class="fa fa-google-plus fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+                <a href="https://github.com/cscherrer" title="GitHub">
+                  <span class="fa-stack fa-lg">
+                    <i class="fa fa-circle fa-stack-2x"></i>
+                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+                <a href="https://twitter.com/@ChadScherrer" title="Twitter">
+                  <span class="fa-stack fa-lg">
+                    <i class="fa fa-circle fa-stack-2x"></i>
+                    <i class="fa fa-twitter fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+                <a href="https://reddit.com/u/cscherrer" title="Reddit">
+                  <span class="fa-stack fa-lg">
+                    <i class="fa fa-circle fa-stack-2x"></i>
+                    <i class="fa fa-reddit-alien fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+                <a href="https://linkedin.com/in/username" title="LinkedIn">
+                  <span class="fa-stack fa-lg">
+                    <i class="fa fa-circle fa-stack-2x"></i>
+                    <i class="fa fa-linkedin fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+                <a href="https://stackoverflow.com/users/XXXXXXX/username" title="StackOverflow">
+                  <span class="fa-stack fa-lg">
+                    <i class="fa fa-circle fa-stack-2x"></i>
+                    <i class="fa fa-stack-overflow fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+          
+          <li>
+            
+            <a href="https://cscherrer.github.io/index.xml" title="RSS">
+            
+              <span class="fa-stack fa-lg">
+                <i class="fa fa-circle fa-stack-2x"></i>
+                <i class="fa fa-rss fa-stack-1x fa-inverse"></i>
+              </span>
+            </a>
+          </li>
+          
+        </ul>
+        <p class="credits copyright text-muted">
+          
+            
+              <a href="yourwebsite.com">Chad Scherrer</a>
+            
+          
+
+          &nbsp;&bull;&nbsp;
+          2018
+
+          
+            &nbsp;&bull;&nbsp;
+            <a href="https://cscherrer.github.io">Chad Scherrer</a>
+          
+        </p>
+        
+        <p class="credits theme-by text-muted">
+          <a href="http://gohugo.io">Hugo v0.37.1</a> powered &nbsp;&bull;&nbsp; Theme by <a href="http://deanattali.com/beautiful-jekyll/">Beautiful Jekyll</a> adapted to <a href="https://github.com/halogenica/beautifulhugo">Beautiful Hugo</a>
+          
+        </p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.7.1/katex.min.js" integrity="sha384-/y1Nn9+QQAipbNQWU65krzJralCnuOasHncUFXGkdwntGeSvQicrYkiUBwsgUqc1" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.7.1/contrib/auto-render.min.js" integrity="sha384-dq1/gEHSxPZQ7DdrM82ID4YVol9BYyU7GbWlIwnwyPzotpoc57wDw/guX8EaYGPx" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ=" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<script src="https://cscherrer.github.io/js/main.js"></script><script> renderMathInElement(document.body); </script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe.min.js" integrity="sha384-QELNnmcmU8IR9ZAykt67vGr9/rZJdHbiWi64V88fCPaOohUlHCqUD/unNN0BXSqy" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe-ui-default.min.js" integrity="sha384-m67o7SkQ1ALzKZIFh4CiTA8tmadaujiTa9Vu+nqPSwDOqHrDmxLezTdFln8077+q" crossorigin="anonymous"></script>
+<script src="https://cscherrer.github.io/js/load-photoswipe.js"></script>
+
+
+
+
+
+
+  </body>
+</html>
+

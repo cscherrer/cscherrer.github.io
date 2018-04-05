@@ -7,10 +7,22 @@
     <generator>Hugo -- gohugo.io</generator>
     <managingEditor>chad.scherrer@gmail.com (Chad Scherrer)</managingEditor>
     <webMaster>chad.scherrer@gmail.com (Chad Scherrer)</webMaster>
-    <lastBuildDate>Sun, 25 Feb 2018 00:00:00 -0800</lastBuildDate>
+    <lastBuildDate>Wed, 04 Apr 2018 13:43:57 -0700</lastBuildDate>
     
 	<atom:link href="https://cscherrer.github.io/post/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>The Bias-Variance Decomposition</title>
+      <link>https://cscherrer.github.io/post/bias-variance/</link>
+      <pubDate>Wed, 04 Apr 2018 13:43:57 -0700</pubDate>
+      <author>chad.scherrer@gmail.com (Chad Scherrer)</author>
+      <guid>https://cscherrer.github.io/post/bias-variance/</guid>
+      <description>Say there&#39;s some experiment that generates noisy data. You and I each go through the process independently, and model the results. Would the resulting models be exactly the same?
+Well no, of course not. That&#39;s the whole problem with noise. Instead, we&#39;ll usually end up with something like this (for a quadratic fit):
+
+The idea is that we&#39;d like to find an approximation to \(f(x)\), but we can never observe this function directly.</description>
+    </item>
     
     <item>
       <title>Bayesian Changepoint Detection with PyMC3</title>
