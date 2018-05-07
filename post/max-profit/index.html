@@ -170,7 +170,7 @@ Let&#39;s start with some hypothetical data. A small company has tried a few dif
   
   
   &nbsp;|&nbsp;
-  <i class="fa fa-clock-o"></i> 9 minutes (1776 words)
+  <i class="fa fa-clock-o"></i> 9 minutes (1787 words)
   
   
 </span>
@@ -196,7 +196,7 @@ Let&#39;s start with some hypothetical data. A small company has tried a few dif
 
 <p><figure><img src="max-profit_files/max-profit_1_1.png" alt="png"></figure></p>
 
-<p>That middle data point looks suspcicious; we'll come back to that.</p>
+<p>That middle data point looks like a posisble outlier; we'll come back to that.</p>
 
 <p>For now, let's start with some notation. We'll use <span  class="math">\(P\)</span> and <span  class="math">\(Q\)</span> to denote price and quantity, respectively. A <span  class="math">\(0\)</span> subscript will denote observed data, so we were able to sell <span  class="math">\(Q_0\)</span> units when the price was set to <span  class="math">\(P_0\)</span>.</p>
 
@@ -519,22 +519,22 @@ Q = a P^c\ .
 
 <h2 id="posterior-predictive-checks">Posterior Predictive Checks</h2>
 
-<p>The trace we found is a sample form the joint posterior distribution of the parameters. Instead of a point estimate, we have a sample of &quot;possible worlds&quot; that represent reality. To perform inference, we query each and aggregate the results. So, for example...</p>
+<p>The trace we found is a sample from the joint posterior distribution of the parameters. Instead of a point estimate, we have a sample of &quot;possible worlds&quot; that represent reality. To perform inference, we query each and aggregate the results. So, for example...</p>
 <div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="n">p</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">25</span><span class="p">,</span><span class="mi">55</span><span class="p">)</span>
 <span class="err">μ</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="err">α</span> <span class="o">+</span> <span class="n">t</span><span class="o">.</span><span class="err">β</span> <span class="o">*</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">p</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">p0</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()))</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">p</span><span class="p">,</span><span class="err">μ</span><span class="p">,</span><span class="n">c</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">,</span><span class="n">alpha</span><span class="o">=</span><span class="mf">0.01</span><span class="p">);</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">p0</span><span class="p">,</span><span class="n">q0</span><span class="p">,</span><span class="s1">&#39;o&#39;</span><span class="p">,</span><span class="n">c</span><span class="o">=</span><span class="s1">&#39;C1&#39;</span><span class="p">);</span></code></pre></div>
-<p>To be concise, I've leaving out some simple code like axis labels, etc. Here's the result.</p>
+<p>To be concise, I've left out some simple code like axis labels, etc. Here's the result.</p>
 
 <p><figure><img src="max-profit_files/max-profit_15_1.png" alt="png"></figure></p>
 
-<p>Each &quot;hair&quot; represents <span  class="math">\(\mathbb{E}[Q|P]\)</span> according to one sample from the posterior. At first glance this might seem to confirm our suspicions about the point at <span  class="math">\(P_0=40\)</span>. But remember, this is not a conditional distribution of <span  class="math">\((Q|P)\)</span>, but of its <em>expectation</em>.</p>
+<p>Each &quot;hair&quot; represents <span  class="math">\(\mathbb{E}[Q|P]\)</span> according to one sample from the posterior. On introducing the data I suggested the point <span  class="math">\(P_0=40\)</span> may be an outlier. At first glance, the above plot might seem to confirm this. But remember, this is not a conditional distribution of <span  class="math">\((Q|P)\)</span>, but of its <em>expectation</em>.</p>
 
 <p>The following boxplot makes this point more explicitly:</p>
 <div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="n">plt</span><span class="o">.</span><span class="n">boxplot</span><span class="p">(</span><span class="n">scipy</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">poisson</span><span class="o">.</span><span class="n">cdf</span><span class="p">(</span><span class="n">q0</span><span class="p">,</span><span class="n">mu</span><span class="o">=</span><span class="n">t</span><span class="p">[</span><span class="s1">&#39;μ0&#39;</span><span class="p">]));</span></code></pre></div>
 <p><figure><img src="max-profit_files/max-profit_16_0.png" alt="png"></figure></p>
 
-<p>Think of this as asking each possible world, &quot;In your reality, what's the probability of Seeing a smaller <span  class="math">\(Q\)</span> value than this?&quot; The responses are then aggregated by price. For <span  class="math">\(P_0=40\)</span>, the about half the results are above 0.1. The point is a bit unusual, but hardly an outlier.</p>
+<p>Think of this as asking each possible world, &quot;In your reality, what's the probability of seeing a smaller <span  class="math">\(Q\)</span> value than this?&quot; The responses are then aggregated by price. For <span  class="math">\(P_0=40\)</span>, about half the results are above 0.1. The point is a bit unusual, but hardly an outlier.</p>
 
 <p>This shouldn't be considered a recipe for <em>the</em> way to do posterior predictive checks. There are countless possibilities, and the right approach depends on the problem at hand.</p>
 
