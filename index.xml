@@ -7,10 +7,22 @@
     <generator>Hugo -- gohugo.io</generator>
     <managingEditor>chad.scherrer@gmail.com (Chad Scherrer)</managingEditor>
     <webMaster>chad.scherrer@gmail.com (Chad Scherrer)</webMaster>
-    <lastBuildDate>Sun, 06 May 2018 07:04:24 -0700</lastBuildDate>
+    <lastBuildDate>Sun, 03 Jun 2018 12:05:48 -0700</lastBuildDate>
     
 	<atom:link href="https://cscherrer.github.io/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Bayesian Optimal Pricing, Part 2</title>
+      <link>https://cscherrer.github.io/post/max-profit-2/</link>
+      <pubDate>Sun, 03 Jun 2018 12:05:48 -0700</pubDate>
+      <author>chad.scherrer@gmail.com (Chad Scherrer)</author>
+      <guid>https://cscherrer.github.io/post/max-profit-2/</guid>
+      <description>This is Part 2 in a series on Bayesian optimal pricing. Part 1 is here.
+Introduction In Part 1 we used PyMC3 to build a Bayesian model for sales. By the end we had this result:
+
+A common advantage of Bayesian analysis is the understanding it gives us of the distribution of a given result. For example, we very easily analyze a sample from the posterior distribution of profit for a given price.</description>
+    </item>
     
     <item>
       <title>Bayesian Optimal Pricing, Part 1</title>

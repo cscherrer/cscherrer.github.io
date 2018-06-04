@@ -3,6 +3,11 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
+    <loc>https://cscherrer.github.io/post/max-profit-2/</loc>
+    <lastmod>2018-06-03T12:05:48-07:00</lastmod>
+  </url>
+  
+  <url>
     <loc>https://cscherrer.github.io/post/max-profit/</loc>
     <lastmod>2018-05-06T07:04:24-07:00</lastmod>
   </url>
@@ -41,7 +46,7 @@
   
   <url>
     <loc>https://cscherrer.github.io/</loc>
-    <lastmod>2018-05-06T07:04:24-07:00</lastmod>
+    <lastmod>2018-06-03T12:05:48-07:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -52,7 +57,7 @@
   
   <url>
     <loc>https://cscherrer.github.io/post/</loc>
-    <lastmod>2018-05-06T07:04:24-07:00</lastmod>
+    <lastmod>2018-06-03T12:05:48-07:00</lastmod>
     <priority>0</priority>
   </url>
   

@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+
+  <title>Bayesian Optimal Pricing, Part 2</title>
+  <meta property="og:title" content="Bayesian Optimal Pricing, Part 2" />
+  <meta name="twitter:title" content="Bayesian Optimal Pricing, Part 2" />
+  <meta name="description" content="This is Part 2 in a series on Bayesian optimal pricing. Part 1 is here.
+Introduction In Part 1 we used PyMC3 to build a Bayesian model for sales. By the end we had this result:
+
+A common advantage of Bayesian analysis is the understanding it gives us of the distribution of a given result. For example, we very easily analyze a sample from the posterior distribution of profit for a given price.">
+  <meta property="og:description" content="This is Part 2 in a series on Bayesian optimal pricing. Part 1 is here.
+Introduction In Part 1 we used PyMC3 to build a Bayesian model for sales. By the end we had this result:
+
+A common advantage of Bayesian analysis is the understanding it gives us of the distribution of a given result. For example, we very easily analyze a sample from the posterior distribution of profit for a given price.">
+  <meta name="twitter:description" content="This is Part 2 in a series on Bayesian optimal pricing. Part 1 is here.
+Introduction In Part 1 we used PyMC3 to build a Bayesian model for sales. By the end we had this result:
+
+A common advantage of …">
+  <meta name="author" content="Chad Scherrer"/>
+  <link href='https://cscherrer.github.io/img/favicon.ico' rel='icon' type='image/x-icon'/>
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:site" content="@@ChadScherrer" />
+  <meta name="twitter:creator" content="@@ChadScherrer" />
+  <meta property="og:url" content="https://cscherrer.github.io/post/max-profit-2/" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Chad Scherrer" />
+
+  <meta name="generator" content="Hugo 0.41" />
+  <link rel="canonical" href="https://cscherrer.github.io/post/max-profit-2/" />
+  <link rel="alternate" href="https://cscherrer.github.io/index.xml" type="application/rss+xml" title="Chad Scherrer">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.7.1/katex.min.css" integrity="sha384-wITovz90syo1dJWVh32uuETPVEtGigN07tkttEqPv+uR2SE/mbQcG7ATL28aI9H0" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cscherrer.github.io/css/main.css" /><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" /><link rel="stylesheet" href="https://cscherrer.github.io/css/syntax.css" /><link rel="stylesheet" href="https://cscherrer.github.io/css/codeblock.css" />
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-114923902-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-114923902-1');
+</script>
+
+
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe.min.css" integrity="sha384-h/L2W9KefUClHWaty3SLE5F/qvc4djlyR4qY3NUV5HGQBBW7stbcfff1+I/vmsHh" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/default-skin/default-skin.min.css" integrity="sha384-iD0dNku6PYSIQLyfTOpB06F2KCZJAKLOThS5HRe8b3ibhdEQ6eKsFf/EeFxdOt5R" crossorigin="anonymous">
+
+
+
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+<div class="pswp__bg"></div>
+
+<div class="pswp__scroll-wrap">
+    
+    <div class="pswp__container">
+      <div class="pswp__item"></div>
+      <div class="pswp__item"></div>
+      <div class="pswp__item"></div>
+    </div>
+    
+    <div class="pswp__ui pswp__ui--hidden">
+    <div class="pswp__top-bar">
+      
+      <div class="pswp__counter"></div>
+      <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+      <button class="pswp__button pswp__button--share" title="Share"></button>
+      <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+      <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+      
+      
+      <div class="pswp__preloader">
+        <div class="pswp__preloader__icn">
+          <div class="pswp__preloader__cut">
+            <div class="pswp__preloader__donut"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+      <div class="pswp__share-tooltip"></div>
+    </div>
+    <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+    </button>
+    <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+    </button>
+    <div class="pswp__caption">
+      <div class="pswp__caption__center"></div>
+    </div>
+    </div>
+    </div>
+</div>
+
+</head>
+
+  <body>
+    <nav class="navbar navbar-default navbar-fixed-top navbar-custom">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#main-navbar">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="https://cscherrer.github.io">Chad Scherrer</a>
+    </div>
+
+    <div class="collapse navbar-collapse" id="main-navbar">
+      <ul class="nav navbar-nav navbar-right">
+        
+          
+            <li>
+              <a title="Blog" href="/">Blog</a>
+            </li>
+          
+        
+          
+            <li>
+              <a title="Tags" href="/tags">Tags</a>
+            </li>
+          
+        
+
+        
+
+        
+      </ul>
+    </div>
+
+    <div class="avatar-container">
+      <div class="avatar-img-border">
+        
+      </div>
+    </div>
+
+  </div>
+</nav>
+
+
+
+
+    
+  
+  
+  
+
+
+
+
+  
+
+  <header class="header-section ">
+    
+    <div class="intro-header no-img">
+      
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+            <div class="post-heading">
+              <h1>Bayesian Optimal Pricing, Part 2</h1>
+                
+                
+                  <span class="post-meta">
+  
+  
+  <i class="fa fa-calendar-o"></i>&nbsp;Posted on June 3, 2018
+  
+  
+  &nbsp;|&nbsp;
+  <i class="fa fa-clock-o"></i> 6 minutes (1271 words)
+  
+  
+</span>
+
+
+                
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+
+    
+<div class="container" role="main">
+  <div class="row">
+    <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+      <article role="main" class="blog-post">
+        <p><em>This is Part 2 in a series on Bayesian optimal pricing. Part 1 is <a href="https://cscherrer.github.io/post/max-profit/">here</a>.</em></p>
+
+<h1 id="introduction">Introduction</h1>
+
+<p>In <a href="https://cscherrer.github.io/post/max-profit/">Part 1</a> we used PyMC3 to build a Bayesian model for sales. By the end we had this result:</p>
+
+<p><figure><img src="plots/opt1.png" alt="png"></figure></p>
+
+<p>A common advantage of Bayesian analysis is the understanding it gives us of the distribution of a given result. For example, we very easily analyze a sample from the posterior distribution of profit for a given price. So it's natural to ask, what about the distribution of the result of out last optimization?</p>
+
+<p>Strangely, there's no immediate answer to this. In Part 1 we discussed <em>posterior predictive checks</em>, which compare the observed data to data that <em>might</em> have been generated, according to the posterior over the parameters. But our &quot;max of means&quot; optimization can't even be computed for a single parameter value. The empirical nature of our approach makes it awkward to understand the sensitivity of the result to fluctuations in the observed sales data or the posterior parameter estimate.</p>
+
+<p>Let's see what we can do about that.</p>
+
+<h1 id="bootstrapping">Bootstrapping</h1>
+
+<p>Perhaps the most immediate possible solution is the <em>nonparametric bootstrap</em>. We can resample from the posterior distribution, and apply our max-of-means approach to each resample. This gives us the following result.</p>
+
+<p><figure><img src="plots/boot1.svg" alt=""></figure></p>
+
+<p>Pretty good, right? Maybe we should call it a day?</p>
+
+<p>Not so fast. The bootstrap is great when we already know a distribution is reasonably well-behaved. But there are pathological cases. Even the simplest bootstrap calculation breaks down for a Cauchy distribution. Here are 10 Cauchy samples, with the bootsrapped mean density for each:</p>
+
+<p><figure><img src="plots/cauchy-bootstrap.svg" alt=""></figure></p>
+
+<p>What's going on here? Because the tails of the Cauchy are so heavy, no sample can be considered &quot;representative enough&quot; for stable estimation of the mean (at least with the usual MLE approach).</p>
+
+<h1 id="simulation">Simulation</h1>
+
+<p>Just to be safe, let's try a different approach. Here are the assumptions our model makes about the process to this point:</p>
+
+<ol>
+<li>The parameters <span  class="math">\((\alpha, \beta)\)</span> were drawn from the prior distribution.</li>
+<li>Each component of <span  class="math">\(Q_0\)</span> was drawn from a Poisson distribution determined by <span  class="math">\(\alpha\)</span>, <span  class="math">\(\beta\)</span>, and the corresponding component of the set price <span  class="math">\(P_0\)</span>.</li>
+<li>We sampled from the posterior distribution <span  class="math">\((\alpha,\beta | Q_0)\)</span>.</li>
+<li>Using the posterior samples, we found a distribution on the profit <span  class="math">\(\pi\)</span> as a function of price <span  class="math">\(P\)</span>. In particular, each price gave us an expected, or mean, profit.</li>
+<li>We found the max-of-means: that price <span  class="math">\(\hat{P}\)</span> for which the estimated expected profit is the highest.</li>
+</ol>
+
+<p>Let's simulate all but the first step of this, using the posterior mean for <span  class="math">\(\alpha\)</span> and <span  class="math">\(\beta\)</span>. We can do this simulation lots of times, and hopefully get a better understanding on the distributions involved.</p>
+
+<p>We can do most of this in one little function:</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="k">def</span> <span class="nf">generate_replications</span><span class="p">(</span><span class="n">p0</span><span class="p">,</span> <span class="err">μ</span><span class="mi">0</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+    <span class="n">qobs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">poisson</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">outer</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">n</span><span class="p">),</span> <span class="err">μ</span><span class="mi">0</span><span class="p">))</span>
+    <span class="k">with</span> <span class="n">pm</span><span class="o">.</span><span class="n">Model</span><span class="p">()</span> <span class="k">as</span> <span class="n">m</span><span class="p">:</span>
+        <span class="err">α</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">Cauchy</span><span class="p">(</span><span class="s1">&#39;α&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="n">n</span><span class="p">)</span>
+        <span class="err">β</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">Cauchy</span><span class="p">(</span><span class="s1">&#39;β&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="n">n</span><span class="p">)</span>
+        <span class="err">μ</span><span class="mi">0</span><span class="n">rep</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span>
+            <span class="err">α</span> <span class="o">+</span> <span class="err">β</span> <span class="o">*</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">p0</span><span class="p">)</span> <span class="o">-</span> <span class="n">logp0mean</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span><span class="o">.</span><span class="n">T</span>
+        <span class="n">qval</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">Poisson</span><span class="p">(</span><span class="s1">&#39;q0&#39;</span><span class="p">,</span> <span class="err">μ</span><span class="mi">0</span><span class="n">rep</span><span class="p">,</span> <span class="n">observed</span><span class="o">=</span><span class="n">qobs</span><span class="p">)</span>
+        <span class="n">t</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">sample</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">t</span></code></pre></div>
+<p>Given prices and desired means, this generates <code>n</code> replications of data, and fits each independently. It would have been simpler to just call out original model <code>n</code> times, but overhead in calling PyMC3 adds up quickly, so the current approach is much faster. Note that this does not include the optimization; we'll express that separately in order to compare an alternative approach.</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="k">def</span> <span class="nf">withrep</span><span class="p">(</span><span class="n">rep</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">f</span><span class="p">):</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">rep</span><span class="o">.</span><span class="err">β</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
+        <span class="n">t</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;α&#39;</span><span class="p">:</span> <span class="n">rep</span><span class="o">.</span><span class="err">α</span><span class="p">[:,</span> <span class="n">j</span><span class="p">],</span> <span class="s1">&#39;β&#39;</span><span class="p">:</span> <span class="n">rep</span><span class="o">.</span><span class="err">β</span><span class="p">[:,</span> <span class="n">j</span><span class="p">]}</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">f</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">p</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">max_of_means</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">p</span><span class="p">):</span>
+    <span class="n">_</span><span class="p">,</span> <span class="err">π</span> <span class="o">=</span> <span class="n">predict</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">p</span><span class="p">)</span>
+    <span class="err">π</span><span class="n">mean</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="err">π</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">jmax</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="err">π</span><span class="n">mean</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="n">jmax</span><span class="p">],</span> <span class="err">π</span><span class="n">mean</span><span class="p">[</span><span class="n">jmax</span><span class="p">])</span></code></pre></div>
+<p>Then we have a nice way of connecting these components:</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="n">rep</span> <span class="o">=</span> <span class="n">generate_replications</span><span class="p">(</span><span class="n">p0</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">a</span> <span class="o">+</span> <span class="n">b</span> <span class="o">*</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">p0</span><span class="p">)</span> <span class="o">-</span> <span class="n">logp0mean</span><span class="p">)),</span><span class="mi">800</span><span class="p">)</span>
+<span class="n">out1</span> <span class="o">=</span> <span class="n">withrep</span><span class="p">(</span><span class="n">rep</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">logspace</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="mi">20</span><span class="p">),</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="mi">300</span><span class="p">),</span><span class="mi">1000</span><span class="p">),</span><span class="n">max_of_means</span><span class="p">)</span></code></pre></div>
+<p>This yields the following result:</p>
+
+<p><figure><img src="plots/replications.svg" alt=""></figure></p>
+
+<p>Each point on this graph is a replication of the process; our original result from Part 1 would be one such point. The blue points on the bottom left are what we might have expected - some additional variablility beyond our bootstrap result, but nothing too extreme. The inset plot shows a closer view of these.</p>
+
+<p>The points shown in red seem to be in agreement about an optimal price of $300. But this is only an artifact of the range chosen for the search; all of them &quot;want&quot; a higher price. There's more going on here than suggested by our initial bootstrap results.</p>
+
+<h1 id="further-analysis">Further analysis</h1>
+
+<p>Along the way in Part 1, we showed this scatter plot of the posterior samples:</p>
+
+<p><figure><img src="plots/centered.svg" alt=""></figure></p>
+
+<p>We could do this for each replication, but the result would have too many points to be easily interpretable. Let's instead look at a 95% ellipse for each replication:</p>
+
+<p><figure><img src="plots/ellipses.png" alt=""></figure></p>
+
+<p>The blue/red coloring here is the same as above, and the original posterior sample is overlayed, with the corresponding ellipse in bold. Divergent solutions seem to arise from large values of <span  class="math">\(\beta\)</span>.</p>
+
+<p>To understand what's going on, let's suppose we had a fixed value for <span  class="math">\(\alpha\)</span> and <span  class="math">\(\beta\)</span>. Recall from Part 1 that the expected profit is</p>
+
+<p><span  class="math">\[
+\pi = (P-K) \mu\ ,
+\]</span></p>
+
+<p>where</p>
+
+<p><span  class="math">\[
+\log \mu = \alpha + \beta (\log P - \overline{\log P_0})\ .
+\]</span></p>
+
+<p>Setting <span  class="math">\(\frac{d\pi}{dP}=0\)</span> and solving for <span  class="math">\(P\)</span> gives</p>
+
+<p><span  class="math">\[
+\hat{P} = \frac{\beta K}{1+\beta}\ .
+\]</span></p>
+
+<p>So as <span  class="math">\(\beta\)</span> gets close to <span  class="math">\(-1\)</span>, our estimate blows up.</p>
+
+<p>To build some intuition about this, consider profit in units of &quot;dollars per day&quot;, or equivalently,</p>
+
+<p><span  class="math">\[
+\frac{\text{dollars}/\text{purchase}}{\text{days}/\text{purchase}}\ .
+\]</span></p>
+
+<p>The numerator of this corresponds to <span  class="math">\(P-K\)</span>, the denominator to <span  class="math">\(\frac{1}{\mu}\)</span>. An increase in price increases both the numerator and denominator. When <span  class="math">\(\beta < -1\)</span>, the denominator grows more quickly, and <span  class="math">\(\hat{P}\)</span> is the point of diminishing returns. When <span  class="math">\(\beta > -1\)</span>, sales still slow down with price increases, but not enough to offset the increased revenue of each sale.</p>
+
+<p>We can also see this in terms of complexity. As a function of <span  class="math">\(P\)</span>, the numerator is <span  class="math">\(O(P)\)</span>, but the denominator is <span  class="math">\(O(P^{-\beta})\)</span>.</p>
+
+<h1 id="an-alternative-approach">An alternative approach</h1>
+
+<p>The analysis of the last section gave us a quick way to estimate <span  class="math">\(\hat{P}\)</span> for a given <span  class="math">\(\beta\)</span>. In our original problem, we don't have just a single <span  class="math">\(\beta\)</span>, but rather a sample from the posterior distribution. Some of these (4%) are greater than <span  class="math">\(-1\)</span>, leading to nonsensical negative values of our simple <span  class="math">\(\frac{\beta K}{1+\beta}\)</span> approach. The remainder follow a <a href="https://en.wikipedia.org/wiki/Ratio_distribution">ratio distribution</a> (a heavy-tailed distribution of which Cauchy is an example).</p>
+
+<p>Using a mean for estimation in this case is generally not a good idea, but the median works just fine (see John Cook's <a href="https://www.johndcook.com/blog/cauchy_estimation/">blog post</a> for some more details).</p>
+
+<p>So we could find all of the per-sample optima, and then take the median of those which are positive. But we can do even better! Medians are preserved under monotonic transformations, so for example the median of the log of a random variable is the log of its median. This simplifies the algorithm considerably, leaving us with this:</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="k">def</span> <span class="nf">median_of_maxes</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">p</span><span class="p">):</span>
+    <span class="n">tβ</span> <span class="o">=</span> <span class="n">t</span><span class="p">[</span><span class="s1">&#39;β&#39;</span><span class="p">]</span>
+    <span class="err">β</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">tβ</span><span class="p">[</span><span class="n">tβ</span> <span class="o">&lt;</span> <span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+    <span class="n">pmax</span> <span class="o">=</span> <span class="mi">20</span><span class="o">*</span><span class="err">β</span><span class="o">/</span><span class="p">(</span><span class="mi">1</span><span class="o">+</span><span class="err">β</span><span class="p">)</span>
+    <span class="n">_</span><span class="p">,</span> <span class="err">π</span><span class="nb">max</span> <span class="o">=</span> <span class="n">predict</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">pmax</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">pmax</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="err">π</span><span class="nb">max</span><span class="p">))</span></code></pre></div>
+<p>Finally, let's see how this compares to the original max-of-means approach:</p>
+
+<p><figure><img src="plots/opt-compare.svg" alt=""></figure></p>
+
+<p>The distribution of the replicated results are much more consistent than our first attempt.</p>
+
+<h1 id="conclusion">Conclusion</h1>
+
+<p>After some simulation-based analysis, we've improved considerably on our initial attempt at optimization. Our resulting approach is more robust and more computationally efficient. As a bonus, it is expressed in terms of individual samples, making it far more amenable to posterior predictive checks than the original approach.</p>
+
+<p>It may be an overstatement to claim that we should <em>always</em> prefer median-of-maxes to max-of-means. But certainly one should avoid the latter unless a similar analysis to this one has shown a good reason for the choice.</p>
+
+
+        
+
+        
+      </article>
+
+      
+        <ul class="pager blog-pager">
+          
+            <li class="previous">
+              <a href="https://cscherrer.github.io/post/max-profit/" data-toggle="tooltip" data-placement="top" title="Bayesian Optimal Pricing, Part 1">&larr; Previous Post</a>
+            </li>
+          
+          
+        </ul>
+      
+
+
+      
+        
+        
+      
+
+    </div>
+  </div>
+</div>
+
+    <footer>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        <ul class="list-inline text-center footer-links">
+          
+              <li>
+                <a href="mailto:chad.scherrer@gmail.com" title="Email me">
+                  <span class="fa-stack fa-lg">
+                    <i class="fa fa-circle fa-stack-2x"></i>
+                    <i class="fa fa-envelope fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+                <a href="https://plus.google.com/&#43;chad.scherrer" title="Google&#43;">
+                  <span class="fa-stack fa-lg">
+                    <i class="fa fa-circle fa-stack-2x"></i>
+                    <i class="fa fa-google-plus fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+                <a href="https://github.com/cscherrer" title="GitHub">
+                  <span class="fa-stack fa-lg">
+                    <i class="fa fa-circle fa-stack-2x"></i>
+                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+                <a href="https://twitter.com/@ChadScherrer" title="Twitter">
+                  <span class="fa-stack fa-lg">
+                    <i class="fa fa-circle fa-stack-2x"></i>
+                    <i class="fa fa-twitter fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+                <a href="https://reddit.com/u/cscherrer" title="Reddit">
+                  <span class="fa-stack fa-lg">
+                    <i class="fa fa-circle fa-stack-2x"></i>
+                    <i class="fa fa-reddit-alien fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+                <a href="https://linkedin.com/in/chadscherrer" title="LinkedIn">
+                  <span class="fa-stack fa-lg">
+                    <i class="fa fa-circle fa-stack-2x"></i>
+                    <i class="fa fa-linkedin fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+                <a href="https://stackoverflow.com/users/488124/chad-scherrer" title="StackOverflow">
+                  <span class="fa-stack fa-lg">
+                    <i class="fa fa-circle fa-stack-2x"></i>
+                    <i class="fa fa-stack-overflow fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+          
+          <li>
+            
+            <a href="https://cscherrer.github.io/index.xml" title="RSS">
+            
+              <span class="fa-stack fa-lg">
+                <i class="fa fa-circle fa-stack-2x"></i>
+                <i class="fa fa-rss fa-stack-1x fa-inverse"></i>
+              </span>
+            </a>
+          </li>
+          
+        </ul>
+        <p class="credits copyright text-muted">
+          
+            
+              <a href="cscherrer.github.io">Chad Scherrer</a>
+            
+          
+
+          &nbsp;&bull;&nbsp;
+          2018
+
+          
+            &nbsp;&bull;&nbsp;
+            <a href="https://cscherrer.github.io">Chad Scherrer</a>
+          
+        </p>
+        
+        <p class="credits theme-by text-muted">
+          <a href="http://gohugo.io">Hugo v0.41</a> powered &nbsp;&bull;&nbsp; Theme by <a href="http://deanattali.com/beautiful-jekyll/">Beautiful Jekyll</a> adapted to <a href="https://github.com/halogenica/beautifulhugo">Beautiful Hugo</a>
+          
+        </p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.7.1/katex.min.js" integrity="sha384-/y1Nn9+QQAipbNQWU65krzJralCnuOasHncUFXGkdwntGeSvQicrYkiUBwsgUqc1" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.7.1/contrib/auto-render.min.js" integrity="sha384-dq1/gEHSxPZQ7DdrM82ID4YVol9BYyU7GbWlIwnwyPzotpoc57wDw/guX8EaYGPx" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ=" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<script src="https://cscherrer.github.io/js/main.js"></script><script> renderMathInElement(document.body); </script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe.min.js" integrity="sha384-QELNnmcmU8IR9ZAykt67vGr9/rZJdHbiWi64V88fCPaOohUlHCqUD/unNN0BXSqy" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe-ui-default.min.js" integrity="sha384-m67o7SkQ1ALzKZIFh4CiTA8tmadaujiTa9Vu+nqPSwDOqHrDmxLezTdFln8077+q" crossorigin="anonymous"></script>
+<script src="https://cscherrer.github.io/js/load-photoswipe.js"></script>
+
+
+
+
+
+
+  </body>
+</html>
+

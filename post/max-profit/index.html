@@ -22,7 +22,7 @@ Let&#39;s start with some hypothetical data. A small company has tried a few dif
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="Chad Scherrer" />
 
-  <meta name="generator" content="Hugo 0.40.2" />
+  <meta name="generator" content="Hugo 0.41" />
   <link rel="canonical" href="https://cscherrer.github.io/post/max-profit/" />
   <link rel="alternate" href="https://cscherrer.github.io/index.xml" type="application/rss+xml" title="Chad Scherrer">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.7.1/katex.min.css" integrity="sha384-wITovz90syo1dJWVh32uuETPVEtGigN07tkttEqPv+uR2SE/mbQcG7ATL28aI9H0" crossorigin="anonymous">
@@ -541,7 +541,10 @@ Q = a P^c\ .
 <p>For example, another very common approach is to use the posterior parameter samples to generate a <em>replicated response</em> <span  class="math">\(Q_0^\text{rep}\)</span>, and then comparing this to the observed response <span  class="math">\(Q_0\)</span>:</p>
 <div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">q0</span>  <span class="o">&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">poisson</span><span class="p">(</span><span class="n">t</span><span class="p">[</span><span class="s1">&#39;μ0&#39;</span><span class="p">]),</span> <span class="mi">0</span><span class="p">)</span></code></pre></div>
 <p>which yields</p>
-<div class="highlight"><pre class="chroma">array([ 0.5055,  0.7265,  0.1055,  0.451 ,  0.7   ])</pre></div>
+
+<pre><code>array([ 0.5055,  0.7265,  0.1055,  0.451 ,  0.7   ])
+</code></pre>
+
 <p>These are sometimes called <em>Bayesian <span  class="math">\(p\)</span>-values</em>. For out-of-sample data, results for a well-calibrated model should follow a uniform distribution.</p>
 
 <h2 id="optimization">Optimization</h2>
@@ -575,6 +578,10 @@ Q = a P^c\ .
 
 <p>See you next time!</p>
 
+
+        
+
+        
       </article>
 
       
@@ -584,6 +591,10 @@ Q = a P^c\ .
               <a href="https://cscherrer.github.io/post/bias-variance/" data-toggle="tooltip" data-placement="top" title="The Bias-Variance Decomposition">&larr; Previous Post</a>
             </li>
           
+          
+            <li class="next">
+              <a href="https://cscherrer.github.io/post/max-profit-2/" data-toggle="tooltip" data-placement="top" title="Bayesian Optimal Pricing, Part 2">Next Post &rarr;</a>
+            </li>
           
         </ul>
       
@@ -645,7 +656,7 @@ Q = a P^c\ .
                 </a>
               </li>
               <li>
-                <a href="https://linkedin.com/in/username" title="LinkedIn">
+                <a href="https://linkedin.com/in/chadscherrer" title="LinkedIn">
                   <span class="fa-stack fa-lg">
                     <i class="fa fa-circle fa-stack-2x"></i>
                     <i class="fa fa-linkedin fa-stack-1x fa-inverse"></i>
@@ -653,7 +664,7 @@ Q = a P^c\ .
                 </a>
               </li>
               <li>
-                <a href="https://stackoverflow.com/users/XXXXXXX/username" title="StackOverflow">
+                <a href="https://stackoverflow.com/users/488124/chad-scherrer" title="StackOverflow">
                   <span class="fa-stack fa-lg">
                     <i class="fa fa-circle fa-stack-2x"></i>
                     <i class="fa fa-stack-overflow fa-stack-1x fa-inverse"></i>
@@ -676,7 +687,7 @@ Q = a P^c\ .
         <p class="credits copyright text-muted">
           
             
-              <a href="yourwebsite.com">Chad Scherrer</a>
+              <a href="cscherrer.github.io">Chad Scherrer</a>
             
           
 
@@ -690,7 +701,7 @@ Q = a P^c\ .
         </p>
         
         <p class="credits theme-by text-muted">
-          <a href="http://gohugo.io">Hugo v0.40.2</a> powered &nbsp;&bull;&nbsp; Theme by <a href="http://deanattali.com/beautiful-jekyll/">Beautiful Jekyll</a> adapted to <a href="https://github.com/halogenica/beautifulhugo">Beautiful Hugo</a>
+          <a href="http://gohugo.io">Hugo v0.41</a> powered &nbsp;&bull;&nbsp; Theme by <a href="http://deanattali.com/beautiful-jekyll/">Beautiful Jekyll</a> adapted to <a href="https://github.com/halogenica/beautifulhugo">Beautiful Hugo</a>
           
         </p>
       </div>

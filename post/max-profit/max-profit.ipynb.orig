@@ -1,0 +1,631 @@
+{
+ "cells": [
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "import numpy as np\n",
+    "import matplotlib.pyplot as plt\n",
+    "from sklearn.linear_model import BayesianRidge\n",
+    "from sklearn.preprocessing import PolynomialFeatures\n",
+    "from sklearn.pipeline import Pipeline\n",
+    "import pandas as pd\n",
+    "%matplotlib inline\n",
+    "#%config InlineBackend.figure_format = 'svg'\n",
+    "%config InlineBackend.figure_format = 'png'\n",
+    "import matplotlib as mpl\n",
+    "mpl.rcParams['figure.dpi']= 300\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "np.random.seed(42)\n",
+    "a = 50000\n",
+    "k = 20\n",
+    "c = -2\n",
+    "p  = np.linspace(25,55)\n",
+    "p0 = np.linspace(30,50,5)\n",
+    "eq = a * p**c\n",
+    "q0 = np.random.poisson(a * p0**c)\n",
+    "π = eq * (p - k)\n",
+    "\n",
+    "# np.log(prices-k) + np.log(a) + c*np.log(prices)\n",
+    "\n",
+    "#plt.plot(p,π);\n",
+    "plt.plot(p0,q0,'o',c='C1');\n",
+    "plt.xlabel('Price')\n",
+    "plt.ylabel('Quantity sold')"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "import pymc3 as pm"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "with pm.Model() as m:\n",
+    "    loga = pm.Cauchy('loga',0,5)\n",
+    "    c = pm.Cauchy('c',0,5,testval=-5)\n",
+    "    μ0 = pm.Deterministic('μ0',np.exp(loga+c*np.log(p0)))\n",
+    "    qval = pm.Poisson('q',μ0,observed=q0)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "with m:\n",
+    "    trace = pm.sample()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "pm.summary(trace)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "plt.plot(trace['c'],trace['loga'],'.',alpha=0.5)\n",
+    "plt.xlabel('$c$')\n",
+    "plt.ylabel('$\\log a$')"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "def fit(p0,q0):\n",
+    "    with pm.Model() as m2:\n",
+    "        α = pm.Cauchy('α',0,5)\n",
+    "        β = pm.Cauchy('β',0,5)\n",
+    "        logμ0 = α + β * (np.log(p0) - np.log(p0).mean())\n",
+    "        μ0 = pm.Deterministic('μ0',np.exp(logμ0))\n",
+    "        qval = pm.Poisson('q0',μ0,observed=q0)\n",
+    "        t = pm.sample()\n",
+    "    return t"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "t = fit(p0,q0)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "pm.summary(t)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "pm.traceplot(t);"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "plt.plot(t['α'],t['β'],'.',alpha=0.5);\n",
+    "plt.xlabel('$\\\\alpha$')\n",
+    "plt.ylabel('$\\\\beta$')"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "pm.forestplot(t,varnames=['α','β'])"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "μ = np.exp(t.α + t.β * (np.log(p).reshape(-1,1) - np.log(p0).mean()))"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# Checking model fit\n",
+    "\n",
+    "plt.plot(p,μ,c='k',alpha=0.01);\n",
+    "plt.plot(p0,q0,'o',c='C1');\n",
+    "#plt.plot(p,eq)\n",
+    "plt.xlabel('Price')\n",
+    "plt.ylabel('Quantity')"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "import scipy\n",
+    "plt.boxplot(scipy.stats.poisson.cdf(q0,mu=t['μ0']));\n",
+    "plt.xticks(range(1,6),p0);\n",
+    "plt.xlabel('Price')\n",
+    "plt.ylabel('$P(Q<Q_0 | P)$');"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "q0"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "import scipy\n",
+    "np.mean(q0  > np.random.poisson(t['μ0']), 0)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "source": [
+    "plt.boxplot(scipy.stats.poisson.cdf(q0,mu=t['μ0']));\n",
+    "plt.xticks(range(1,6),p0);\n",
+    "plt.xlabel('Price')\n",
+    "plt.ylabel('$P(Q<Q_0 | P)$');"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "def predict(t,p):\n",
+    "    μ = np.exp(t.α + t.β * (np.log(p).reshape(-1,1) - np.log(p0).mean()))\n",
+    "    π = (p - k).reshape(-1,1) * μ\n",
+    "    return μ,π"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "μ,π = predict(t,p)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "plt.plot(p,π,c='k',alpha=0.01);\n",
+    "plt.plot(p,np.mean(π,1).T,c='C1',lw=2,label=\"$\\mathbb{E}[\\pi|P]$\");\n",
+    "plt.fill_between(p,(np.mean(π,1)-np.std(π,1)).T,(np.mean(π,1)+np.std(π,1)).T,alpha=0.1,color='C1')\n",
+    "plt.plot(p,(np.mean(π,1)+np.std(π,1)).T,c='C1',lw=1,label=\"$\\mathbb{E}[\\pi|P]\\ \\pm$1 sd\");\n",
+    "plt.plot(p,(np.mean(π,1)-np.std(π,1)).T,c='C1',lw=1);\n",
+    "pmax = p[np.argmax(np.mean(π,1))]\n",
+    "plt.vlines(pmax,300,900,colors='C0',linestyles='dashed',label=\"argmax$_P\\ \\mathbb{E}[\\pi|P]$\")\n",
+    "#plt.plot(p,(p - k) * eq)\n",
+    "plt.ylim(300,900);\n",
+    "plt.xlabel(\"Price $P$\")\n",
+    "plt.ylabel(\"Profit $\\pi$\")\n",
+    "\n",
+    "plt.legend();"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "plt.plot(p,π,c='k',alpha=0.01);\n",
+    "plt.plot(p,np.mean(π,1).T,c='C1',lw=2,label=\"$\\mathbb{E}[\\pi|P]$\");\n",
+    "plt.fill_between(p,(np.mean(π,1)-np.std(π,1)).T,(np.mean(π,1)+np.std(π,1)).T,alpha=0.1,color='C1')\n",
+    "plt.plot(p,(np.mean(π,1)+np.std(π,1)).T,c='C1',lw=1,label=\"$\\mathbb{E}[\\pi|P]\\ \\pm$1 sd\");\n",
+    "plt.plot(p,(np.mean(π,1)-np.std(π,1)).T,c='C1',lw=1);\n",
+    "\n",
+    "jmax = np.argmax(np.mean(π,1))\n",
+    "pmax = p[jmax]\n",
+    "πmax = np.mean(π,1)[jmax]\n",
+    "plt.vlines(pmax,300,900,colors='C0',linestyles='dashed',label=\"argmax$_P\\ \\mathbb{E}[\\pi|P]$\")\n",
+    "#plt.plot(p,(p - k) * eq)\n",
+    "plt.xlim(pmax-5,pmax+5)\n",
+    "plt.ylim(πmax-5,πmax+1);\n",
+    "plt.xlabel(\"Price $P$\")\n",
+    "plt.ylabel(\"Profit $\\pi$\")\n",
+    "\n",
+    "plt.legend();"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "# Bootstrap"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "from sklearn.utils import resample"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "n = 10000\n",
+    "pboot = np.zeros(n)\n",
+    "\n",
+    "for j in range(n):\n",
+    "    newπ = resample(π.T).T\n",
+    "    pboot[j] = p[np.argmax(np.mean(newπ,1))]"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "(pb, c) = np.unique(pboot,return_counts=True)\n",
+    "c = c / np.sum(c)\n",
+    "\n",
+    "plt.bar(pb,c);\n",
+    "plt.xlabel('Optimal price')\n",
+    "plt.ylabel('Bootstrap density estimate');"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "# Sensitivity Analysis"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "a,b = np.median(t.α),np.median(t.β)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "μmedian = np.asarray(pm.trace_to_dataframe(t).median()[2:])"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "import theano\n",
+    "import theano.tensor as tt"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "tt.outer()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "def fitppc(p0,μ0,n):\n",
+    "    qobs = np.random.poisson(np.outer(np.ones(n),μ0))\n",
+    "    with pm.Model() as m2:\n",
+    "        α = pm.Cauchy('α',0,5,shape=(n,1))\n",
+    "        β = pm.Cauchy('β',0,5,shape=(n,1))\n",
+    "        logμ0 = α + β * np.log(p0) - np.log(p0).mean()\n",
+    "        qval = pm.Poisson('q0',np.exp(logμ0),observed=qobs)\n",
+    "        t2 = pm.sample()\n",
+    "    return t2"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "ppc = fitppc(p0,μmedian,800)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "ppc.β.shape"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "plt.imshow(ppc.β[:,:,0])"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "with pm.Model() as m2:\n",
+    "    np.random.poisson(np.outer(np.ones(3),p0))"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "p = np.linspace(20,1000,1000)\n",
+    "n = 100\n",
+    "phats = np.zeros(n)\n",
+    "phats2 = np.zeros(n)\n",
+    "for j in range(n):\n",
+    "    q0 = np.random.poisson(np.exp(a + b * (np.log(p0) - np.log(p0).mean())))\n",
+    "    print(f\"ITERATION {j}\")\n",
+    "    print(q0)\n",
+    "    t = fit(p0,q0)\n",
+    "    print(f\"Median α:{np.median(t.α)}, Median β: {np.median(t.β)}\")\n",
+    "    phats2[j] = np.median(t.β)*20/(1+np.median(t.β))\n",
+    "    print(f\"Per sample fit: {phats2[j]}\")\n",
+    "    μ,π = predict(t,p)\n",
+    "    phats[j] = p[np.argmax(np.mean(π,1))]\n",
+    "    print(f\"Current fit: {phats[j]}\")"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "phats"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "from sklearn.utils import resample"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "np.std(p[[np.argmax(np.mean(resample(π.T).T,1)) for j in range(10000)]])"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "p[np.argmax(np.mean(π,1))]"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "phat = t.β*20/(t.β+1)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "np.percentile(phat,[10,20,30,40,50,60,70,80,90])"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "20*np.median(t.β[t.β< -1])/(1+np.median(t.β[t.β< -1]))"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "plt.plot(np.sort(phat[t.β< -1]),np.arange(sum(t.β<-1)))\n",
+    "plt.xscale('log')"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "plt.plot(p,π,c='k',alpha=0.01);\n",
+    "\n",
+    "plt.plot(p,np.percentile(π,[10,20,30,40,50,60,70,80,90],1).T,c='C1');\n",
+    "#plt.plot(p,(p - k) * eq)\n",
+    "plt.ylim(400,800);"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "#t = fitprices(p0,q0)\n",
+    "μ,π = predict(t,p)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "lo = np.linspace(np.max(np.min(π,1)),800)\n",
+    "m = np.zeros_like(lo)\n",
+    "for (j,πmin) in enumerate(lo):\n",
+    "    m[j] = p[np.argmax(np.mean(π>πmin,1))]"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "outputs": [],
+   "source": [
+    "plt.plot(p,π,c='k',alpha=0.01);\n",
+    "plt.plot(m,lo,c='C1')\n",
+    "plt.ylim(400,800);"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "outputs": [],
+   "source": [
+    "%config InlineBackend.figure_format = 'png'\n",
+    "import matplotlib as mpl\n",
+    "mpl.rcParams['figure.dpi']= 300\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "outputs": [],
+   "source": [
+    "plt.plot(p,μ,c='k',alpha=0.01);\n",
+    "plt.plot(p0,q0,'o',c='C1');\n",
+    "plt.plot(p,eq)\n",
+    "plt.ylim(10,70);"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "outputs": [],
+   "source": [
+    "plt.plot(p,π,c='k',alpha=0.01);\n",
+    "#plt.plot(p,np.mean(π,1).T,c='C1',lw=2);\n",
+    "plt.plot(p0,(p0-k)*q0,'o',c='C1',lw=2);\n",
+    "plt.plot(p,(p - k) * eq)\n",
+    "plt.ylim(400,800);"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  }
+ ],
+ "metadata": {
+  "language_info": {
+   "name": "python",
+   "pygments_lexer": "ipython3"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 2
+}
