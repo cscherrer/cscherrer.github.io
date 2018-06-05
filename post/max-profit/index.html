@@ -194,7 +194,7 @@ Let&#39;s start with some hypothetical data. A small company has tried a few dif
 
 <p>Let's start with some hypothetical data. A small company has tried a few different price points (say, one week each) and recorded the demand at each price. We'll abstract away some economic issues in order to focus on the statistical approach. Here's the data:</p>
 
-<p><figure><img src="max-profit_files/max-profit_1_1.png" alt="png"></figure></p>
+<p><figure><img src="plots/max-profit_1_1.png" alt="png"></figure></p>
 
 <p>That middle data point looks like a posisble outlier; we'll come back to that.</p>
 
@@ -370,7 +370,7 @@ Q = a P^c\ .
 
 <p>Let's have a closer look what's going on. Here's the joint posterior of the parameters:</p>
 
-<p><figure><img src="max-profit_files/max-profit_6_1.png" alt="png"></figure></p>
+<p><figure><img src="plots/max-profit_6_1.png" alt="png"></figure></p>
 
 <p>This strong correlation is caused by the data not being centered. All of the <span  class="math">\(\log P_0\)</span> values are positive, so any increase in the slope leads to a decrease in the intercept, and vice versa. If you don't see this immediatley, draw an <span  class="math">\((x,y)\)</span> cloud of points with positive <span  class="math">\(x\)</span>, and compare slope and intercept of some lines passing through the cloud.</p>
 
@@ -505,17 +505,17 @@ Q = a P^c\ .
 
 <p>And of course, the parameter correlations are much better:</p>
 
-<p><figure><img src="max-profit_files/max-profit_11_1.png" alt="png"></figure></p>
+<p><figure><img src="plots/max-profit_11_1.png" alt="png"></figure></p>
 
 <p>There are a few other useful tools we can explore. Here's the <em>trace plot</em>:</p>
 <div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="n">pm</span><span class="o">.</span><span class="n">traceplot</span><span class="p">(</span><span class="n">t</span><span class="p">);</span></code></pre></div>
-<p><figure><img src="max-profit_files/max-profit_10_0.png" alt="png"></figure></p>
+<p><figure><img src="plots/max-profit_10_0.png" alt="png"></figure></p>
 
 <p>Sampling is done using an independent (Markov) chain for each hardware core (by default, though this can be changed). The trace plot gives us a quick visual check that the chains are behaving well. Ideally, the distributions across chains should look very similar (left column) and have very little autocorrelation (right column). Note that since <span  class="math">\(\mu_0\)</span> is a vector, the plots in the bottom row superimpose its five components.</p>
 
 <p>Sometimes we need a more compact form, especially if there are lots of parameters. In this case the <em>forest plot</em> is helpful.</p>
 <div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="n">pm</span><span class="o">.</span><span class="n">forestplot</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">varnames</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;α&#39;</span><span class="p">,</span><span class="s1">&#39;β&#39;</span><span class="p">])</span></code></pre></div>
-<p><figure><img src="max-profit_files/max-profit_13_1.png" alt="png"></figure></p>
+<p><figure><img src="plots/max-profit_13_1.png" alt="png"></figure></p>
 
 <h2 id="posterior-predictive-checks">Posterior Predictive Checks</h2>
 
@@ -526,13 +526,13 @@ Q = a P^c\ .
 <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">p0</span><span class="p">,</span><span class="n">q0</span><span class="p">,</span><span class="s1">&#39;o&#39;</span><span class="p">,</span><span class="n">c</span><span class="o">=</span><span class="s1">&#39;C1&#39;</span><span class="p">);</span></code></pre></div>
 <p>To be concise, I've left out some simple code like axis labels, etc. Here's the result.</p>
 
-<p><figure><img src="max-profit_files/max-profit_15_1.png" alt="png"></figure></p>
+<p><figure><img src="plots/max-profit_15_1.png" alt="png"></figure></p>
 
 <p>Each &quot;hair&quot; represents <span  class="math">\(\mathbb{E}[Q|P]\)</span> according to one sample from the posterior. On introducing the data I suggested the point <span  class="math">\(P_0=40\)</span> may be an outlier. At first glance, the above plot might seem to confirm this. But remember, this is not a conditional distribution of <span  class="math">\((Q|P)\)</span>, but of its <em>expectation</em>.</p>
 
 <p>The following boxplot makes this point more explicitly:</p>
 <div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="n">plt</span><span class="o">.</span><span class="n">boxplot</span><span class="p">(</span><span class="n">scipy</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">poisson</span><span class="o">.</span><span class="n">cdf</span><span class="p">(</span><span class="n">q0</span><span class="p">,</span><span class="n">mu</span><span class="o">=</span><span class="n">t</span><span class="p">[</span><span class="s1">&#39;μ0&#39;</span><span class="p">]));</span></code></pre></div>
-<p><figure><img src="max-profit_files/max-profit_16_0.png" alt="png"></figure></p>
+<p><figure><img src="plots/max-profit_16_0.png" alt="png"></figure></p>
 
 <p>Think of this as asking each possible world, &quot;In your reality, what's the probability of seeing a smaller <span  class="math">\(Q\)</span> value than this?&quot; The responses are then aggregated by price. For <span  class="math">\(P_0=40\)</span>, about half the results are above 0.1. The point is a bit unusual, but hardly an outlier.</p>
 
@@ -566,7 +566,7 @@ Q = a P^c\ .
 <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&#34;Profit $\pi$&#34;</span><span class="p">)</span>
 
 <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">();</span></code></pre></div>
-<p><figure><img src="max-profit_files/max-profit_18_0.png" alt="png"></figure></p>
+<p><figure><img src="plots/max-profit_18_0.png" alt="png"></figure></p>
 
 <p>This suggests an optimal price of $49.</p>
 
@@ -576,7 +576,7 @@ Q = a P^c\ .
 
 <p>Also, the mean is very flat near our solution, suggesting the potential for instability in the solution. Can we quantify this, and does it lead us to a different solution?</p>
 
-<p>See you next time!</p>
+<p><a href="../max-profit-2">Continue to Part 2</a></p>
 
 
         
