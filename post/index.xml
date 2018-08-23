@@ -7,10 +7,20 @@
     <generator>Hugo -- gohugo.io</generator>
     <managingEditor>chad.scherrer@gmail.com (Chad Scherrer)</managingEditor>
     <webMaster>chad.scherrer@gmail.com (Chad Scherrer)</webMaster>
-    <lastBuildDate>Sun, 03 Jun 2018 12:05:48 -0700</lastBuildDate>
+    <lastBuildDate>Tue, 21 Aug 2018 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="https://cscherrer.github.io/post/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>A Prelude to Pyro</title>
+      <link>https://cscherrer.github.io/post/pyro/</link>
+      <pubDate>Tue, 21 Aug 2018 00:00:00 +0000</pubDate>
+      <author>chad.scherrer@gmail.com (Chad Scherrer)</author>
+      <guid>https://cscherrer.github.io/post/pyro/</guid>
+      <description>Lately I&#39;ve been exploring Pyro, a recent development in probabilistic programming from Uber AI Labs. It&#39;s an exciting development that has a huge potential for large-scale applications.
+In any technical writing, it&#39;s common (at least for me) to realize I need to add some introductory material before moving on. In writing about Pyro, this happened quite a bit, to the point that it warranted this post as a kind of warm-up.</description>
+    </item>
     
     <item>
       <title>Bayesian Optimal Pricing, Part 2</title>

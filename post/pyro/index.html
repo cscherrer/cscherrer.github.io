@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+
+  <title>A Prelude to Pyro</title>
+  <meta property="og:title" content="A Prelude to Pyro" />
+  <meta name="twitter:title" content="A Prelude to Pyro" />
+  <meta name="description" content="Lately I&#39;ve been exploring Pyro, a recent development in probabilistic programming from Uber AI Labs. It&#39;s an exciting development that has a huge potential for large-scale applications.
+In any technical writing, it&#39;s common (at least for me) to realize I need to add some introductory material before moving on. In writing about Pyro, this happened quite a bit, to the point that it warranted this post as a kind of warm-up.">
+  <meta property="og:description" content="Lately I&#39;ve been exploring Pyro, a recent development in probabilistic programming from Uber AI Labs. It&#39;s an exciting development that has a huge potential for large-scale applications.
+In any technical writing, it&#39;s common (at least for me) to realize I need to add some introductory material before moving on. In writing about Pyro, this happened quite a bit, to the point that it warranted this post as a kind of warm-up.">
+  <meta name="twitter:description" content="Lately I&#39;ve been exploring Pyro, a recent development in probabilistic programming from Uber AI Labs. It&#39;s an exciting development that has a huge potential for large-scale applications.
+In any …">
+  <meta name="author" content="Chad Scherrer"/>
+  <link href='https://cscherrer.github.io/img/favicon.ico' rel='icon' type='image/x-icon'/>
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:site" content="@@ChadScherrer" />
+  <meta name="twitter:creator" content="@@ChadScherrer" />
+  <meta property="og:url" content="https://cscherrer.github.io/post/pyro/" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Chad Scherrer" />
+
+  <meta name="generator" content="Hugo 0.46" />
+  <link rel="canonical" href="https://cscherrer.github.io/post/pyro/" />
+  <link rel="alternate" href="https://cscherrer.github.io/index.xml" type="application/rss+xml" title="Chad Scherrer">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.7.1/katex.min.css" integrity="sha384-wITovz90syo1dJWVh32uuETPVEtGigN07tkttEqPv+uR2SE/mbQcG7ATL28aI9H0" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cscherrer.github.io/css/main.css" /><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" />
+  <link rel="stylesheet" href="https://cscherrer.github.io/css/highlight.min.css" /><link rel="stylesheet" href="https://cscherrer.github.io/css/codeblock.css" />
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-114923902-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-114923902-1');
+</script>
+
+
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe.min.css" integrity="sha384-h/L2W9KefUClHWaty3SLE5F/qvc4djlyR4qY3NUV5HGQBBW7stbcfff1+I/vmsHh" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/default-skin/default-skin.min.css" integrity="sha384-iD0dNku6PYSIQLyfTOpB06F2KCZJAKLOThS5HRe8b3ibhdEQ6eKsFf/EeFxdOt5R" crossorigin="anonymous">
+
+
+
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+<div class="pswp__bg"></div>
+
+<div class="pswp__scroll-wrap">
+    
+    <div class="pswp__container">
+      <div class="pswp__item"></div>
+      <div class="pswp__item"></div>
+      <div class="pswp__item"></div>
+    </div>
+    
+    <div class="pswp__ui pswp__ui--hidden">
+    <div class="pswp__top-bar">
+      
+      <div class="pswp__counter"></div>
+      <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+      <button class="pswp__button pswp__button--share" title="Share"></button>
+      <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+      <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+      
+      
+      <div class="pswp__preloader">
+        <div class="pswp__preloader__icn">
+          <div class="pswp__preloader__cut">
+            <div class="pswp__preloader__donut"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+      <div class="pswp__share-tooltip"></div>
+    </div>
+    <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+    </button>
+    <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+    </button>
+    <div class="pswp__caption">
+      <div class="pswp__caption__center"></div>
+    </div>
+    </div>
+    </div>
+</div>
+
+</head>
+
+  <body>
+    <nav class="navbar navbar-default navbar-fixed-top navbar-custom">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#main-navbar">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="https://cscherrer.github.io">Chad Scherrer</a>
+    </div>
+
+    <div class="collapse navbar-collapse" id="main-navbar">
+      <ul class="nav navbar-nav navbar-right">
+        
+          
+            <li>
+              <a title="Blog" href="/">Blog</a>
+            </li>
+          
+        
+          
+            <li>
+              <a title="Tags" href="/tags">Tags</a>
+            </li>
+          
+        
+
+        
+
+        
+      </ul>
+    </div>
+
+    <div class="avatar-container">
+      <div class="avatar-img-border">
+        
+      </div>
+    </div>
+
+  </div>
+</nav>
+
+
+
+
+    
+  
+  
+  
+
+
+
+
+  
+
+  <header class="header-section ">
+    
+    <div class="intro-header no-img">
+      
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+            <div class="post-heading">
+              <h1>A Prelude to Pyro</h1>
+                
+                
+                  <span class="post-meta">
+  
+  
+  <i class="fa fa-calendar-o"></i>&nbsp;Posted on August 21, 2018
+  
+  
+  &nbsp;|&nbsp;
+  <i class="fa fa-clock-o"></i> 8 minutes (1571 words)
+  
+  
+</span>
+
+
+                
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+
+    
+<div class="container" role="main">
+  <div class="row">
+    <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+      <article role="main" class="blog-post">
+        <p>Lately I've been exploring <a href="http://pyro.ai/">Pyro</a>, a recent development in probabilistic programming from <a href="http://uber.ai/">Uber AI Labs</a>. It's an exciting development that has a huge potential for large-scale applications.</p>
+
+<p>In any technical writing, it's common (at least for me) to realize I need to add some introductory material before moving on. In writing about Pyro, this happened quite a bit, to the point that it warranted this post as a kind of warm-up.</p>
+
+<h1 id="what-is-pyro">What is Pyro?</h1>
+
+<p>Pyro bills itself as <em>&quot;Deep Universal Probabilistic Programming&quot;</em>. Some of those terms might be new, so let's deconstruct it.</p>
+
+<h2 id="deep"><em>&quot;Deep&quot;</em></h2>
+
+<p>This is probably the most widely-known of these terms, and of course refers to <a href="https://en.wikipedia.org/wiki/Deep_learning"><em>deep learning</em></a>. Pyro is built on <a href="https://pytorch.org/">PyTorch</a>, a popular deep-learning library from Facebook.</p>
+
+<p>PyTorch is similar in some ways to TensorFlow/Keras, but uses <a href="https://pytorch.org/tutorials/beginner/pytorch_with_examples.html#tensorflow-static-graphs"><em>dynamic computational graphs</em></a>; the graph defining the computational steps is built from scratch with each execution. We'll come back to this, as it turns out to be a crucial ingredient for Pyro's approach.</p>
+
+<h2 id="probabilistic-programming"><em>&quot;Probabilistic Programming&quot;</em></h2>
+
+<p>In the broadest sense, probabilistic programming is &quot;programming language support for reasoning about probabilities&quot;. There are lots of scopes for this, depending what you mean by &quot;support&quot; and &quot;reasoning&quot;, but by far the most common (and the target of Pyro) involves <em>automation of Bayesian inference</em>.</p>
+
+<p>Through decades of research and development, there have been many probabilistic programming languages, perhaps the best-known of which have included <a href="https://wiki.helsinki.fi/download/attachments/59060372/BUGSproject.pdf">BUGS</a>, <a href="http://www.ci.tuwien.ac.at/Conferences/DSC-2003/Proceedings/Plummer.pdf">JAGS</a>, and most recently <a href="http://mc-stan.org/">Stan</a>. These (and many less widely-known developments) share the constraint that the number and type of random choices is known statically, before the model is &quot;run&quot;.</p>
+
+<p>This is a reasonable assumption for a huge variety of models, and the constraint allows for specific inference methods. For example, the &quot;GS&quot; in BUGS and JAGS stands for &quot;<a href="https://en.wikipedia.org/wiki/Gibbs_sampling"><em>Gibbs sampling</em></a>&quot;. Stan imposes the additional constraint that all parameters (but not data) must be continuous, in exchange for the <a href="http://www.stat.columbia.edu/~gelman/research/published/nuts.pdf"><em>No U-Turn Sampler</em></a> (&quot;NUTS&quot;) and <a href="https://arxiv.org/abs/1603.00788"><em>Automatic Differentiation Variational Inference</em></a> (&quot;ADVI&quot;).</p>
+
+<p>While the above constraints are reasonable, they do still limit the models that can be expressed...</p>
+
+<h2 id="universal"><em>&quot;Universal&quot;</em></h2>
+
+<p>In general-purpose programming languages, much of the history was shaped by the influence and early design decisions of two early languages,  <a href="https://en.wikipedia.org/wiki/Fortran">FORTRAN</a> and <a href="https://en.wikipedia.org/wiki/Lisp_(programming_language)">Lisp</a>. Probabilistic programming has followed a similar pattern, with the FORTRAN-like pragmatism of BUGS contrasted by the Lisp-like emphasis on flexibility and expressiveness in <a href="https://web.stanford.edu/~ngoodman/papers/churchUAI08_rev2.pdf">Church</a>.</p>
+
+<p>In &quot;<em>universal</em>&quot; languages like Church (and descendants like <a href="https://probprog.github.io/anglican/index.html">Anglican</a> and
+<a href="http://webppl.org/">WebPPL</a>), a simulation <strong>is</strong> a model. An arbitrary number of random choices are made along the way, and we reason about those choices based on the observations. No need to constrain anything. Want new random variables at execution time? They're all yours. Stochastic recursion? Sure, go for it.</p>
+
+<p>This may sound needlessly general, a sort of Bayesian Bacchanalia. But it's what we need to easily express <a href="http://stat.columbia.edu/~porbanz/npb-tutorial.html"><em>nonparametric Bayesian models</em></a>, which have plenty of applications in real-world problems. Say you're using <a href="https://en.wikipedia.org/wiki/Latent_Dirichlet_allocation">latent Dirichlet allocation</a> for text analysis. How many topics do you need? What if you had a thousand times as many documents - would you possibly want more topics? <a href="http://papers.nips.cc/paper/2698-sharing-clusters-among-related-groups-hierarchical-dirichlet-processes.pdf"><em>Hierarchical Dirichlet process mixture models</em></a> are just the thing.</p>
+
+<p>There is some inconsistency in the community about terminology. For some time the term &quot;Turing complete&quot; was used to describe this concept. But this isn't so useful, since for example <a href="http://andrewgelman.com/2014/06/12/stan-turing-completeo-probabilistic-programming-language/">Stan is Turing complete</a>.  <a href="http://pyro.ai/">Pyro's web site</a> says it's universal because, &quot;Pyro can represent any computable probability distribution&quot;, which is consistent with the definition from other researchers like <a href="http://danroy.org/">Dan Roy</a>. But it's very common to use the term more loosely, often without support of a formal proof.</p>
+
+<h1 id="bayesian-inference">Bayesian Inference</h1>
+
+<p>In most cases, building a Bayesian model involves specifying a <em>prior</em> <span  class="math">\(P(\theta)\)</span> and <em>likelihood</em> <span  class="math">\(P(x|\theta)\)</span>. The <em>posterior distribution</em> is then</p>
+
+<p><span  class="math">\[
+P(\theta | x) = \frac{P(\theta) P(x|\theta)}{P(x)}\ .
+\]</span></p>
+
+<p>The goal of Bayesian inference is to &quot;understand&quot; this distribution. Design choices in inference come down to what kind of understanding we're after, and what cost we're willing to pay to get there.</p>
+
+<p>Perhaps the simplest useful thing we can do with the posterior is to find the value of <span  class="math">\(\theta\)</span> that maximizes <span  class="math">\(P(\theta|x)\)</span>. This is <em>Maximum a Posteriori</em>, or <a href="https://en.wikipedia.org/wiki/Maximum_a_posteriori_estimation"><em>MAP estimation</em></a>, and has special cases in <a href="https://en.wikipedia.org/wiki/Tikhonov_regularization">ridge</a> and <a href="https://en.wikipedia.org/wiki/Lasso_(statistics)">lasso</a>.</p>
+
+<p>MAP estimation is an optimization problem, and is usually very fast to compute. But there are limitations. As a point estimate, it considers the result to be &quot;the one true estimate&quot;, with no accounting for uncertainty. It's also sensitive to reparameterization; a substitution like <span  class="math">\(\theta=\log \tau\)</span> usually leads to <span  class="math">\(\hat\theta \neq \log \hat\tau\)</span> .</p>
+
+<p>Because of these and related shortcomings, Bayesians tend to eschew point estimates like MAP, instead preferring to sample from the posterior distribution. <a href="https://en.wikipedia.org/wiki/Markov_chain_Monte_Carlo"><em>Markov chain Monte Carlo</em></a> (<em>&quot;MCMC&quot;</em>) methods work well for problems that are moderate in both data size and model complexity. But the benefits of sampling come at a price: sampling tends to be much slower and less scalable than optimization.</p>
+
+<p><a href="https://en.wikipedia.org/wiki/Variational_Bayesian_methods"><em>Variational inference</em></a> offers a middle ground: Approximate the posterior with a parameterized distribution. This turns the sampling problem in to an optimization problem of finding the parameters to give the &quot;best&quot; approximation. By adjusting the complexity of the approximation, we can trade speed for approximation quality or vice-versa.</p>
+
+<h1 id="variational-inference">Variational Inference</h1>
+
+<p>Before we get into variational inference, it's convenient to change our notation a bit. We've been writing everything in terms of <span  class="math">\(P(\cdots)\)</span>, but now we'll have two different distributions with some things in common, and we need to be able to keep everything straight.</p>
+
+<p>To match most of the literature, we'll write <span  class="math">\(p\)</span> for the original distribution, and <span  class="math">\(q\)</span> for the approximation. We'll also use <span  class="math">\(z\)</span> for unobserved random variables; this corresponds to <span  class="math">\(\theta\)</span> above. So the goal is find a distribution <span  class="math">\(q(z)\)</span> that's a good approximation to the posterior <span  class="math">\(p(z|x)\)</span>.</p>
+
+<p>We still need to quantify what makes an approximation &quot;good&quot;. One reasonable approach is to try to minimize the <a href="https://en.wikipedia.org/wiki/Kullback%E2%80%93Leibler_divergence"><em>Kullback-Leibler divergence</em></a>  <span  class="math">\(\text{KL}[q(z) \| p(z|x)]\)</span>. This turns out to be intractable to compute, but minimizing it is equivalent to maximizing a related quantity, the <a href="http://legacydirs.umiacs.umd.edu/~xyang35/files/understanding-variational-lower.pdf"><em><strong>e</strong>vidence <strong>l</strong>ower <strong>bo</strong>und</em></a>, or  <em>&quot;ELBO&quot;</em>,</p>
+
+<p><span  class="math">\[
+\text{ELBO}(p,q) = \mathbb{E}_q[\log p(z,x)] - \mathbb{E}_q[\log q(z)]\ .
+\]</span></p>
+
+<p>The big idea of variational inference is to <strong>tune the approximation <span  class="math">\(q\)</span> by maximizing the ELBO</strong>.</p>
+
+<p>Let's think through how to interpret this. If we have a proposed approximation <span  class="math">\(q\)</span>, the first terms gives a reward when <span  class="math">\(p\)</span> is large on some sample from <span  class="math">\(q\)</span>. But we could cheat, by choosing <span  class="math">\(q\)</span> to concentrate on the MAP estimate of <span  class="math">\(p\)</span>. So the second term balances this, encouraging <span  class="math">\(q\)</span> to be &quot;spread out&quot;. You might recognize the second term (including the negative) as the <a href="https://en.wikipedia.org/wiki/Entropy_(information_theory)"><em>entropy</em></a> of <span  class="math">\(q\)</span>.</p>
+
+<p>Ok, so we need to find <span  class="math">\(q\)</span> to maximize the ELBO. What possibilities should we try? In its original form, variational inference used the <a href="https://en.wikipedia.org/wiki/Calculus_of_variations"><em>calculus of variations</em></a>, allowing very loose constraints. But in common use, we'll select some parameterized form. For example, in a simple example we might want <span  class="math">\(q\)</span> to choose
+<span  class="math">\(
+z \sim \text{Normal}(\mu, \sigma)\ .
+\)</span>
+Then <span  class="math">\(q\)</span> would be parameterized by <span  class="math">\((\mu,\sigma)\)</span>, which we could write as <span  class="math">\(q_{\mu, \sigma}\)</span>.</p>
+
+<p>In this context, <span  class="math">\((\mu,\sigma)\)</span> is called the <em>variational parameter</em>. In the generic formulation, this is usually called <span  class="math">\(\lambda\)</span>. So we're given <span  class="math">\(p(z,x)\)</span> and a parameterized form <span  class="math">\(q_\lambda(z)\)</span>, and need to find <span  class="math">\(\lambda\)</span> to maximize <span  class="math">\(\text{ELBO}(p,q_\lambda)\)</span>.</p>
+
+<p>The formulation to this point still requires stepping through the entirety of the data <span  class="math">\(x\)</span>. It's faster than MCMC, but doesn't yet offer a way of handling large data. In typical machine learning, we get around this by dropping <a href="https://en.wikipedia.org/wiki/Gradient_descent"><em>gradient descent</em></a> in favor of <a href="https://en.wikipedia.org/wiki/Stochastic_gradient_descent"><em>stochastic gradient descent</em></a>.
+In variational methods, the role of SGD is played by <a href="http://jmlr.org/papers/v14/hoffman13a.html"><em>stochastic variational inference</em></a>.</p>
+
+<p>For more details on variational inference, see <br>
+<a href="https://arxiv.org/abs/1601.00670">Blei, D. M., Kucukelbir, A., &amp; McAuliffe, J. D. (2017). <em>Variational Inference: A Review for Statisticians</em>. Journal of the American Statistical Association, 112(518), 859–877.</a></p>
+
+<h1 id="back-to-pyro">Back to Pyro</h1>
+
+<p>We've discussed the components of &quot;deep universal probabilistic programming&quot;. Pyro models can involve any of these, or all of them at once. <a href="http://pyro.ai/examples/vae.html"><em>Variational autoencoders</em></a>, <a href="http://pyro.ai/examples/dmm.html"><em>deep Markov models</em></a>, <a href="http://pyro.ai/examples/gp.html"><em>Gaussian processes</em></a>... it really has a &quot;sky's the limit&quot; kind of feel.</p>
+
+<p>Pyro supports a variety of inference methods, but its main focus is on stochastic variational inference. Pyro allows more generality than described above, through optional &quot;fixed but unknown&quot; parameters included in <span  class="math">\(p\)</span>. The user specifies <span  class="math">\(p\)</span> and <span  class="math">\(q\)</span> through functions <code>model</code> and <code>guide</code>, respectively, each of which takes the same <code>data</code> as a parameter.</p>
+
+<p>Parameters to optimize are introduced using the <code>param</code> function, while stochastic choices use <code>sample</code>.</p>
+
+<p>Overall, the setup is like this:</p>
+
+<table>
+<thead>
+<tr>
+<th>Component</th>
+<th>Pyro code</th>
+<th>In <code>model</code> <span  class="math">\(p\)</span></th>
+<th>In <code>guide</code> <span  class="math">\(q\)</span></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>Parameters to optimize</td>
+<td><code>param(...)</code></td>
+<td><span  class="math">\(\varphi\)</span></td>
+<td><span  class="math">\(\lambda\)</span></td>
+</tr>
+
+<tr>
+<td>Prior</td>
+<td><code>sample(...)</code></td>
+<td><span  class="math">\(p_\varphi(z)\)</span></td>
+<td><span  class="math">\(q_\lambda(z)\)</span></td>
+</tr>
+
+<tr>
+<td>Likelihood</td>
+<td><code>sample(..., obs=...)</code></td>
+<td><span  class="math">\(p_\varphi(x \vert z)\)</span></td>
+<td>Not allowed</td>
+</tr>
+</tbody>
+</table>
+
+<p>This approach turns out to be remarkably flexible:</p>
+
+<ul>
+<li>If <span  class="math">\(z=\emptyset\)</span>, it gives <a href="https://en.wikipedia.org/wiki/Maximum_likelihood_estimation"><em>maximum likelihood estimation</em></a> over <span  class="math">\(\varphi\)</span></li>
+<li>If <span  class="math">\(\varphi=\emptyset\)</span> and <span  class="math">\(q_\lambda\)</span> is a <a href="https://en.wikipedia.org/wiki/Dirac_delta_function#As_a_distribution"><em>delta distribution</em></a> at <span  class="math">\(\lambda\)</span>, it gives MAP estimation</li>
+<li>If <span  class="math">\(\varphi=\emptyset\)</span>, it gives variational inference</li>
+<li>If <span  class="math">\(\varphi\equiv\lambda\)</span> and <span  class="math">\(p_\varphi (z)\equiv q_\lambda (z)\)</span>, it gives <a href="https://en.wikipedia.org/wiki/Marginal_likelihood"><em>maximum marginal likelihood</em></a>, also known as <em>type II maximum likelihood</em> or <em>empirical Bayes</em>  <br>
+[<em>N.B.</em> I don't know that constraints for this item can currently be expressed in Pyro]</li>
+</ul>
+
+<h1 id="conclusion">Conclusion</h1>
+
+<p>While deep learning has generated a lot of mainstream excitement, probabilistic programming is still dramatically underused, and <em>universal</em> probabilistic programming even more so. Pyro's combination of these with scalable and flexible variational inference has the potential to change that. It's notoriously difficult to predict the influence of a new software library, but Pyro is certainly one to keep an eye on.</p>
+
+
+        
+
+        
+      </article>
+
+      
+        <ul class="pager blog-pager">
+          
+            <li class="previous">
+              <a href="https://cscherrer.github.io/post/max-profit-2/" data-toggle="tooltip" data-placement="top" title="Bayesian Optimal Pricing, Part 2">&larr; Previous Post</a>
+            </li>
+          
+          
+        </ul>
+      
+
+
+      
+        
+        
+      
+
+    </div>
+  </div>
+</div>
+
+    <footer>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        <ul class="list-inline text-center footer-links">
+          
+              <li>
+                <a href="mailto:chad.scherrer@gmail.com" title="Email me">
+                  <span class="fa-stack fa-lg">
+                    <i class="fa fa-circle fa-stack-2x"></i>
+                    <i class="fa fa-envelope fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+                <a href="https://plus.google.com/&#43;chad.scherrer" title="Google&#43;">
+                  <span class="fa-stack fa-lg">
+                    <i class="fa fa-circle fa-stack-2x"></i>
+                    <i class="fa fa-google-plus fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+                <a href="https://github.com/cscherrer" title="GitHub">
+                  <span class="fa-stack fa-lg">
+                    <i class="fa fa-circle fa-stack-2x"></i>
+                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+                <a href="https://twitter.com/@ChadScherrer" title="Twitter">
+                  <span class="fa-stack fa-lg">
+                    <i class="fa fa-circle fa-stack-2x"></i>
+                    <i class="fa fa-twitter fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+                <a href="https://reddit.com/u/cscherrer" title="Reddit">
+                  <span class="fa-stack fa-lg">
+                    <i class="fa fa-circle fa-stack-2x"></i>
+                    <i class="fa fa-reddit-alien fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+                <a href="https://linkedin.com/in/chadscherrer" title="LinkedIn">
+                  <span class="fa-stack fa-lg">
+                    <i class="fa fa-circle fa-stack-2x"></i>
+                    <i class="fa fa-linkedin fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+                <a href="https://stackoverflow.com/users/488124/chad-scherrer" title="StackOverflow">
+                  <span class="fa-stack fa-lg">
+                    <i class="fa fa-circle fa-stack-2x"></i>
+                    <i class="fa fa-stack-overflow fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+          
+          <li>
+            
+            <a href="https://cscherrer.github.io/index.xml" title="RSS">
+            
+              <span class="fa-stack fa-lg">
+                <i class="fa fa-circle fa-stack-2x"></i>
+                <i class="fa fa-rss fa-stack-1x fa-inverse"></i>
+              </span>
+            </a>
+          </li>
+          
+        </ul>
+        <p class="credits copyright text-muted">
+          
+            
+              <a href="cscherrer.github.io">Chad Scherrer</a>
+            
+          
+
+          &nbsp;&bull;&nbsp;
+          2018
+
+          
+            &nbsp;&bull;&nbsp;
+            <a href="https://cscherrer.github.io">Chad Scherrer</a>
+          
+        </p>
+        
+        <p class="credits theme-by text-muted">
+          <a href="http://gohugo.io">Hugo v0.46</a> powered &nbsp;&bull;&nbsp; Theme by <a href="http://deanattali.com/beautiful-jekyll/">Beautiful Jekyll</a> adapted to <a href="https://github.com/halogenica/beautifulhugo">Beautiful Hugo</a>
+          
+        </p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.7.1/katex.min.js" integrity="sha384-/y1Nn9+QQAipbNQWU65krzJralCnuOasHncUFXGkdwntGeSvQicrYkiUBwsgUqc1" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.7.1/contrib/auto-render.min.js" integrity="sha384-dq1/gEHSxPZQ7DdrM82ID4YVol9BYyU7GbWlIwnwyPzotpoc57wDw/guX8EaYGPx" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ=" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<script src="https://cscherrer.github.io/js/main.js"></script>
+<script src="https://cscherrer.github.io/js/highlight.min.js"></script>
+<script> hljs.initHighlightingOnLoad(); </script>
+<script> $(document).ready(function() {$("pre.chroma").css("padding","0");}); </script><script> renderMathInElement(document.body); </script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe.min.js" integrity="sha384-QELNnmcmU8IR9ZAykt67vGr9/rZJdHbiWi64V88fCPaOohUlHCqUD/unNN0BXSqy" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe-ui-default.min.js" integrity="sha384-m67o7SkQ1ALzKZIFh4CiTA8tmadaujiTa9Vu+nqPSwDOqHrDmxLezTdFln8077+q" crossorigin="anonymous"></script>
+<script src="https://cscherrer.github.io/js/load-photoswipe.js"></script>
+
+
+
+
+
+
+  </body>
+</html>
+
