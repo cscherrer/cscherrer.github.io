@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+
+  <title>Julia for Probabilistic Metaprogramming</title>
+  <meta property="og:title" content="Julia for Probabilistic Metaprogramming" />
+  <meta name="twitter:title" content="Julia for Probabilistic Metaprogramming" />
+  <meta name="description" content="Since around 2010, I&#39;ve been involved with using and developing probabilistic programming languages. So when I learn about new language, one of my first questions is whether it&#39;s a good fit for this kind of development. In this post, I&#39;ll talk a bit about working in this area with Julia, to motivate my Soss project.
+Domain-Specific Languages At a high level, a probabilistic programming languages is a kind of domain-specific language, or DSL.">
+  <meta property="og:description" content="Since around 2010, I&#39;ve been involved with using and developing probabilistic programming languages. So when I learn about new language, one of my first questions is whether it&#39;s a good fit for this kind of development. In this post, I&#39;ll talk a bit about working in this area with Julia, to motivate my Soss project.
+Domain-Specific Languages At a high level, a probabilistic programming languages is a kind of domain-specific language, or DSL.">
+  <meta name="twitter:description" content="Since around 2010, I&#39;ve been involved with using and developing probabilistic programming languages. So when I learn about new language, one of my first questions is whether it&#39;s a good fit for this …">
+  <meta name="author" content="Chad Scherrer"/>
+  <link href='https://cscherrer.github.io/img/favicon.ico' rel='icon' type='image/x-icon'/>
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:site" content="@@ChadScherrer" />
+  <meta name="twitter:creator" content="@@ChadScherrer" />
+  <meta property="og:url" content="https://cscherrer.github.io/post/soss/" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Chad Scherrer" />
+
+  <meta name="generator" content="Hugo 0.48" />
+  <link rel="canonical" href="https://cscherrer.github.io/post/soss/" />
+  <link rel="alternate" href="https://cscherrer.github.io/index.xml" type="application/rss+xml" title="Chad Scherrer">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.7.1/katex.min.css" integrity="sha384-wITovz90syo1dJWVh32uuETPVEtGigN07tkttEqPv+uR2SE/mbQcG7ATL28aI9H0" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cscherrer.github.io/css/main.css" /><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" /><link rel="stylesheet" href="https://cscherrer.github.io/css/syntax.css" /><link rel="stylesheet" href="https://cscherrer.github.io/css/codeblock.css" />
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-114923902-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-114923902-1');
+</script>
+
+
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe.min.css" integrity="sha384-h/L2W9KefUClHWaty3SLE5F/qvc4djlyR4qY3NUV5HGQBBW7stbcfff1+I/vmsHh" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/default-skin/default-skin.min.css" integrity="sha384-iD0dNku6PYSIQLyfTOpB06F2KCZJAKLOThS5HRe8b3ibhdEQ6eKsFf/EeFxdOt5R" crossorigin="anonymous">
+
+
+
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+<div class="pswp__bg"></div>
+
+<div class="pswp__scroll-wrap">
+    
+    <div class="pswp__container">
+      <div class="pswp__item"></div>
+      <div class="pswp__item"></div>
+      <div class="pswp__item"></div>
+    </div>
+    
+    <div class="pswp__ui pswp__ui--hidden">
+    <div class="pswp__top-bar">
+      
+      <div class="pswp__counter"></div>
+      <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+      <button class="pswp__button pswp__button--share" title="Share"></button>
+      <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+      <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+      
+      
+      <div class="pswp__preloader">
+        <div class="pswp__preloader__icn">
+          <div class="pswp__preloader__cut">
+            <div class="pswp__preloader__donut"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+      <div class="pswp__share-tooltip"></div>
+    </div>
+    <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+    </button>
+    <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+    </button>
+    <div class="pswp__caption">
+      <div class="pswp__caption__center"></div>
+    </div>
+    </div>
+    </div>
+</div>
+
+</head>
+
+  <body>
+    <nav class="navbar navbar-default navbar-fixed-top navbar-custom">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#main-navbar">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="https://cscherrer.github.io">Chad Scherrer</a>
+    </div>
+
+    <div class="collapse navbar-collapse" id="main-navbar">
+      <ul class="nav navbar-nav navbar-right">
+        
+          
+            <li>
+              <a title="Blog" href="/">Blog</a>
+            </li>
+          
+        
+          
+            <li>
+              <a title="Tags" href="/tags">Tags</a>
+            </li>
+          
+        
+
+        
+
+        
+      </ul>
+    </div>
+
+    <div class="avatar-container">
+      <div class="avatar-img-border">
+        
+      </div>
+    </div>
+
+  </div>
+</nav>
+
+
+
+
+    
+  
+  
+  
+
+
+
+
+  
+
+  <header class="header-section ">
+    
+    <div class="intro-header no-img">
+      
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+            <div class="post-heading">
+              <h1>Julia for Probabilistic Metaprogramming</h1>
+                
+                
+                  <span class="post-meta">
+  
+  
+  <i class="fa fa-calendar-o"></i>&nbsp;Posted on September 11, 2018
+  
+  
+  &nbsp;|&nbsp;
+  <i class="fa fa-clock-o"></i> 6 minutes (1190 words)
+  
+  
+</span>
+
+
+                
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+
+    
+<div class="container" role="main">
+  <div class="row">
+    <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+      <article role="main" class="blog-post">
+        <p><em>Since around 2010, I've been involved with using and developing probabilistic programming languages. So when I learn about new language, one of my first questions is whether it's a good fit for this kind of development. In this post, I'll talk a bit about working in this area with Julia, to motivate my <a href="https://github.com/cscherrer/Soss.jl">Soss</a> project.</em></p>
+
+<h1 id="domainspecific-languages">Domain-Specific Languages</h1>
+
+<p>At a high level, a probabilistic programming languages is a kind of <em>domain-specific language</em>, or <em>DSL</em>. As you might expect, this is just a language with a specific purpose, in constrast with a general-purpose programming language.</p>
+
+<p>Even if this term is new to you, you've probably used lots of these. <em>HTML</em> and <em>Markdown</em> for web content, <em>Postscript</em> for (2D) printers, <em>G-code</em> for 3D printers, <em>SQL</em> for database queries... all are examples of DSLs.</p>
+
+<p>These examples have their own syntax, so parsing them requires code made specifically for that purpose. The tremendous flexibility of this approach comes at cost far beyond just parsing the language; none of the language tooling we usually take for granted will come for free.</p>
+
+<p>Want syntax highlighting? You'll need to write it. Connect with external tools? You have to teach it how. Make a change to the language, and you'll need to change the parser accordingly. And this affects more than just developers, since designers of a language can rarely anticipate all the things a user might want to do.</p>
+
+<p>An alternative to this heavy-handed approach is to embed a DSL in some host language, producing an <em>embedded DSL</em>, or <em>EDSL</em>. This is just a library in some <em>host language</em> that is written in such a way to feel like its own language. The distinction from &quot;just a library&quot; is a bit fuzzy, and usually pointless. The biggest advantage of even having the term is that it gives a way of thinking about the problem when designing this sort of thing.</p>
+
+<p>EDSLs are especially popular in functional languages, due to the ability of monads to <a href="https://blog.osteele.com/2007/12/overloading-semicolon/"><em>&quot;overload the semicolon&quot;</em></a>. In Python, the strongest support for EDSL development comes from things like metaclasses, decorators, and double underscore (or <em>&quot;dunderscore&quot;</em>) methods like <code>__add__</code>.</p>
+
+<p>Relative to a standalone DSL, the ability to leverage tools in the host language makes EDSLs much quicker to develop, and gives users the freedom to combine elements of the EDSL and host language in ways the developers never anticipated. In exchange, EDSLs usually have significant interpretive overhead. This can usually be overcome, given enough engineering budget.</p>
+
+<p>Fortunately, there's a middle ground. But let's build som context before getting to that.</p>
+
+<h1 id="probabilistic-programming">Probabilistic Programming</h1>
+
+<p>Probabilistic programming languages, or <em>PPLs</em>, are usually implemented as a DSL, either standalone (like  <a href="http://mc-stan.org/"><em>Stan</em></a> or <a href="https://hakaru-dev.github.io/"><em>Hakaru</em></a>) or embedded (like <a href="https://docs.pymc.io/"><em>PyMC3</em></a> or <a href="http://pyro.ai/"><em>Pyro</em></a> in Python, <a href="https://probprog.github.io/anglican/index.html"><em>Anglican</em></a> in Clojure, or <a href="https://www.cra.com/sites/default/files/pdf/Figaro_Tutorial.pdf"><em>Figaro</em></a> in Scala). In either case, it's typical for interactions with probability distributions to take two forms, often abstractly referred to as <em>sample</em> and <em>observe</em>.</p>
+
+<p>Let's take a simple example. Say we flip a (maybe unfair) coin <span  class="math">\(N\)</span> times and observe the sequence of heads and tails, and we'd like to infer <span  class="math">\(P(\text{heads})\)</span> for the coin. So, something like this:</p>
+
+<p><span  class="math">\[
+\begin{aligned}
+p &\sim \text{Uniform}(0,1) \\
+y_n &\sim \text{Bernoulli}(p), n\in\{1,\cdots,N\}\ .
+\end{aligned}
+\]</span></p>
+
+<p>From this way of writing it, there's not much distinction between <span  class="math">\(p\)</span> and <span  class="math">\(y_n\)</span>. But of course, there's a big difference; we <em>know</em> the value of the <span  class="math">\(y_n\)</span>s, and would like to use that to reason about <span  class="math">\(p\)</span>. So we often think of this as having two steps:</p>
+
+<ol>
+<li><em><strong>Sample</strong></em> a value for <span  class="math">\(p\)</span> from the given distribution</li>
+<li><em><strong>Observe</strong></em> each known <span  class="math">\(y_n\)</span>, using the dependence to update the distribution of <span  class="math">\(p\)</span>.</li>
+</ol>
+
+<p>This is still a bit vague, and that's the point; the exact form of <code>sample</code> and <code>observe</code> depends on what inference routine we're using.</p>
+
+<p>Perhaps the simplest thing we could do it <a href="https://en.wikipedia.org/wiki/Rejection_sampling"><em>rejection sampling</em></a>. Here, <code>sample</code> means &quot;sample&quot; in the usual sense, and <code>observe</code> means &quot;sample and filter&quot;. Here's some pseudo-code:</p>
+<div class="highlight"><pre class="chroma"><code class="language-julia" data-lang="julia"><span class="k">function</span> <span class="n">rejectionSample</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">numSamples</span><span class="p">)</span>
+    <span class="n">N</span> <span class="o">=</span> <span class="n">length</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+    <span class="n">posteriorSample</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">(</span><span class="n">numSamples</span><span class="p">)</span>  
+    <span class="n">sampleNum</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="k">while</span> <span class="n">sampleNum</span> <span class="o">&lt;=</span> <span class="n">numSamples</span>  
+        <span class="c"># sample</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="n">rand</span><span class="p">(</span><span class="n">Uniform</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span>   
+        
+        <span class="c"># observe</span>
+        <span class="n">proposal</span> <span class="o">=</span> <span class="n">rand</span><span class="p">(</span><span class="n">Bernoulli</span><span class="p">(</span><span class="n">p</span><span class="p">),</span><span class="n">N</span><span class="p">)</span> 
+        <span class="k">if</span> <span class="n">y</span> <span class="o">==</span> <span class="n">proposal</span>
+            <span class="n">posteriorSample</span><span class="p">[</span><span class="n">sampleNum</span><span class="p">]</span> <span class="o">=</span> <span class="n">p</span>
+            <span class="n">sampleNum</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">end</span>
+    <span class="k">end</span>
+    <span class="k">return</span> <span class="n">posteriorSample</span>
+<span class="k">end</span></code></pre></div>
+<p>Did the syntax highlighting give it away? I lied about the &quot;pseudo&quot; part; this is valid code in <a href="https://julialang.org/"><em>Julia</em></a>, using the <a href="https://juliastats.github.io/Distributions.jl/stable/"><em>Distributions.jl</em></a> library. Here, let's try it out:</p>
+<div class="highlight"><pre class="chroma"><code class="language-julia" data-lang="julia"><span class="n">julia</span><span class="o">&gt;</span> <span class="k">using</span> <span class="n">Distributions</span>
+<span class="n">julia</span><span class="o">&gt;</span> <span class="n">rejectionSample</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">],</span><span class="mi">20</span><span class="p">)</span>
+<span class="mi">20</span><span class="o">-</span><span class="n">element</span> <span class="kt">Array</span><span class="p">{</span><span class="kt">Float64</span><span class="p">,</span><span class="mi">1</span><span class="p">}</span><span class="o">:</span>
+ <span class="mf">0.8158976408772047</span> 
+ <span class="mf">0.6450191099491256</span> 
+ <span class="mf">0.45250580931562356</span>
+ <span class="mf">0.6910986247512794</span> 
+ <span class="mf">0.7140409029883459</span> 
+ <span class="mf">0.7590618621191185</span> 
+ <span class="mf">0.7657057442482806</span> 
+ <span class="mf">0.7298275374588723</span> 
+ <span class="mf">0.671549906910313</span>  
+ <span class="mf">0.3973116677286921</span> 
+ <span class="mf">0.3295084397546948</span> 
+ <span class="mf">0.6253119802386622</span> 
+ <span class="mf">0.47958145829736454</span>
+ <span class="mf">0.4319525168178511</span> 
+ <span class="mf">0.5541398855968984</span> 
+ <span class="mf">0.5504098499307508</span> 
+ <span class="mf">0.7751201367243916</span> 
+ <span class="mf">0.8307277566881002</span> 
+ <span class="mf">0.37112539281292123</span>
+ <span class="mf">0.40474937271123146</span></code></pre></div>
+<p>The code above is horribly inefficient, because so many proposals are rejected, and (relatedly) because we're using a vector of <code>Bernoulli</code> samples instead of a single <code>Binomial</code>. But Julia still gets it going at a good pace:</p>
+<div class="highlight"><pre class="chroma"><code class="language-julia" data-lang="julia"><span class="n">julia</span><span class="o">&gt;</span> <span class="k">using</span> <span class="n">BenchmarkTools</span>
+<span class="n">julia</span><span class="o">&gt;</span> <span class="nd">@btime</span> <span class="n">rejectionSample</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">],</span><span class="mi">20</span><span class="p">)</span>
+  <span class="mf">157.213</span> <span class="n">μs</span> <span class="p">(</span><span class="mi">3378</span> <span class="n">allocations</span><span class="o">:</span> <span class="mf">475.13</span> <span class="n">KiB</span><span class="p">)</span>
+
+<span class="o">...</span> <span class="p">(</span><span class="n">same</span> <span class="n">result</span><span class="p">)</span></code></pre></div>
+<p>The theory says that another term for <code>Uniform(0,1)</code> is <code>Beta(1,1)</code>, and observing 5 ones and three 3 zeros should bring us to a <code>Beta(1+5,1+3)</code>. This makes it easy to do a quick check:</p>
+<div class="highlight"><pre class="chroma"><code class="language-julia" data-lang="julia"><span class="n">julia</span><span class="o">&gt;</span> <span class="n">fit</span><span class="p">(</span><span class="n">Beta</span><span class="p">,</span> <span class="n">rejectionSample</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">],</span><span class="mi">100000</span><span class="p">))</span>
+<span class="n">Beta</span><span class="p">{</span><span class="kt">Float64</span><span class="p">}(</span><span class="n">α</span><span class="o">=</span><span class="mf">6.032293654775521</span><span class="p">,</span> <span class="n">β</span><span class="o">=</span><span class="mf">4.018746844089239</span><span class="p">)</span></code></pre></div>
+<p>On my laptop, this takes about 2.5 seconds.</p>
+
+<h1 id="so-meta">So Meta</h1>
+
+<p>In <code>rejectionSample</code> above, we passed in an <code>observe</code>d value as an argument to the function. This is a common pattern, whatever inference algorithm we're using. So let's abstract it. Much of the point of probabilistic programming is separation of concerns between the <em>model</em> and the <em>algorithm</em>. So let's use a representation like this:</p>
+<div class="highlight"><pre class="chroma"><code class="language-julia" data-lang="julia"><span class="n">coin</span> <span class="o">=</span> <span class="nd">@model</span> <span class="n">y</span> <span class="k">begin</span>
+    <span class="n">N</span> <span class="o">=</span> <span class="n">length</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+    <span class="n">p</span> <span class="o">~</span> <span class="n">Uniform</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">y</span> <span class="n">⩪</span> <span class="n">Bernoulli</span><span class="p">(</span><span class="n">p</span><span class="p">)</span> <span class="o">|&gt;</span> <span class="n">iid</span><span class="p">(</span><span class="n">N</span><span class="p">)</span>
+<span class="k">end</span></code></pre></div>
+<p>This incorporates the concepts from above:</p>
+
+<ul>
+<li><code>~</code> means <em>sample</em></li>
+<li><code>⩪</code> means <em>observe</em></li>
+</ul>
+
+<p>The <code>⩪</code> symbol is unusual, but it's easy to input in Julia; just type <code>\dotsim &lt;TAB&gt;</code>.</p>
+
+<p>There are a couple of other things about this that might be unfamiliar. First, <code>@model</code> is a <a href="https://en.wikibooks.org/wiki/Introducing_Julia/Metaprogramming#Macros"><em>macro</em></a>. To (over)simplify, this means the body of <code>coin</code> will be parsed (to make sure it's valid Julia code), but not evaluated (unless the macro says so, which <code>@model</code> doesn't). The result is an <a href="https://en.wikipedia.org/wiki/Abstract_syntax_tree"><em>abstract syntax tree</em></a>, or <em>AST</em> that can be manipulated and transformed to generate high-performance code. We saw another macro above, <code>@btime</code> for benchmarking. Macros and related techniques for code generation are known as <em>metaprogramming</em>.</p>
+
+<p>The <code>|&gt;</code> in the line defining <code>y</code> is a <em>pipe</em>, similar to the concept of the same name in UNIX-like systems. This is just for notational convenience; <code>Bernoulli(p) |&gt; iid(N)</code> is equivalent to <code>iid(N)(Bernoulli(p))</code>.</p>
+
+<p>The <code>iid</code> function is not specific to Julia, but is defined as part of Soss. This is a concept from statistics; <code>iid(N)</code> means there should be <code>N</code> copies that are <a href="https://en.wikipedia.org/wiki/Independent_and_identically_distributed_random_variables"><em>independent and identically distributed</em></a>. [Unlike &quot;www&quot;, this initialization actually saves a few syllables. Use it enough, and maybe the world will have a net gain!]</p>
+
+<h1 id="wrapping-up">Wrapping up</h1>
+
+<p>There's a huge potential in this approach. Models are expressed at a high level, and code transformation gives a way for developers to specify inference algorithms in a way that generates high-performance code.</p>
+
+<p>The <code>@model</code> macro, and lots more, is implemented in my
+<a href="https://github.com/cscherrer/Soss.jl"><em>Soss</em></a> package. There's lots more to say about this:</p>
+
+<ul>
+<li>Composability</li>
+<li>Programmatic model transformation</li>
+<li>Performant code generation</li>
+<li>Inference algorithms</li>
+</ul>
+
+<p>But this will have to wait for another time. Thanks for reading!</p>
+
+
+        
+
+        
+      </article>
+
+      
+        <ul class="pager blog-pager">
+          
+            <li class="previous">
+              <a href="https://cscherrer.github.io/post/pyro/" data-toggle="tooltip" data-placement="top" title="A Prelude to Pyro">&larr; Previous Post</a>
+            </li>
+          
+          
+        </ul>
+      
+
+
+      
+        
+        
+      
+
+    </div>
+  </div>
+</div>
+
+    <footer>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        <ul class="list-inline text-center footer-links">
+          
+              <li>
+                <a href="mailto:chad.scherrer@gmail.com" title="Email me">
+                  <span class="fa-stack fa-lg">
+                    <i class="fa fa-circle fa-stack-2x"></i>
+                    <i class="fa fa-envelope fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+                <a href="https://plus.google.com/&#43;chad.scherrer" title="Google&#43;">
+                  <span class="fa-stack fa-lg">
+                    <i class="fa fa-circle fa-stack-2x"></i>
+                    <i class="fa fa-google-plus fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+                <a href="https://github.com/cscherrer" title="GitHub">
+                  <span class="fa-stack fa-lg">
+                    <i class="fa fa-circle fa-stack-2x"></i>
+                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+                <a href="https://twitter.com/@ChadScherrer" title="Twitter">
+                  <span class="fa-stack fa-lg">
+                    <i class="fa fa-circle fa-stack-2x"></i>
+                    <i class="fa fa-twitter fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+                <a href="https://reddit.com/u/cscherrer" title="Reddit">
+                  <span class="fa-stack fa-lg">
+                    <i class="fa fa-circle fa-stack-2x"></i>
+                    <i class="fa fa-reddit-alien fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+                <a href="https://linkedin.com/in/chadscherrer" title="LinkedIn">
+                  <span class="fa-stack fa-lg">
+                    <i class="fa fa-circle fa-stack-2x"></i>
+                    <i class="fa fa-linkedin fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+                <a href="https://stackoverflow.com/users/488124/chad-scherrer" title="StackOverflow">
+                  <span class="fa-stack fa-lg">
+                    <i class="fa fa-circle fa-stack-2x"></i>
+                    <i class="fa fa-stack-overflow fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+          
+          <li>
+            
+            <a href="https://cscherrer.github.io/index.xml" title="RSS">
+            
+              <span class="fa-stack fa-lg">
+                <i class="fa fa-circle fa-stack-2x"></i>
+                <i class="fa fa-rss fa-stack-1x fa-inverse"></i>
+              </span>
+            </a>
+          </li>
+          
+        </ul>
+        <p class="credits copyright text-muted">
+          
+            
+              <a href="cscherrer.github.io">Chad Scherrer</a>
+            
+          
+
+          &nbsp;&bull;&nbsp;
+          2018
+
+          
+            &nbsp;&bull;&nbsp;
+            <a href="https://cscherrer.github.io">Chad Scherrer</a>
+          
+        </p>
+        
+        <p class="credits theme-by text-muted">
+          <a href="http://gohugo.io">Hugo v0.48</a> powered &nbsp;&bull;&nbsp; Theme by <a href="http://deanattali.com/beautiful-jekyll/">Beautiful Jekyll</a> adapted to <a href="https://github.com/halogenica/beautifulhugo">Beautiful Hugo</a>
+          
+        </p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.7.1/katex.min.js" integrity="sha384-/y1Nn9+QQAipbNQWU65krzJralCnuOasHncUFXGkdwntGeSvQicrYkiUBwsgUqc1" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.7.1/contrib/auto-render.min.js" integrity="sha384-dq1/gEHSxPZQ7DdrM82ID4YVol9BYyU7GbWlIwnwyPzotpoc57wDw/guX8EaYGPx" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ=" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<script src="https://cscherrer.github.io/js/main.js"></script><script> renderMathInElement(document.body); </script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe.min.js" integrity="sha384-QELNnmcmU8IR9ZAykt67vGr9/rZJdHbiWi64V88fCPaOohUlHCqUD/unNN0BXSqy" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe-ui-default.min.js" integrity="sha384-m67o7SkQ1ALzKZIFh4CiTA8tmadaujiTa9Vu+nqPSwDOqHrDmxLezTdFln8077+q" crossorigin="anonymous"></script>
+<script src="https://cscherrer.github.io/js/load-photoswipe.js"></script>
+
+
+
+
+
+
+  </body>
+</html>
+
