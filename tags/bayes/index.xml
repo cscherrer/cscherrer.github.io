@@ -7,10 +7,20 @@
     <generator>Hugo -- gohugo.io</generator>
     <managingEditor>chad.scherrer@gmail.com (Chad Scherrer)</managingEditor>
     <webMaster>chad.scherrer@gmail.com (Chad Scherrer)</webMaster>
-    <lastBuildDate>Tue, 21 Aug 2018 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Tue, 11 Sep 2018 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="https://cscherrer.github.io/tags/bayes/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Julia for Probabilistic Metaprogramming</title>
+      <link>https://cscherrer.github.io/post/soss/</link>
+      <pubDate>Tue, 11 Sep 2018 00:00:00 +0000</pubDate>
+      <author>chad.scherrer@gmail.com (Chad Scherrer)</author>
+      <guid>https://cscherrer.github.io/post/soss/</guid>
+      <description>Since around 2010, I&#39;ve been involved with using and developing probabilistic programming languages. So when I learn about new language, one of my first questions is whether it&#39;s a good fit for this kind of development. In this post, I&#39;ll talk a bit about working in this area with Julia, to motivate my Soss project.
+Domain-Specific Languages At a high level, a probabilistic programming languages is a kind of domain-specific language, or DSL.</description>
+    </item>
     
     <item>
       <title>A Prelude to Pyro</title>
