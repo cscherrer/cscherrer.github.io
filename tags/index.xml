@@ -7,7 +7,7 @@
     <generator>Hugo -- gohugo.io</generator>
     <managingEditor>chad.scherrer@gmail.com (Chad Scherrer)</managingEditor>
     <webMaster>chad.scherrer@gmail.com (Chad Scherrer)</webMaster>
-    <lastBuildDate>Sun, 25 Feb 2018 00:00:00 -0800</lastBuildDate>
+    <lastBuildDate>Tue, 21 Aug 2018 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="https://cscherrer.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
     
@@ -15,27 +15,54 @@
     <item>
       <title>Bayes</title>
       <link>https://cscherrer.github.io/tags/bayes/</link>
-      <pubDate>Sun, 25 Feb 2018 00:00:00 -0800</pubDate>
+      <pubDate>Tue, 21 Aug 2018 00:00:00 +0000</pubDate>
       <author>chad.scherrer@gmail.com (Chad Scherrer)</author>
       <guid>https://cscherrer.github.io/tags/bayes/</guid>
       <description></description>
     </item>
     
     <item>
+      <title>Julia</title>
+      <link>https://cscherrer.github.io/tags/julia/</link>
+      <pubDate>Tue, 11 Sep 2018 00:00:00 +0000</pubDate>
+      <author>chad.scherrer@gmail.com (Chad Scherrer)</author>
+      <guid>https://cscherrer.github.io/tags/julia/</guid>
+      <description></description>
+    </item>
+    
+    <item>
       <title>Pymc3</title>
       <link>https://cscherrer.github.io/tags/pymc3/</link>
-      <pubDate>Sun, 25 Feb 2018 00:00:00 -0800</pubDate>
+      <pubDate>Sun, 03 Jun 2018 12:05:48 -0700</pubDate>
       <author>chad.scherrer@gmail.com (Chad Scherrer)</author>
       <guid>https://cscherrer.github.io/tags/pymc3/</guid>
       <description></description>
     </item>
     
     <item>
+      <title>Pyro</title>
+      <link>https://cscherrer.github.io/tags/pyro/</link>
+      <pubDate>Tue, 21 Aug 2018 00:00:00 +0000</pubDate>
+      <author>chad.scherrer@gmail.com (Chad Scherrer)</author>
+      <guid>https://cscherrer.github.io/tags/pyro/</guid>
+      <description></description>
+    </item>
+    
+    <item>
       <title>Python</title>
       <link>https://cscherrer.github.io/tags/python/</link>
-      <pubDate>Sun, 25 Feb 2018 00:00:00 -0800</pubDate>
+      <pubDate>Tue, 21 Aug 2018 00:00:00 +0000</pubDate>
       <author>chad.scherrer@gmail.com (Chad Scherrer)</author>
       <guid>https://cscherrer.github.io/tags/python/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Variational Inference</title>
+      <link>https://cscherrer.github.io/tags/variational-inference/</link>
+      <pubDate>Tue, 21 Aug 2018 00:00:00 +0000</pubDate>
+      <author>chad.scherrer@gmail.com (Chad Scherrer)</author>
+      <guid>https://cscherrer.github.io/tags/variational-inference/</guid>
       <description></description>
     </item>
     

@@ -5,21 +5,21 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 
-  <title>Pymc3</title>
-  <meta property="og:title" content="Pymc3" />
-  <meta name="twitter:title" content="Pymc3" />
+  <title>Pyro</title>
+  <meta property="og:title" content="Pyro" />
+  <meta name="twitter:title" content="Pyro" />
   <meta name="author" content="Chad Scherrer"/>
   <link href='https://cscherrer.github.io/img/favicon.ico' rel='icon' type='image/x-icon'/>
   <meta name="twitter:card" content="summary" />
   <meta name="twitter:site" content="@@ChadScherrer" />
   <meta name="twitter:creator" content="@@ChadScherrer" />
-  <meta property="og:url" content="https://cscherrer.github.io/tags/pymc3/" />
+  <meta property="og:url" content="https://cscherrer.github.io/tags/pyro/" />
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="Chad Scherrer" />
 
   <meta name="generator" content="Hugo 0.48" />
-  <link rel="canonical" href="https://cscherrer.github.io/tags/pymc3/" />
-  <link rel="alternate" href="https://cscherrer.github.io/tags/pymc3/index.xml" type="application/rss+xml" title="Chad Scherrer">
+  <link rel="canonical" href="https://cscherrer.github.io/tags/pyro/" />
+  <link rel="alternate" href="https://cscherrer.github.io/tags/pyro/index.xml" type="application/rss+xml" title="Chad Scherrer">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.7.1/katex.min.css" integrity="sha384-wITovz90syo1dJWVh32uuETPVEtGigN07tkttEqPv+uR2SE/mbQcG7ATL28aI9H0" crossorigin="anonymous">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
@@ -144,7 +144,7 @@
         <div class="row">
           <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
             <div class="page-heading">
-              <h1>#Pymc3</h1>
+              <h1>#Pyro</h1>
               <hr class="small">
             </div>
           </div>
@@ -161,8 +161,8 @@
         <div class="posts-list">
           
             <article class="post-preview">
-              <a href="https://cscherrer.github.io/post/max-profit-2/">
-                <h2 class="post-title">Bayesian Optimal Pricing, Part 2</h2>
+              <a href="https://cscherrer.github.io/post/pyro/">
+                <h2 class="post-title">A Prelude to Pyro</h2>
 
                 
               </a>
@@ -171,11 +171,11 @@
                 <span class="post-meta">
   
   
-  <i class="fa fa-calendar-o"></i>&nbsp;Posted on June 3, 2018
+  <i class="fa fa-calendar-o"></i>&nbsp;Posted on August 21, 2018
   
   
   &nbsp;|&nbsp;
-  <i class="fa fa-clock-o"></i> 6 minutes (1271 words)
+  <i class="fa fa-clock-o"></i> 8 minutes (1571 words)
   
   
 </span>
@@ -184,11 +184,9 @@
               </p>
               <div class="post-entry">
                 
-                  This is Part 2 in a series on Bayesian optimal pricing. Part 1 is here.
-Introduction In Part 1 we used PyMC3 to build a Bayesian model for sales. By the end we had this result:
-
-A common advantage of Bayesian analysis is the understanding it gives us of the distribution of a given result. For example, we very easily analyze a sample from the posterior distribution of profit for a given price.
-                  <a href="https://cscherrer.github.io/post/max-profit-2/" class="post-read-more">[Read More]</a>
+                  Lately I've been exploring Pyro, a recent development in probabilistic programming from Uber AI Labs. It's an exciting development that has a huge potential for large-scale applications.
+In any technical writing, it's common (at least for me) to realize I need to add some introductory material before moving on. In writing about Pyro, this happened quite a bit, to the point that it warranted this post as a kind of warm-up.
+                  <a href="https://cscherrer.github.io/post/pyro/" class="post-read-more">[Read More]</a>
                 
               </div>
 
@@ -199,96 +197,9 @@ A common advantage of Bayesian analysis is the understanding it gives us of the 
                   
                     <a href="https://cscherrer.github.io/tags/python/">python</a>&nbsp;
                   
-                    <a href="https://cscherrer.github.io/tags/pymc3/">pymc3</a>&nbsp;
+                    <a href="https://cscherrer.github.io/tags/variational-inference/">variational inference</a>&nbsp;
                   
-                </div>
-              
-
-            </article>
-          
-            <article class="post-preview">
-              <a href="https://cscherrer.github.io/post/max-profit/">
-                <h2 class="post-title">Bayesian Optimal Pricing, Part 1</h2>
-
-                
-              </a>
-
-              <p class="post-meta">
-                <span class="post-meta">
-  
-  
-  <i class="fa fa-calendar-o"></i>&nbsp;Posted on May 6, 2018
-  
-  
-  &nbsp;|&nbsp;
-  <i class="fa fa-clock-o"></i> 9 minutes (1794 words)
-  
-  
-</span>
-
-
-              </p>
-              <div class="post-entry">
-                
-                  Pricing is a common problem faced by businesses, and one that can be addressed effectively by Bayesian statistical methods. We'll step through a simple example and build the background necessary to extend get involved with this approach.
-Let's start with some hypothetical data. A small company has tried a few different price points (say, one week each) and recorded the demand at each price. We'll abstract away some economic issues in order to focus on the statistical approach.
-                  <a href="https://cscherrer.github.io/post/max-profit/" class="post-read-more">[Read More]</a>
-                
-              </div>
-
-              
-                <div class="blog-tags">
-                  
-                    <a href="https://cscherrer.github.io/tags/bayes/">bayes</a>&nbsp;
-                  
-                    <a href="https://cscherrer.github.io/tags/python/">python</a>&nbsp;
-                  
-                    <a href="https://cscherrer.github.io/tags/pymc3/">pymc3</a>&nbsp;
-                  
-                </div>
-              
-
-            </article>
-          
-            <article class="post-preview">
-              <a href="https://cscherrer.github.io/post/bayesian-changepoint/">
-                <h2 class="post-title">Bayesian Changepoint Detection with PyMC3</h2>
-
-                
-              </a>
-
-              <p class="post-meta">
-                <span class="post-meta">
-  
-  
-  <i class="fa fa-calendar-o"></i>&nbsp;Posted on February 25, 2018
-  
-  
-  &nbsp;|&nbsp;
-  <i class="fa fa-clock-o"></i> 5 minutes (876 words)
-  
-  
-</span>
-
-
-              </p>
-              <div class="post-entry">
-                
-                  A client comes to you with this problem:
- The coal company I work for is trying to make mining safer. We made some change around 1900 that seemed to improve things, but the records are all archived. Tracking down such old records can be expensive, and it would help a lot if we could narrow the search. Can you tell us what year we should focus on?
-Also, it would really help to know this is a real effect, and not just due to random variability - we don't want to waste resources digging up the records if there's not really anything there.
-                  <a href="https://cscherrer.github.io/post/bayesian-changepoint/" class="post-read-more">[Read More]</a>
-                
-              </div>
-
-              
-                <div class="blog-tags">
-                  
-                    <a href="https://cscherrer.github.io/tags/bayes/">bayes</a>&nbsp;
-                  
-                    <a href="https://cscherrer.github.io/tags/python/">python</a>&nbsp;
-                  
-                    <a href="https://cscherrer.github.io/tags/pymc3/">pymc3</a>&nbsp;
+                    <a href="https://cscherrer.github.io/tags/pyro/">pyro</a>&nbsp;
                   
                 </div>
               
@@ -366,7 +277,7 @@ Also, it would really help to know this is a real effect, and not just due to ra
           
           <li>
             
-            <a href="https://cscherrer.github.io/tags/pymc3/index.xml" title="RSS">
+            <a href="https://cscherrer.github.io/tags/pyro/index.xml" title="RSS">
             
               <span class="fa-stack fa-lg">
                 <i class="fa fa-circle fa-stack-2x"></i>
