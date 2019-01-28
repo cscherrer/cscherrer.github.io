@@ -11,7 +11,7 @@
 /* KeywordNamespace */ .chroma .kn { color: #007020; font-weight: bold }
 /* KeywordPseudo */ .chroma .kp { color: #007020 }
 /* KeywordReserved */ .chroma .kr { color: #007020; font-weight: bold }
-/* KeywordType */ .chroma .kt { color: #902000 }
+/* KeywordType */ .chroma .kt { color: #2b0900 }
 /* NameAttribute */ .chroma .na { color: #4070a0 }
 /* NameBuiltin */ .chroma .nb { color: #007020 }
 /* NameClass */ .chroma .nc { color: #0e84b5; font-weight: bold }
@@ -66,3 +66,4 @@
 /* GenericTraceback */ .chroma .gt { color: #0044dd }
 /* GenericUnderline */ .chroma .gl { text-decoration: underline }
 /* TextWhitespace */ .chroma .w { color: #bbbbbb }
+code {color: #111; background-color: #0000}
