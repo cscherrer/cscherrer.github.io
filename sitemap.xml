@@ -3,6 +3,11 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
+    <loc>https://cscherrer.github.io/post/soss-update/</loc>
+    <lastmod>2019-01-27T07:35:51-08:00</lastmod>
+  </url>
+  
+  <url>
     <loc>https://cscherrer.github.io/post/soss/</loc>
     <lastmod>2018-09-11T00:00:00+00:00</lastmod>
   </url>
@@ -44,7 +49,7 @@
   
   <url>
     <loc>https://cscherrer.github.io/tags/bayes/</loc>
-    <lastmod>2018-09-11T00:00:00+00:00</lastmod>
+    <lastmod>2019-01-27T07:35:51-08:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -56,13 +61,13 @@
   
   <url>
     <loc>https://cscherrer.github.io/</loc>
-    <lastmod>2018-09-11T00:00:00+00:00</lastmod>
+    <lastmod>2019-01-27T07:35:51-08:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
     <loc>https://cscherrer.github.io/tags/julia/</loc>
-    <lastmod>2018-09-11T00:00:00+00:00</lastmod>
+    <lastmod>2019-01-27T07:35:51-08:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -73,7 +78,7 @@
   
   <url>
     <loc>https://cscherrer.github.io/post/</loc>
-    <lastmod>2018-09-11T00:00:00+00:00</lastmod>
+    <lastmod>2019-01-27T07:35:51-08:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -96,8 +101,14 @@
   </url>
   
   <url>
+    <loc>https://cscherrer.github.io/tags/soss/</loc>
+    <lastmod>2019-01-27T07:35:51-08:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
     <loc>https://cscherrer.github.io/tags/</loc>
-    <lastmod>2018-09-11T00:00:00+00:00</lastmod>
+    <lastmod>2019-01-27T07:35:51-08:00</lastmod>
     <priority>0</priority>
   </url>
   
