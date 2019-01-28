@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="en" itemscope itemtype="http://schema.org/WebPage">
+  <head>
+    
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+
+  <title>Soss.jl: Design Plans for Spring 2019 - Chad Scherrer</title>
+  <meta property="og:title" content="Soss.jl: Design Plans for Spring 2019" />
+  <meta name="twitter:title" content="Soss.jl: Design Plans for Spring 2019" />
+  <meta name="description" content="If you&#39;ve followed my work recently, you&#39;ve probably heard of my probabilistic programming system Soss.jl. I recently had the pleasure of presenting these ideas at PyData Miami:
+ --  In April I&#39;ll begin another &quot;passion quarter&quot; (essentially a sabbatical) and hope to really push this work forward. I count myself lucky to have an employer so supportive of independent R&amp;D. Thank you, Metis!
+It&#39;s a bit unusual to document an approach before it&#39;s fully implemented.">
+  <meta property="og:description" content="If you&#39;ve followed my work recently, you&#39;ve probably heard of my probabilistic programming system Soss.jl. I recently had the pleasure of presenting these ideas at PyData Miami:
+ --  In April I&#39;ll begin another &quot;passion quarter&quot; (essentially a sabbatical) and hope to really push this work forward. I count myself lucky to have an employer so supportive of independent R&amp;D. Thank you, Metis!
+It&#39;s a bit unusual to document an approach before it&#39;s fully implemented.">
+  <meta name="twitter:description" content="If you&#39;ve followed my work recently, you&#39;ve probably heard of my probabilistic programming system Soss.jl. I recently had the pleasure of presenting these ideas at PyData Miami:
+ --  In April I&#39;ll …">
+  <meta name="author" content="Chad Scherrer"/><script type="application/ld+json">
+{
+    "@context": "http://schema.org",
+    "@type": "WebSite",
+    "name": "Chad Scherrer",
+    
+    "url": "https://cscherrer.github.io"
+}
+</script><script type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "@type": "Organization",
+  "name": "",
+  "url": "https://cscherrer.github.io"
+  
+  
+  
+  
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [{
+        "@type": "ListItem",
+        "position": 1,
+        "item": {
+          "@id": "https://cscherrer.github.io",
+          "name": "home"
+        }
+    },{
+        "@type": "ListItem",
+        "position": 3,
+        "item": {
+          "@id": "https://cscherrer.github.io/post/soss-update/",
+          "name": "Soss.jl design plans for spring 2019"
+        }
+    }]
+}
+</script><script type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "@type": "Article",
+  "author": {
+    "name" : "Chad Scherrer"
+  },
+  "headline": "Soss.jl: Design Plans for Spring 2019",
+  "description" : "If you&#39;ve followed my work recently, you&#39;ve probably heard of my probabilistic programming system Soss.jl. I recently had the pleasure of presenting these ideas at PyData Miami:
+ --  In April I&#39;ll begin another &amp;quot;passion quarter&amp;quot; (essentially a sabbatical) and hope to really push this work forward. I count myself lucky to have an employer so supportive of independent R&amp;amp;D. Thank you, Metis!
+It&#39;s a bit unusual to document an approach before it&#39;s fully implemented.",
+  "inLanguage" : "en",
+  "wordCount": 1414,
+  "datePublished" : "2019-01-27T07:35:51",
+  "dateModified" : "2019-01-27T07:35:51",
+  "image" : "https://cscherrer.github.io",
+  "keywords" : [ "julia, bayes, Soss" ],
+  "mainEntityOfPage" : "https://cscherrer.github.io/post/soss-update/",
+  "publisher" : {
+    "@type": "Organization",
+    "name" : "https://cscherrer.github.io",
+    "logo" : {
+        "@type" : "ImageObject",
+        "url" : "https://cscherrer.github.io",
+        "height" :  60 ,
+        "width" :  60
+    }
+  }
+}
+</script>
+
+<meta property="og:title" content="Soss.jl: Design Plans for Spring 2019" />
+<meta property="og:description" content="If you&#39;ve followed my work recently, you&#39;ve probably heard of my probabilistic programming system Soss.jl. I recently had the pleasure of presenting these ideas at PyData Miami:
+ --  In April I&#39;ll begin another &quot;passion quarter&quot; (essentially a sabbatical) and hope to really push this work forward. I count myself lucky to have an employer so supportive of independent R&amp;D. Thank you, Metis!
+It&#39;s a bit unusual to document an approach before it&#39;s fully implemented.">
+<meta property="og:url" content="https://cscherrer.github.io/post/soss-update/" />
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="Chad Scherrer" />
+  <meta name="twitter:title" content="Soss.jl: Design Plans for Spring 2019" />
+  <meta name="twitter:description" content="If you&#39;ve followed my work recently, you&#39;ve probably heard of my probabilistic programming system Soss.jl. I recently had the pleasure of presenting these ideas at PyData Miami:
+ --  In April I&#39;ll …">
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:site" content="@@ChadScherrer" />
+  <meta name="twitter:creator" content="@@ChadScherrer" />
+  <link href='https://cscherrer.github.io/img/favicon.ico' rel='icon' type='image/x-icon'/>
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:site" content="@@ChadScherrer" />
+  <meta name="twitter:creator" content="@@ChadScherrer" />
+  <meta property="og:url" content="https://cscherrer.github.io/post/soss-update/" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Chad Scherrer" />
+
+  <meta name="generator" content="Hugo 0.53" />
+  <link rel="alternate" href="https://cscherrer.github.io/index.xml" type="application/rss+xml" title="Chad Scherrer">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css" integrity="sha384-9eLZqc9ds8eNjO3TmqPeYcDj8n+Qfa4nuSiGYa6DjLNcv9BtN69ZIulL9+8CqC9Y" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cscherrer.github.io/css/main.css" /><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" /><link rel="stylesheet" href="https://cscherrer.github.io/css/syntax.css" /><link rel="stylesheet" href="https://cscherrer.github.io/css/codeblock.css" /><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe.min.css" integrity="sha384-h/L2W9KefUClHWaty3SLE5F/qvc4djlyR4qY3NUV5HGQBBW7stbcfff1+I/vmsHh" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/default-skin/default-skin.min.css" integrity="sha384-iD0dNku6PYSIQLyfTOpB06F2KCZJAKLOThS5HRe8b3ibhdEQ6eKsFf/EeFxdOt5R" crossorigin="anonymous">
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-114923902-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-114923902-1');
+</script>
+
+
+
+
+
+  </head>
+  <body>
+    <nav class="navbar navbar-default navbar-fixed-top navbar-custom">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#main-navbar">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="https://cscherrer.github.io">Chad Scherrer</a>
+    </div>
+
+    <div class="collapse navbar-collapse" id="main-navbar">
+      <ul class="nav navbar-nav navbar-right">
+        
+          
+            <li>
+              <a title="Blog" href="/">Blog</a>
+            </li>
+          
+        
+          
+            <li>
+              <a title="Tags" href="/tags">Tags</a>
+            </li>
+          
+        
+
+        
+
+        
+      </ul>
+    </div>
+
+    
+
+  </div>
+</nav>
+
+
+
+
+    
+
+
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+<div class="pswp__bg"></div>
+
+<div class="pswp__scroll-wrap">
+    
+    <div class="pswp__container">
+      <div class="pswp__item"></div>
+      <div class="pswp__item"></div>
+      <div class="pswp__item"></div>
+    </div>
+    
+    <div class="pswp__ui pswp__ui--hidden">
+    <div class="pswp__top-bar">
+      
+      <div class="pswp__counter"></div>
+      <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+      <button class="pswp__button pswp__button--share" title="Share"></button>
+      <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+      <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+      
+      
+      <div class="pswp__preloader">
+        <div class="pswp__preloader__icn">
+          <div class="pswp__preloader__cut">
+            <div class="pswp__preloader__donut"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+      <div class="pswp__share-tooltip"></div>
+    </div>
+    <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+    </button>
+    <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+    </button>
+    <div class="pswp__caption">
+      <div class="pswp__caption__center"></div>
+    </div>
+    </div>
+    </div>
+</div>
+
+
+  
+  
+  
+
+
+
+
+
+
+  
+
+  <header class="header-section ">
+    
+    <div class="intro-header no-img">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+            <div class="post-heading">
+              
+                <h1>Soss.jl: Design Plans for Spring 2019</h1>
+              
+              
+              
+              
+                <span class="post-meta">
+  
+  
+  <i class="fas fa-calendar"></i>&nbsp;Posted on January 27, 2019
+  
+  
+    &nbsp;|&nbsp;<i class="fas fa-clock"></i>&nbsp;7&nbsp;minutes
+  
+  
+  
+    &nbsp;|&nbsp;<i class="fas fa-user"></i>&nbsp;Chad Scherrer
+  
+  
+</span>
+
+
+              
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+
+    
+<div class="container" role="main">
+  <div class="row">
+    <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+      <article role="main" class="blog-post">
+        <p>If you've followed my work recently, you've probably heard of my probabilistic programming system <a href="https://github.com/cscherrer/Soss.jl">Soss.jl</a>. I recently had the pleasure of presenting these ideas at PyData Miami:</p>
+
+<!-- <iframe src="//slides.com/cscherrer/2019-01-11-pydata/embed" width=576 height=420 scrolling="no" frameborder=0 webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe> -->
+
+<iframe src="//slides.com/cscherrer/2019-01-11-pydata/embed" width="576" height="420" scrolling="no"
+        frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
+
+<p>In April I'll begin another &quot;passion quarter&quot; (essentially a sabbatical) and hope to really push this work forward. I count myself lucky to have an employer so supportive of independent R&amp;D. Thank you, Metis!</p>
+
+<p>It's a bit unusual to document an approach before it's fully implemented. There are a few reasons for doing this:</p>
+
+<ul>
+<li>Making the ideas explicit is helpful for forcing myself to think through them</li>
+<li>It could be useful for anyone following this to see where things are going</li>
+<li>In case anyone is interesting in collaboration (pull requests welcome 🙂)</li>
+<li>In case there's an aspect of this I'm overlooking</li>
+</ul>
+
+<h1 id="the-initial-design">The Initial Design</h1>
+
+<p>Using a simple model <code>m</code> as a running example, a Soss model looks like this:</p>
+<div class="highlight"><pre class="chroma"><code class="language-julia" data-lang="julia"><span class="n">m</span> <span class="o">=</span> <span class="nd">@model</span> <span class="n">x</span> <span class="k">begin</span>
+    <span class="n">μ</span> <span class="o">~</span> <span class="n">Normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+    <span class="n">σ</span> <span class="o">~</span> <span class="n">HalfCauchy</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+    <span class="n">x</span> <span class="o">~</span> <span class="n">Normal</span><span class="p">(</span><span class="n">μ</span><span class="p">,</span> <span class="n">σ</span><span class="p">)</span> <span class="o">|&gt;</span> <span class="n">iid</span>
+<span class="k">end</span></code></pre></div>
+<!-- To begin with, we can think of this as an abstraction of a function. Let's step through line by line:
+1. `x` is an _argument_, similar to a function argument. Maintaining this analogy, the `begin...end` block gives the `body`, which tells us what to do with the argument.
+2. `μ ~ Normal(0, 5)` is our first time seeing `μ`, so this is interpreted as "draw `μ` from a `Normal(0,5)` distribution".
+3. Similarly, `σ ~ HalfCauchy(3)` is our first time seeing `σ`, so this also correseponds to a random sample.
+4. Finally,  we get to `x ~ Normal(μ, σ) |> iid`. This would seem to be drawing a sample of _independent and identically distributed_ values from `Normal(μ,σ)` and assigning this  to `x`. But this can't be the case, because we already know `x`! Instead, this is telling us something about the `x` we started with.  -->
+
+<p><code>@model</code> is a <a href="https://docs.julialang.org/en/v1/manual/metaprogramming/index.html#man-macros-1"><em>macro</em></a>. Evaluating code in any language leads to it being transformed through a sequence of <a href="https://en.wikipedia.org/wiki/Intermediate_representation"><em>intermediate representations</em></a>. The first step  in this process is nearly always to <a href="https://en.wikipedia.org/wiki/Parsing"><em>parse</em></a> the raw text code, resulting in an <a href="https://en.wikipedia.org/wiki/Abstract_syntax_tree"><em>abstract syntax tree</em> (&quot;<em>AST</em>&quot;)</a>.</p>
+
+<p>A macro is an &quot;AST transformer&quot;. It takes the AST resulting from parsing, and modifies it (or possibly replaces it with something completely different) before passing it down the line.</p>
+
+<p>In the initial implementation, the <code>@model</code> macro does very little. Simplifying a bit, a <code>Model</code> is represented as a Julia <code>struct</code>:</p>
+<div class="highlight"><pre class="chroma"><code class="language-julia" data-lang="julia"><span class="n">struct</span> <span class="n">Model</span>
+    <span class="n">args</span> <span class="o">::</span> <span class="kt">Vector</span><span class="p">{</span><span class="kt">Symbol</span><span class="p">}</span>
+    <span class="n">body</span> <span class="o">::</span> <span class="kt">Expr</span>
+<span class="k">end</span></code></pre></div>
+<p>To build this, the <code>@model</code> macro turns <code>x</code> into a <code>Vector</code> of <code>Symbols</code>:</p>
+<div class="highlight"><pre class="chroma"><code class="language-julia" data-lang="julia"><span class="n">julia</span><span class="o">&gt;</span> <span class="n">m</span><span class="o">.</span><span class="n">args</span> <span class="o">==</span> <span class="p">[</span><span class="o">:</span><span class="n">x</span><span class="p">]</span>
+<span class="kc">true</span></code></pre></div>
+<p>and essentially leaves the <code>body</code> expression alone:</p>
+<div class="highlight"><pre class="chroma"><code class="language-julia" data-lang="julia"><span class="n">julia</span><span class="o">&gt;</span> <span class="n">m</span><span class="o">.</span><span class="n">body</span>
+<span class="k">quote</span>
+    <span class="n">μ</span> <span class="o">~</span> <span class="n">Normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+    <span class="n">σ</span> <span class="o">~</span> <span class="n">HalfCauchy</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+    <span class="n">x</span> <span class="o">~</span> <span class="n">Normal</span><span class="p">(</span><span class="n">μ</span><span class="p">,</span> <span class="n">σ</span><span class="p">)</span> <span class="o">|&gt;</span> <span class="n">iid</span>
+<span class="k">end</span></code></pre></div>
+<p>Note, however, that this is not just text, but has already been parsed.  For example, we can show the Lisp-like <a href="https://en.wikipedia.org/wiki/S-expression"><em>s-expression</em></a> for the AST:</p>
+<div class="highlight"><pre class="chroma"><code class="language-julia" data-lang="julia"><span class="n">julia</span><span class="o">&gt;</span> <span class="n">m</span><span class="o">.</span><span class="n">body</span> <span class="o">|&gt;</span> <span class="n">Meta</span><span class="o">.</span><span class="n">show_sexpr</span>
+<span class="p">(</span><span class="o">:</span><span class="n">block</span><span class="p">,</span>
+  <span class="p">(</span><span class="o">:</span><span class="n">call</span><span class="p">,</span> <span class="o">:~</span><span class="p">,</span> <span class="o">:</span><span class="n">μ</span><span class="p">,</span> <span class="p">(</span><span class="o">:</span><span class="n">call</span><span class="p">,</span> <span class="o">:</span><span class="n">Normal</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">)),</span>
+  <span class="p">(</span><span class="o">:</span><span class="n">call</span><span class="p">,</span> <span class="o">:~</span><span class="p">,</span> <span class="o">:</span><span class="n">σ</span><span class="p">,</span> <span class="p">(</span><span class="o">:</span><span class="n">call</span><span class="p">,</span> <span class="o">:</span><span class="n">HalfCauchy</span><span class="p">,</span> <span class="mi">3</span><span class="p">)),</span>
+  <span class="p">(</span><span class="o">:</span><span class="n">call</span><span class="p">,</span> <span class="o">:~</span><span class="p">,</span> <span class="o">:</span><span class="n">x</span><span class="p">,</span> <span class="p">(</span><span class="o">:</span><span class="n">call</span><span class="p">,</span> <span class="o">:|&gt;</span><span class="p">,</span> <span class="p">(</span><span class="o">:</span><span class="n">call</span><span class="p">,</span> <span class="o">:</span><span class="n">Normal</span><span class="p">,</span> <span class="o">:</span><span class="n">μ</span><span class="p">,</span> <span class="o">:</span><span class="n">σ</span><span class="p">),</span> <span class="o">:</span><span class="n">iid</span><span class="p">))</span>
+<span class="p">)</span></code></pre></div>
+<h1 id="wheres-the-problem">Where's the Problem?</h1>
+
+<p>The initial design gives the ultimate in flexibility, but at a high cost. The bulk of a model is just an <code>Expr</code>ession, with no real structure. This makes it awkward to reason about, and leads to a lot of code redundancy. For example, if you look in the code, you'll see a lot of things like this:</p>
+<div class="highlight"><pre class="chroma"><code class="language-julia" data-lang="julia"><span class="n">newbody</span> <span class="o">=</span> <span class="n">postwalk</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">body</span><span class="p">)</span> <span class="k">do</span> <span class="n">x</span>
+    <span class="k">if</span> <span class="nd">@capture</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">v_</span> <span class="o">~</span> <span class="n">dist_</span><span class="p">)</span>
+        <span class="o">...</span>
+    <span class="k">else</span> <span class="n">x</span>
+    <span class="k">end</span>
+    <span class="o">...</span>
+<span class="k">end</span></code></pre></div>
+<p>This traverses the body and pattern-matches sub-expressions that look like distributional statements. A lot of this is imperative, mutating some other structure as we walk the AST. This kind of code is (at least for me) easy to get wrong in subtle ways.</p>
+
+<h1 id="tidying-up">Tidying Up</h1>
+
+<p>This implementation no longer sparks joy. What else can we do?</p>
+
+<p>Trying to pin this down was the goal of what turned into <a href="https://discourse.julialang.org/t/working-with-asts/19646">an extended discussion</a> on Julia's Discourse message board. After lots of back and forth and some time rethinking the approach, we have a path forward.</p>
+
+<h2 id="set-up-the-types">Set Up the Types</h2>
+
+<p>Julia uses <a href="https://en.wikipedia.org/wiki/Multiple_dispatch"><em>multiple dispatch</em></a>, but we're  not yet making much use  of it. By setting up some types in a sensible way, we can make the code cleaner and more extensible.</p>
+
+<p>For example, often the body of a <code>Model</code> consists of a sequence of <code>v ~ dist</code> statements. Let's call each of these a <code>ModelTilde</code>.</p>
+
+<p>But can we be sure we'll never need more than <code>ModelTilde</code>s? In some cases assignment in the usual sense can be useful, and the two should certainly be treated differently. So maybe we also have a <code>ModelAssignment</code> to represent things like <code>y = f(x)</code>.</p>
+
+<p>To keep things consistent, we can create a new abstract type, say <code>AbstractModelBlock</code>, and declare <code>ModelTilde</code> and <code>ModelAssignment</code> to be subtypes of it. This gives us a nice clean representation (the body of a <code>Model</code> is an array of <code>AbstractModelBlock</code> values) without sacrificing extensibility (a new subtype of <code>AbstractModelBlock</code> just requires defining some operations on the new type).</p>
+
+<p>Is this enough? Probably not. The most common use of <code>v ~ dist</code> is where <code>dist</code> is a <code>Distribution</code>. But it can certainly be more general than that. a value is generated according to a simulation process. Or  maybe a value has been generated earlier, and we'd like a flexible way of assigning a weight. We may even have a <code>Model</code> object, or we'd like to embed a model from <a href="https://github.com/TuringLang/Turing.jl">Turing.jl</a> and treat it as a distribution-like value.</p>
+
+<p>All of this points to the need for a <code>AbstractTildeRHS</code> (&quot;right hand side&quot;) abstract type. Possible subtypes include <code>Distribution</code>, <code>Model</code>, <code>TuringModel</code>, <code>Simulation</code>, and <code>Weight</code>.</p>
+
+<h2 id="focus-on-declarative-modeling">Focus on Declarative Modeling</h2>
+
+<p>Declarative systems are significantly easier to reason about, so we'll focus on this approach. That's not to say imperative components will be disallowed. Rather, we'll expect effects to be contained (for example in a <code>Simulation</code> or <code>TuringModel</code>).</p>
+
+<h2 id="have-model-do-more">Have <code>@model</code> do more</h2>
+
+<p>Suppose our model has a declaration like <code>x ~ Normal(μ, σ)</code>. There are quite a few useful things we can precompute:</p>
+
+<ul>
+<li>LHS variable <code>:x</code></li>
+<li>RHS variables <code>[:μ,:σ]</code>, making sure only to extract symbols that are either arguments or LHS of some <code>~</code> or <code>=</code> statement</li>
+<li>A compiled function <code>(μ, σ, shape) -&gt; rand(Normal(μ, σ), shape)</code></li>
+<li>A compiled function <code>(μ, σ, x) -&gt; logpdf(Normal(μ, σ), x)</code></li>
+<li>An algebraic expression for the log pdf in terms of <code>[:μ, :σ, :x]</code></li>
+</ul>
+
+<p>Note that &quot;compiled function&quot; is not quite accurate, given Julia's generic functions and JIT compilation. The point is that this is <em>an actual function</em>, as opposed  to an AST that evaluates to a function.</p>
+
+<p>Having &quot;compiled&quot; functions available gives a way of interpreting a model without the need to call <code>eval</code>. It's possible this may be enough, but I suspect we'll still need <code>eval</code> to be sure we can &quot;run&quot; the model without unnecessary interpretive overhead.</p>
+
+<h2 id="leverage-existing-julia-packages">Leverage Existing Julia Packages</h2>
+
+<p>For such a young language, Julia has an impressive collection of packages. We're  already making extensive use of a few of these:</p>
+
+<ul>
+<li><a href="https://github.com/JuliaStats/Distributions.jl">Distributions.jl</a> for sampling and logpdf evaluation for  a wide variety of distributions</li>
+<li><a href="https://github.com/MikeInnes/MacroTools.jl">MacroTools.jl</a> for AST manipulation</li>
+<li><a href="https://github.com/tpapp/LogDensityProblems.jl">LogDensityProblems.jl</a> and <a href="https://github.com/tpapp/DynamicHMC.jl">DynamicHMC.jl</a> for inference via Hamiltonian Monte Carlo</li>
+</ul>
+
+<p>There are certainly plenty more opportunities:</p>
+
+<ul>
+<li><a href="https://github.com/chakravala/Reduce.jl">Reduce.jl</a> connects with the classic REDUCE computer algebra system. I expect this will be a good fit for manipulating the algebraic form  of log-densities</li>
+<li><a href="https://github.com/thautwarm/MLStyle.jl">MLStyle.jl</a> seems to offer a fast and elegant approach for pattern matching in ASTs</li>
+<li><a href="https://github.com/BenLauwens/ResumableFunctions.jl">ResumableFunctions.jl</a> offers a simple way to express efficient iterators, at  a similar syntactic cost to <code>yield</code> generators in Python</li>
+<li><a href="https://github.com/FluxML/Zygote.jl">Zygote.jl</a> gives efficient source-to-source automatic differentiation</li>
+<li><a href="https://github.com/FluxML/Flux.jl">Flux.jl</a> gives a way to express deep neural networks at a similar level to Keras, but is implemented entirely in Julia. This avoids the conceptual and implementation overhead of using a library implemented in another language.</li>
+</ul>
+
+<p>There are also a number of other probabilistic programming implementation in Julia:</p>
+
+<ul>
+<li><a href="https://github.com/biaslab/ForneyLab.jl">ForneyLab.jl</a> generates message passing algorithms over factor graphs</li>
+<li><a href="https://github.com/TuringLang/Turing.jl">Turing.jl</a> takes a very general &quot;universal probabilistic programming&quot; approach. Turing's success with the imperative approach was one motivation for focusing on a different part of the design space.</li>
+</ul>
+
+<p>There are at least two possible relationships between Soss and other probabilistic programming languages (PPLs) like ForneyLab and Turing:</p>
+
+<ul>
+<li>The other PPL can serve as a backend</li>
+<li>A model in the other PPL can serve as a <code>TildeRHS</code> in Soss</li>
+</ul>
+
+<p>Of course, there are plenty of probabilistic programming systems outside of Julia. Because Julia connects so easily with C and Python, there's at least potential to explore similar connections with <a href="https://mc-stan.org/">Stan</a>, <a href="https://docs.pymc.io/">PyMC3</a>, and <a href="http://pyro.ai/">Pyro</a>.</p>
+
+<h1 id="final-thoughts">Final Thoughts</h1>
+
+<p>The &quot;road map&quot; is  still pretty high-level, but I feel like it's now  converging much more quickly. I'm excited to be getting things lined up to push them forward more quickly in the spring. If you have questions, thoughts, or suggestions, I hope you'll contact me on <a href="https://discourse.julialang.org/">Julia Discourse</a> or otherwise.</p>
+
+<p>I'd like to thank Chris Foster and Tamas Papp for their time and patience in a Julia Discourse discussion, as well as the Turing team for being supportive and open to collaboration. Most notably, Mohamed Tarek and Martin Trapp have been especially helpful.</p>
+
+
+        
+          <div class="blog-tags">
+            
+              <a href="https://cscherrer.github.io/tags/julia/">julia</a>&nbsp;
+            
+              <a href="https://cscherrer.github.io/tags/bayes/">bayes</a>&nbsp;
+            
+              <a href="https://cscherrer.github.io/tags/soss/">Soss</a>&nbsp;
+            
+          </div>
+        
+
+        
+
+        
+      </article>
+
+      
+        <ul class="pager blog-pager">
+          
+            <li class="previous">
+              <a href="https://cscherrer.github.io/post/soss/" data-toggle="tooltip" data-placement="top" title="Julia for Probabilistic Metaprogramming">&larr; Previous Post</a>
+            </li>
+          
+          
+        </ul>
+      
+
+
+      
+        
+        
+      
+
+    </div>
+  </div>
+</div>
+
+    <footer>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        <ul class="list-inline text-center footer-links">
+          
+              <li>
+                <a href="mailto:chad.scherrer@gmail.com" title="Email me">
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fas fa-envelope fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+                <a href="https://plus.google.com/&#43;chad.scherrer" title="Google&#43;">
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-google-plus fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+                <a href="https://github.com/cscherrer" title="GitHub">
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-github fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+                <a href="https://twitter.com/@ChadScherrer" title="Twitter">
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-twitter fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+                <a href="https://reddit.com/u/cscherrer" title="Reddit">
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-reddit-alien fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+                <a href="https://linkedin.com/in/chadscherrer" title="LinkedIn">
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-linkedin fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+                <a href="https://stackoverflow.com/users/488124/chad-scherrer" title="StackOverflow">
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-stack-overflow fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+          
+          <li>
+            
+            <a href="https://cscherrer.github.io/index.xml" title="RSS">
+            
+              <span class="fa-stack fa-lg">
+                <i class="fas fa-circle fa-stack-2x"></i>
+                <i class="fas fa-rss fa-stack-1x fa-inverse"></i>
+              </span>
+            </a>
+          </li>
+          
+        </ul>
+        <p class="credits copyright text-muted">
+          
+            
+              <a href="cscherrer.github.io">Chad Scherrer</a>
+            
+          
+
+          &nbsp;&bull;&nbsp;&copy;
+          
+            2019
+          
+
+          
+            &nbsp;&bull;&nbsp;
+            <a href="https://cscherrer.github.io">Chad Scherrer</a>
+          
+        </p>
+        
+        <p class="credits theme-by text-muted">
+          <a href="http://gohugo.io">Hugo v0.53</a> powered &nbsp;&bull;&nbsp; Theme by <a href="http://deanattali.com/beautiful-jekyll/">Beautiful Jekyll</a> adapted to <a href="https://github.com/halogenica/beautifulhugo">Beautiful Hugo</a>
+          
+        </p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.js" integrity="sha384-K3vbOmF2BtaVai+Qk37uypf7VrgBubhQreNQe9aGsz9lB63dIFiQVlJbr92dw2Lx" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/contrib/auto-render.min.js" integrity="sha384-kmZOZB5ObwgQnS/DuDg6TScgOiWWBiVt0plIRkZCmE6rDZGrEOQeHM5PcHi+nyqe" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ=" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<script src="https://cscherrer.github.io/js/main.js"></script><script> renderMathInElement(document.body); </script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe.min.js" integrity="sha384-QELNnmcmU8IR9ZAykt67vGr9/rZJdHbiWi64V88fCPaOohUlHCqUD/unNN0BXSqy" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe-ui-default.min.js" integrity="sha384-m67o7SkQ1ALzKZIFh4CiTA8tmadaujiTa9Vu+nqPSwDOqHrDmxLezTdFln8077+q" crossorigin="anonymous"></script>
+<script src="https://cscherrer.github.io/js/load-photoswipe.js"></script>
+
+
+
+
+
+
+
+
+  </body>
+</html>
+
