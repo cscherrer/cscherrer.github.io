@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Categories on Chad Scherrer</title>
+    <title>Chad Scherrer</title>
     <link>https://cscherrer.github.io/categories/</link>
-    <description>Recent content in Categories on Chad Scherrer</description>
+    <description>Recent content on Chad Scherrer</description>
     <generator>Hugo -- gohugo.io</generator>
     <managingEditor>chad.scherrer@gmail.com (Chad Scherrer)</managingEditor>
     <webMaster>chad.scherrer@gmail.com (Chad Scherrer)</webMaster>
@@ -13,12 +13,14 @@
     
     
     <item>
-      <title></title>
-      <link>https://cscherrer.github.io/categories/</link>
+      <title>Bayesian Changepoint Detection with PyMC3</title>
+      <link>https://cscherrer.github.io/post/bayesian-changepoint/</link>
       <pubDate>Sun, 25 Feb 2018 00:00:00 -0800</pubDate>
       <author>chad.scherrer@gmail.com (Chad Scherrer)</author>
-      <guid>https://cscherrer.github.io/categories/</guid>
-      <description></description>
+      <guid>https://cscherrer.github.io/post/bayesian-changepoint/</guid>
+      <description>A client comes to you with this problem:
+ The coal company I work for is trying to make mining safer. We made some change around 1900 that seemed to improve things, but the records are all archived. Tracking down such old records can be expensive, and it would help a lot if we could narrow the search. Can you tell us what year we should focus on?
+Also, it would really help to know this is a real effect, and not just due to random variability - we don&#39;t want to waste resources digging up the records if there&#39;s not really anything there.</description>
     </item>
     
   </channel>

@@ -19,8 +19,8 @@
       <author>chad.scherrer@gmail.com (Chad Scherrer)</author>
       <guid>https://cscherrer.github.io/post/soss-update/</guid>
       <description>If you&#39;ve followed my work recently, you&#39;ve probably heard of my probabilistic programming system Soss.jl. I recently had the pleasure of presenting these ideas at PyData Miami:
- --  In April I&#39;ll begin another &amp;quot;passion quarter&amp;quot; (essentially a sabbatical) and hope to really push this work forward. I count myself lucky to have an employer so supportive of independent R&amp;amp;D. Thank you, Metis!
-It&#39;s a bit unusual to document an approach before it&#39;s fully implemented.</description>
+ [N.B. Above is supposed to be an embedded copy of my slides from PyData Miami. I can see it from Chrome, but not Firefox. Very weird. ]
+In April I&#39;ll begin another &amp;quot;passion quarter&amp;quot; (essentially a sabbatical) and hope to really push this work forward.</description>
     </item>
     
     <item>
