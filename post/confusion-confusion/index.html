@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="en" itemscope itemtype="http://schema.org/WebPage">
+  <head>
+    
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+
+  <title>Confusion Confusion - Chad Scherrer</title>
+  <meta property="og:title" content="Confusion Confusion" />
+  <meta name="twitter:title" content="Confusion Confusion" />
+  <meta name="description" content="Harder Than it Needs to Be Say you&#39;ve just fit a (two-class) machine learning classifier, and you&#39;d like to judge how it&#39;s doing. This starts out simple: Reality is yes or no, and you predict yes or no. Your model will make some mistakes, which you&#39;d like to characterize.
+So you go to Wikipedia, and see this: 
+There&#39;s a lot of &quot;divide this sum by that sum&quot;, without much connection to why we&#39;re doing that, or how to interpret the result.">
+  <meta property="og:description" content="Harder Than it Needs to Be Say you&#39;ve just fit a (two-class) machine learning classifier, and you&#39;d like to judge how it&#39;s doing. This starts out simple: Reality is yes or no, and you predict yes or no. Your model will make some mistakes, which you&#39;d like to characterize.
+So you go to Wikipedia, and see this: 
+There&#39;s a lot of &quot;divide this sum by that sum&quot;, without much connection to why we&#39;re doing that, or how to interpret the result.">
+  <meta name="twitter:description" content="Harder Than it Needs to Be Say you&#39;ve just fit a (two-class) machine learning classifier, and you&#39;d like to judge how it&#39;s doing. This starts out simple: Reality is yes or no, and you predict yes or …">
+  <meta name="author" content="Chad Scherrer"/><script type="application/ld+json">
+{
+    "@context": "http://schema.org",
+    "@type": "WebSite",
+    "name": "Chad Scherrer",
+    
+    "url": "https://cscherrer.github.io"
+}
+</script><script type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "@type": "Organization",
+  "name": "",
+  "url": "https://cscherrer.github.io"
+  
+  
+  
+  
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [{
+        "@type": "ListItem",
+        "position": 1,
+        "item": {
+          "@id": "https://cscherrer.github.io",
+          "name": "home"
+        }
+    },{
+        "@type": "ListItem",
+        "position": 3,
+        "item": {
+          "@id": "https://cscherrer.github.io/post/confusion-confusion/",
+          "name": "Confusion confusion"
+        }
+    }]
+}
+</script><script type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "@type": "Article",
+  "author": {
+    "name" : "Chad Scherrer"
+  },
+  "headline": "Confusion Confusion",
+  "description" : "Harder Than it Needs to Be Say you&#39;ve just fit a (two-class) machine learning classifier, and you&#39;d like to judge how it&#39;s doing. This starts out simple: Reality is yes or no, and you predict yes or no. Your model will make some mistakes, which you&#39;d like to characterize.
+So you go to Wikipedia, and see this: 
+There&#39;s a lot of &amp;quot;divide this sum by that sum&amp;quot;, without much connection to why we&#39;re doing that, or how to interpret the result.",
+  "inLanguage" : "en",
+  "wordCount": 792,
+  "datePublished" : "2019-02-23T11:01:39",
+  "dateModified" : "2019-02-23T11:01:39",
+  "image" : "https://cscherrer.github.io",
+  "keywords" : [ "" ],
+  "mainEntityOfPage" : "https://cscherrer.github.io/post/confusion-confusion/",
+  "publisher" : {
+    "@type": "Organization",
+    "name" : "https://cscherrer.github.io",
+    "logo" : {
+        "@type" : "ImageObject",
+        "url" : "https://cscherrer.github.io",
+        "height" :  60 ,
+        "width" :  60
+    }
+  }
+}
+</script>
+
+<meta property="og:title" content="Confusion Confusion" />
+<meta property="og:description" content="Harder Than it Needs to Be Say you&#39;ve just fit a (two-class) machine learning classifier, and you&#39;d like to judge how it&#39;s doing. This starts out simple: Reality is yes or no, and you predict yes or no. Your model will make some mistakes, which you&#39;d like to characterize.
+So you go to Wikipedia, and see this: 
+There&#39;s a lot of &quot;divide this sum by that sum&quot;, without much connection to why we&#39;re doing that, or how to interpret the result.">
+<meta property="og:url" content="https://cscherrer.github.io/post/confusion-confusion/" />
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="Chad Scherrer" />
+  <meta name="twitter:title" content="Confusion Confusion" />
+  <meta name="twitter:description" content="Harder Than it Needs to Be Say you&#39;ve just fit a (two-class) machine learning classifier, and you&#39;d like to judge how it&#39;s doing. This starts out simple: Reality is yes or no, and you predict yes or …">
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:site" content="@@ChadScherrer" />
+  <meta name="twitter:creator" content="@@ChadScherrer" />
+  <link href='https://cscherrer.github.io/img/favicon.ico' rel='icon' type='image/x-icon'/>
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:site" content="@@ChadScherrer" />
+  <meta name="twitter:creator" content="@@ChadScherrer" />
+  <meta property="og:url" content="https://cscherrer.github.io/post/confusion-confusion/" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Chad Scherrer" />
+
+  <meta name="generator" content="Hugo 0.53" />
+  <link rel="alternate" href="https://cscherrer.github.io/index.xml" type="application/rss+xml" title="Chad Scherrer">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css" integrity="sha384-9eLZqc9ds8eNjO3TmqPeYcDj8n+Qfa4nuSiGYa6DjLNcv9BtN69ZIulL9+8CqC9Y" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cscherrer.github.io/css/main.css" /><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" /><link rel="stylesheet" href="https://cscherrer.github.io/css/syntax.css" /><link rel="stylesheet" href="https://cscherrer.github.io/css/codeblock.css" /><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe.min.css" integrity="sha384-h/L2W9KefUClHWaty3SLE5F/qvc4djlyR4qY3NUV5HGQBBW7stbcfff1+I/vmsHh" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/default-skin/default-skin.min.css" integrity="sha384-iD0dNku6PYSIQLyfTOpB06F2KCZJAKLOThS5HRe8b3ibhdEQ6eKsFf/EeFxdOt5R" crossorigin="anonymous">
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-114923902-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-114923902-1');
+</script>
+
+
+
+
+
+  </head>
+  <body>
+    <nav class="navbar navbar-default navbar-fixed-top navbar-custom">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#main-navbar">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="https://cscherrer.github.io">Chad Scherrer</a>
+    </div>
+
+    <div class="collapse navbar-collapse" id="main-navbar">
+      <ul class="nav navbar-nav navbar-right">
+        
+          
+            <li>
+              <a title="Blog" href="/">Blog</a>
+            </li>
+          
+        
+          
+            <li>
+              <a title="Tags" href="/tags">Tags</a>
+            </li>
+          
+        
+
+        
+
+        
+      </ul>
+    </div>
+
+    
+
+  </div>
+</nav>
+
+
+
+
+    
+
+
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+<div class="pswp__bg"></div>
+
+<div class="pswp__scroll-wrap">
+    
+    <div class="pswp__container">
+      <div class="pswp__item"></div>
+      <div class="pswp__item"></div>
+      <div class="pswp__item"></div>
+    </div>
+    
+    <div class="pswp__ui pswp__ui--hidden">
+    <div class="pswp__top-bar">
+      
+      <div class="pswp__counter"></div>
+      <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+      <button class="pswp__button pswp__button--share" title="Share"></button>
+      <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+      <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+      
+      
+      <div class="pswp__preloader">
+        <div class="pswp__preloader__icn">
+          <div class="pswp__preloader__cut">
+            <div class="pswp__preloader__donut"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+      <div class="pswp__share-tooltip"></div>
+    </div>
+    <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+    </button>
+    <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+    </button>
+    <div class="pswp__caption">
+      <div class="pswp__caption__center"></div>
+    </div>
+    </div>
+    </div>
+</div>
+
+
+  
+  
+  
+
+
+
+
+
+
+  
+
+  <header class="header-section ">
+    
+    <div class="intro-header no-img">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+            <div class="post-heading">
+              
+                <h1>Confusion Confusion</h1>
+              
+              
+              
+              
+                <span class="post-meta">
+  
+  
+  <i class="fas fa-calendar"></i>&nbsp;Posted on February 23, 2019
+  
+  
+    &nbsp;|&nbsp;<i class="fas fa-clock"></i>&nbsp;4&nbsp;minutes
+  
+  
+  
+    &nbsp;|&nbsp;<i class="fas fa-user"></i>&nbsp;Chad Scherrer
+  
+  
+</span>
+
+
+              
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+
+    
+<div class="container" role="main">
+  <div class="row">
+    <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+      <article role="main" class="blog-post">
+        <h2 id="harder-than-it-needs-to-be">Harder Than it Needs to Be</h2>
+
+<p>Say you've just fit a (two-class) machine learning classifier, and you'd like to judge how it's doing. This starts out simple: Reality is yes or no, and you predict yes or no. Your model will make some mistakes, which you'd like to characterize.</p>
+
+<p>So you go to Wikipedia, and see <a href="https://en.wikipedia.org/wiki/Confusion_matrix">this</a>:
+<figure><img src="wikipedia-confusion.png" alt="Wikipedia confusion matrix"></figure></p>
+
+<p>There's a lot of &quot;divide this sum by that sum&quot;, without much connection to why we're doing that, or how to interpret the result. Sure, we could click on a given link and read about it, but it all seems a bit more complex than it needs to be.</p>
+
+<p>As it turns out, most of the values we're interested in can be expressed concisely and intuitively in terms of conditional probability.</p>
+
+<p>Let's start with <em>false positive rate</em>. The term itself is has lots of potential for confusion:</p>
+
+<ul>
+<li>We have to remember that &quot;positive&quot; refers not to ground truth, but to our prediction.</li>
+<li>&quot;False&quot; doesn't mean we predicted false. Instead, it means <em>our prediction is wrong</em>.</li>
+<li>&quot;Rate&quot; means we're interested not in the number of false positives, but in their frequency. The natural question, &quot;relative to what?&quot; is not included in the terminology.</li>
+</ul>
+
+<p>The formula for FPR is</p>
+
+<p><span  class="math">\[
+\text{FPR} = \frac{\sum \text{False positive}}{\sum \text{Condition negative}}\ .
+\]</span></p>
+
+<h2 id="better-notation">Better notation</h2>
+
+<p>Let's write <span  class="math">\(y\)</span> for the observed data, and <span  class="math">\(\hat{y}\)</span> for our prediction. And we'll use <a href="https://en.wikipedia.org/wiki/Negation">logical negation</a> notation to indicate &quot;false&quot;.</p>
+
+<p>Unraveling the original definition into this, we get simply</p>
+
+<p><span  class="math">\[
+\text{FPR} = P(\hat{y}|\lnot y)
+\]</span></p>
+
+<p>That is, &quot;The probability we predict true, given that the data indicate false&quot;.</p>
+
+<p>Compared to the usual formula, this leads more quickly to ways to calculate the value, &quot;filter for <span  class="math">\(y\)</span> false, then take the mean of <span  class="math">\(\hat{y}\)</span>&quot;. And it makes clear that FPR is conditional on the data, so it's unaffected by changes in the relative class frequencies in the data.</p>
+
+<h2 id="clearer-computations">Clearer Computations</h2>
+
+<p>This may seem like a minor convenience, but my student
+<a href="https://www.linkedin.com/in/mailei-vargas/">Mailei Vargas</a> noticed that the traditional formulation makes it especially difficult to reason about models fit on a balanced sample of a large imbalanced data set.</p>
+
+<p>Suppose you start with a large dataset where <span  class="math">\(P(y) = 0.001\)</span>, and build a model on a small sample of this <span  class="math">\(y_\text{sample}\)</span>, where <span  class="math">\(P(y_\text{sample})=0.5\)</span>. Note that the sampling strategy is heavily biased toward the positive class.</p>
+
+<p>The <a href="https://en.wikipedia.org/wiki/F1_score"><span  class="math">\(F_1\)</span> score</a> is the harmonic mean of precision and recall. How would you compute it?</p>
+
+<p>Conditional probabilities make this significantly easier to think through.</p>
+
+<p>Recall is <span  class="math">\(P(\hat{y}|y)\)</span>. Because this is conditional on the observed value, it will be unaffected  by the bias of the sampling. Put another way, it's reasonable to assume that <span  class="math">\(P(\hat{y}|y) = P(\hat{y}|y_\text{sample})\)</span></p>
+
+<p>Precision is <span  class="math">\(P(y|\hat{y})\)</span>. Because we fit the model in terms of <span  class="math">\(y_\text{sample}\)</span> instead of <span  class="math">\(y\)</span>, we can't get to this directly. But it's a conditional probability, so Bayes' Law can help:</p>
+
+<p><span  class="math">\[
+P(y|\hat{y}) = 
+\frac
+{P(\hat{y}|y) P(y)}
+{P(\hat{y}|y) P(y) + P(\hat{y}|\lnot y) P(\lnot y)}\ .
+\]</span></p>
+
+<p>We already have three terms from this:</p>
+
+<ul>
+<li><span  class="math">\(P(\hat{y}|y)\)</span> is the recall</li>
+<li><span  class="math">\(P(y)\)</span> is the proportion of the positive class in the original data, or 0.001.</li>
+<li><span  class="math">\(P(\lnot y)\)</span> is <span  class="math">\(1-P(y)\)</span>, or 0.999.</li>
+</ul>
+
+<p>The only thing remaining is to calculate the <a href="https://en.wikipedia.org/wiki/False_discovery_rate"><em>false discovery rate</em></a>
+<span  class="math">\(P(\hat{y}|\lnot y)\)</span>. This is again conditional on the data, so we can assume <span  class="math">\(P(\hat{y}|\lnot y) = P(\hat{y}|\lnot y_\text{sample})\)</span> and calculate this on our sample.</p>
+
+<p>Once we have this, we can calculate the precision <span  class="math">\(P(y|\hat{y})\)</span> and find the harmonic mean of that with the recall we computed previously. There's still a bit of arithmetic, but I hope you'll agree that the path is much more clear.</p>
+
+<p>As an aside, note that ROC curves only depend on <span  class="math">\(\text{FPR} = P(\hat{y}|\lnot y)\)</span> and <span  class="math">\(\text{TPR} = P(\hat{y}| y)\)</span>. Both of these are conditional on the true <span  class="math">\(y\)</span> values, so ROC, AUC, etc are unaffected by biased sampling (as long as the only bias is relative to <span  class="math">\(y\)</span>).</p>
+
+<h2 id="a-rosetta-stone">A Rosetta Stone</h2>
+
+<p>The Wikipedia <a href="https://en.wikipedia.org/wiki/Confusion_matrix">article on confusion matrices</a> expresses everything in terms of TP,TN,FP, and FN, where the first letter T or F indicates whether the prediction is correct, and the second letter P or N indicates whether the prediction was positive or negative. Here's a translation into conditional probabilities:</p>
+
+<p><span  class="math">\[
+\begin{aligned}
+\text{TPR} &= \frac{\text{TP}}{\text{TP} + \text{FN}} &&= P(\hat{y}|y) \\  \\ 
+\text{TNR} &= \frac{\text{TN}}{\text{TN} + \text{FP}} &&= P(\lnot \hat{y}|\lnot y) \\ \\ 
+\text{PPV} &= \frac{\text{TP}}{\text{TP} + \text{FP}} &&= P(y|\hat{y}) \\ \\ 
+\text{NPV} &= \frac{\text{TN}}{\text{TN} + \text{FN}} &&= P(\lnot y|\lnot \hat{y}) \\ \\ 
+\text{FNR} &= \frac{\text{FN}}{\text{FN} + \text{TP}} &&= P(\lnot \hat{y}|y) \\ \\ 
+\text{FPR} &= \frac{\text{FP}}{\text{FP} + \text{TN}} &&= P(\hat{y}|\lnot y) \\ \\ 
+\text{FDR} &= \frac{\text{FP}}{\text{FP} + \text{TP}} &&= P(\lnot y|\hat{y}) \\ \\ 
+\text{FOR} &= \frac{\text{FN}}{\text{FN} + \text{TN}} &&= P(y|\lnot \hat{y}) \\ \\ 
+\text{ACC} &= \frac{\text{TP} + \text{TN}}{\text{P} + \text{N}} &&= P(\hat{y} = y) 
+\end{aligned}
+\]</span></p>
+
+
+        
+
+        
+
+        
+      </article>
+
+      
+        <ul class="pager blog-pager">
+          
+            <li class="previous">
+              <a href="https://cscherrer.github.io/post/soss-update/" data-toggle="tooltip" data-placement="top" title="Soss.jl: Design Plans for Spring 2019">&larr; Previous Post</a>
+            </li>
+          
+          
+        </ul>
+      
+
+
+      
+        
+        
+      
+
+    </div>
+  </div>
+</div>
+
+    <footer>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        <ul class="list-inline text-center footer-links">
+          
+              <li>
+                <a href="mailto:chad.scherrer@gmail.com" title="Email me">
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fas fa-envelope fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+                <a href="https://plus.google.com/&#43;chad.scherrer" title="Google&#43;">
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-google-plus fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+                <a href="https://github.com/cscherrer" title="GitHub">
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-github fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+                <a href="https://twitter.com/@ChadScherrer" title="Twitter">
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-twitter fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+                <a href="https://reddit.com/u/cscherrer" title="Reddit">
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-reddit-alien fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+                <a href="https://linkedin.com/in/chadscherrer" title="LinkedIn">
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-linkedin fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+                <a href="https://stackoverflow.com/users/488124/chad-scherrer" title="StackOverflow">
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-stack-overflow fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+          
+          <li>
+            
+            <a href="https://cscherrer.github.io/index.xml" title="RSS">
+            
+              <span class="fa-stack fa-lg">
+                <i class="fas fa-circle fa-stack-2x"></i>
+                <i class="fas fa-rss fa-stack-1x fa-inverse"></i>
+              </span>
+            </a>
+          </li>
+          
+        </ul>
+        <p class="credits copyright text-muted">
+          
+            
+              <a href="cscherrer.github.io">Chad Scherrer</a>
+            
+          
+
+          &nbsp;&bull;&nbsp;&copy;
+          
+            2019
+          
+
+          
+            &nbsp;&bull;&nbsp;
+            <a href="https://cscherrer.github.io">Chad Scherrer</a>
+          
+        </p>
+        
+        <p class="credits theme-by text-muted">
+          <a href="http://gohugo.io">Hugo v0.53</a> powered &nbsp;&bull;&nbsp; Theme by <a href="http://deanattali.com/beautiful-jekyll/">Beautiful Jekyll</a> adapted to <a href="https://github.com/halogenica/beautifulhugo">Beautiful Hugo</a>
+          
+        </p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.js" integrity="sha384-K3vbOmF2BtaVai+Qk37uypf7VrgBubhQreNQe9aGsz9lB63dIFiQVlJbr92dw2Lx" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/contrib/auto-render.min.js" integrity="sha384-kmZOZB5ObwgQnS/DuDg6TScgOiWWBiVt0plIRkZCmE6rDZGrEOQeHM5PcHi+nyqe" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ=" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<script src="https://cscherrer.github.io/js/main.js"></script><script> renderMathInElement(document.body); </script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe.min.js" integrity="sha384-QELNnmcmU8IR9ZAykt67vGr9/rZJdHbiWi64V88fCPaOohUlHCqUD/unNN0BXSqy" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe-ui-default.min.js" integrity="sha384-m67o7SkQ1ALzKZIFh4CiTA8tmadaujiTa9Vu+nqPSwDOqHrDmxLezTdFln8077+q" crossorigin="anonymous"></script>
+<script src="https://cscherrer.github.io/js/load-photoswipe.js"></script>
+
+
+
+
+
+
+
+
+  </body>
+</html>
+

@@ -7,10 +7,21 @@
     <generator>Hugo -- gohugo.io</generator>
     <managingEditor>chad.scherrer@gmail.com (Chad Scherrer)</managingEditor>
     <webMaster>chad.scherrer@gmail.com (Chad Scherrer)</webMaster>
-    <lastBuildDate>Sun, 27 Jan 2019 07:35:51 -0800</lastBuildDate>
+    <lastBuildDate>Sat, 23 Feb 2019 11:01:39 -0800</lastBuildDate>
     
 	<atom:link href="https://cscherrer.github.io/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Confusion Confusion</title>
+      <link>https://cscherrer.github.io/post/confusion-confusion/</link>
+      <pubDate>Sat, 23 Feb 2019 11:01:39 -0800</pubDate>
+      <author>chad.scherrer@gmail.com (Chad Scherrer)</author>
+      <guid>https://cscherrer.github.io/post/confusion-confusion/</guid>
+      <description>Harder Than it Needs to Be Say you&#39;ve just fit a (two-class) machine learning classifier, and you&#39;d like to judge how it&#39;s doing. This starts out simple: Reality is yes or no, and you predict yes or no. Your model will make some mistakes, which you&#39;d like to characterize.
+So you go to Wikipedia, and see this: 
+There&#39;s a lot of &amp;quot;divide this sum by that sum&amp;quot;, without much connection to why we&#39;re doing that, or how to interpret the result.</description>
+    </item>
     
     <item>
       <title>Soss.jl: Design Plans for Spring 2019</title>
