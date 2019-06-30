@@ -7,20 +7,19 @@
     <generator>Hugo -- gohugo.io</generator>
     <managingEditor>chad.scherrer@gmail.com (Chad Scherrer)</managingEditor>
     <webMaster>chad.scherrer@gmail.com (Chad Scherrer)</webMaster>
-    <lastBuildDate>Sun, 27 Jan 2019 07:35:51 -0800</lastBuildDate>
+    <lastBuildDate>Sat, 29 Jun 2019 18:53:45 -0700</lastBuildDate>
     
 	<atom:link href="https://cscherrer.github.io/tags/soss/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
-      <title>Soss.jl: Design Plans for Spring 2019</title>
-      <link>https://cscherrer.github.io/post/soss-update/</link>
-      <pubDate>Sun, 27 Jan 2019 07:35:51 -0800</pubDate>
+      <title>Variational Importance Sampling</title>
+      <link>https://cscherrer.github.io/post/variational-importance-sampling/</link>
+      <pubDate>Sat, 29 Jun 2019 18:53:45 -0700</pubDate>
       <author>chad.scherrer@gmail.com (Chad Scherrer)</author>
-      <guid>https://cscherrer.github.io/post/soss-update/</guid>
-      <description>If you&#39;ve followed my work recently, you&#39;ve probably heard of my probabilistic programming system Soss.jl. I recently had the pleasure of presenting these ideas at PyData Miami:
- [N.B. Above is supposed to be an embedded copy of my slides from PyData Miami. I can see it from Chrome, but not Firefox. Very weird. ]
-In April I&#39;ll begin another &amp;quot;passion quarter&amp;quot; (essentially a sabbatical) and hope to really push this work forward.</description>
+      <guid>https://cscherrer.github.io/post/variational-importance-sampling/</guid>
+      <description>Lots of distributions are easy to evaluate (the density), but hard to sample. So when we need to sample such a distribution, we need to use some tricks. We&#39;ll see connections between two of these: importance sampling and variational inference, and see a way to use them together for fast inference.
+Importance sampling Importance sampling aims to make it easy to compute expected values. Say we have a distribution \(p\), and we&#39;d like to compute the average of some function \(f\) of the distribution (or equivalently, the expected value of a &amp;quot;push-forward along \(f\)&amp;quot;).</description>
     </item>
     
   </channel>

@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="en" itemscope itemtype="http://schema.org/WebPage">
+  <head>
+    
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+
+  <title>Variational Importance Sampling - Chad Scherrer</title>
+  <meta property="og:title" content="Variational Importance Sampling" />
+  <meta name="twitter:title" content="Variational Importance Sampling" />
+  <meta name="description" content="Lots of distributions are easy to evaluate (the density), but hard to sample. So when we need to sample such a distribution, we need to use some tricks. We&#39;ll see connections between two of these: importance sampling and variational inference, and see a way to use them together for fast inference.
+Importance sampling Importance sampling aims to make it easy to compute expected values. Say we have a distribution \(p\), and we&#39;d like to compute the average of some function \(f\) of the distribution (or equivalently, the expected value of a &quot;push-forward along \(f\)&quot;).">
+  <meta property="og:description" content="Lots of distributions are easy to evaluate (the density), but hard to sample. So when we need to sample such a distribution, we need to use some tricks. We&#39;ll see connections between two of these: importance sampling and variational inference, and see a way to use them together for fast inference.
+Importance sampling Importance sampling aims to make it easy to compute expected values. Say we have a distribution \(p\), and we&#39;d like to compute the average of some function \(f\) of the distribution (or equivalently, the expected value of a &quot;push-forward along \(f\)&quot;).">
+  <meta name="twitter:description" content="Lots of distributions are easy to evaluate (the density), but hard to sample. So when we need to sample such a distribution, we need to use some tricks. We&#39;ll see connections between two of these: …">
+  <meta name="author" content="Chad Scherrer"/><script type="application/ld+json">
+{
+    "@context": "http://schema.org",
+    "@type": "WebSite",
+    "name": "Chad Scherrer",
+    
+    "url": "https:\/\/cscherrer.github.io"
+}
+</script><script type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "@type": "Organization",
+  "name": "",
+  "url": "https:\/\/cscherrer.github.io"
+  
+  
+  
+  
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [{
+        "@type": "ListItem",
+        "position": 1,
+        "item": {
+          "@id": "https:\/\/cscherrer.github.io",
+          "name": "home"
+        }
+    },{
+        "@type": "ListItem",
+        "position": 3,
+        "item": {
+          "@id": "https:\/\/cscherrer.github.io\/post\/variational-importance-sampling\/",
+          "name": "Variational importance sampling"
+        }
+    }]
+}
+</script><script type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "@type": "Article",
+  "author": {
+    "name" : "Chad Scherrer"
+  },
+  "headline": "Variational Importance Sampling",
+  "description" : "Lots of distributions are easy to evaluate (the density), but hard to sample. So when we need to sample such a distribution, we need to use some tricks. We\x27ll see connections between two of these: importance sampling and variational inference, and see a way to use them together for fast inference.\nImportance sampling Importance sampling aims to make it easy to compute expected values. Say we have a distribution \\(p\\), and we\x27d like to compute the average of some function \\(f\\) of the distribution (or equivalently, the expected value of a \x26quot;push-forward along \\(f\\)\x26quot;).",
+  "inLanguage" : "en",
+  "wordCount":  1986 ,
+  "datePublished" : "2019-06-29T18:53:45",
+  "dateModified" : "2019-06-29T18:53:45",
+  "image" : "https:\/\/cscherrer.github.io",
+  "keywords" : [ "bayes, Soss, julia" ],
+  "mainEntityOfPage" : "https:\/\/cscherrer.github.io\/post\/variational-importance-sampling\/",
+  "publisher" : {
+    "@type": "Organization",
+    "name" : "https:\/\/cscherrer.github.io",
+    "logo" : {
+        "@type" : "ImageObject",
+        "url" : "https:\/\/cscherrer.github.io",
+        "height" :  60 ,
+        "width" :  60
+    }
+  }
+}
+</script>
+
+<meta property="og:title" content="Variational Importance Sampling" />
+<meta property="og:description" content="Lots of distributions are easy to evaluate (the density), but hard to sample. So when we need to sample such a distribution, we need to use some tricks. We&#39;ll see connections between two of these: importance sampling and variational inference, and see a way to use them together for fast inference.
+Importance sampling Importance sampling aims to make it easy to compute expected values. Say we have a distribution \(p\), and we&#39;d like to compute the average of some function \(f\) of the distribution (or equivalently, the expected value of a &quot;push-forward along \(f\)&quot;).">
+<meta property="og:url" content="https://cscherrer.github.io/post/variational-importance-sampling/" />
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="Chad Scherrer" />
+
+  <meta name="twitter:title" content="Variational Importance Sampling" />
+  <meta name="twitter:description" content="Lots of distributions are easy to evaluate (the density), but hard to sample. So when we need to sample such a distribution, we need to use some tricks. We&#39;ll see connections between two of these: …">
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:site" content="@@ChadScherrer" />
+  <meta name="twitter:creator" content="@@ChadScherrer" />
+  <link href='https://cscherrer.github.io/img/favicon.ico' rel='icon' type='image/x-icon'/>
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:site" content="@@ChadScherrer" />
+  <meta name="twitter:creator" content="@@ChadScherrer" />
+  <meta property="og:url" content="https://cscherrer.github.io/post/variational-importance-sampling/" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Chad Scherrer" />
+
+  <meta name="generator" content="Hugo 0.55.6" />
+  <link rel="alternate" href="https://cscherrer.github.io/index.xml" type="application/rss+xml" title="Chad Scherrer"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css" integrity="sha384-9eLZqc9ds8eNjO3TmqPeYcDj8n+Qfa4nuSiGYa6DjLNcv9BtN69ZIulL9+8CqC9Y" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous"><link rel="stylesheet" href="https://cscherrer.github.io/css/main.css" /><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" /><link rel="stylesheet" href="https://cscherrer.github.io/css/syntax.css" /><link rel="stylesheet" href="https://cscherrer.github.io/css/codeblock.css" /><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe.min.css" integrity="sha384-h/L2W9KefUClHWaty3SLE5F/qvc4djlyR4qY3NUV5HGQBBW7stbcfff1+I/vmsHh" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/default-skin/default-skin.min.css" integrity="sha384-iD0dNku6PYSIQLyfTOpB06F2KCZJAKLOThS5HRe8b3ibhdEQ6eKsFf/EeFxdOt5R" crossorigin="anonymous">
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-114923902-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-114923902-1');
+</script>
+
+
+
+
+
+  </head>
+  <body>
+    <nav class="navbar navbar-default navbar-fixed-top navbar-custom">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#main-navbar">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="https://cscherrer.github.io">Chad Scherrer</a>
+    </div>
+
+    <div class="collapse navbar-collapse" id="main-navbar">
+      <ul class="nav navbar-nav navbar-right">
+        
+          
+            <li>
+              <a title="Blog" href="/">Blog</a>
+            </li>
+          
+        
+          
+            <li>
+              <a title="Tags" href="/tags">Tags</a>
+            </li>
+          
+        
+
+        
+
+        
+      </ul>
+    </div>
+
+    
+
+  </div>
+</nav>
+
+
+
+
+    
+
+
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+<div class="pswp__bg"></div>
+
+<div class="pswp__scroll-wrap">
+    
+    <div class="pswp__container">
+      <div class="pswp__item"></div>
+      <div class="pswp__item"></div>
+      <div class="pswp__item"></div>
+    </div>
+    
+    <div class="pswp__ui pswp__ui--hidden">
+    <div class="pswp__top-bar">
+      
+      <div class="pswp__counter"></div>
+      <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+      <button class="pswp__button pswp__button--share" title="Share"></button>
+      <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+      <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+      
+      
+      <div class="pswp__preloader">
+        <div class="pswp__preloader__icn">
+          <div class="pswp__preloader__cut">
+            <div class="pswp__preloader__donut"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+      <div class="pswp__share-tooltip"></div>
+    </div>
+    <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+    </button>
+    <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+    </button>
+    <div class="pswp__caption">
+      <div class="pswp__caption__center"></div>
+    </div>
+    </div>
+    </div>
+</div>
+
+
+  
+  
+  
+
+
+
+
+
+
+  
+
+  <header class="header-section ">
+    
+    <div class="intro-header no-img">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+            <div class="post-heading">
+              
+                <h1>Variational Importance Sampling</h1>
+              
+              
+              
+              
+                <span class="post-meta">
+  
+  
+  <i class="fas fa-calendar"></i>&nbsp;Posted on June 29, 2019
+  
+  
+    &nbsp;|&nbsp;<i class="fas fa-clock"></i>&nbsp;10&nbsp;minutes
+  
+  
+  
+    &nbsp;|&nbsp;<i class="fas fa-user"></i>&nbsp;Chad Scherrer
+  
+  
+</span>
+
+
+              
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+
+    
+<div class="container" role="main">
+  <div class="row">
+    <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+      <article role="main" class="blog-post">
+        <p><em>Lots of distributions are easy to evaluate (the density), but hard to sample. So when we need to sample such a distribution, we need to use some tricks. We'll see connections between two of these: <strong>importance sampling</strong> and <strong>variational inference</strong>, and see a way to use them together for fast inference.</em></p>
+
+<h2 id="importance-sampling">Importance sampling</h2>
+
+<p>Importance sampling aims to make it easy to compute <em>expected values</em>. Say we have a distribution <span  class="math">\(p\)</span>, and we'd  like to compute the average of some function <span  class="math">\(f\)</span> of the distribution (or equivalently, the expected value of a &quot;<em>push-forward along <span  class="math">\(f\)</span></em>&quot;). If we could sample <span  class="math">\(x_j\sim p\)</span>, we'd be interested in</p>
+
+<p><span  class="math">\[
+\mathbb{E}_p[f]\approx \frac{1}{N}\sum_{j=1}^N f(x_j)\ .
+\]</span></p>
+
+<p>If <span  class="math">\(p\)</span> is hard to sample (or if we don't get enough samples in areas where <span  class="math">\(f\)</span> is very large) , there's a trick we can use:</p>
+
+<ol>
+<li><p>Find an appropriate <em>proposal distribution</em> <span  class="math">\(q\)</span>. This should have the same <em>support</em> (areas of non-zero density) as <span  class="math">\(p\)</span>, and should be easy (or fast) to sample. [We often also want <span  class="math">\(q(x) \approx C |f(x)|\  p(x)\)</span>, but that won't be our focus.]</p></li>
+
+<li><p>Take <span  class="math">\(N\)</span> samples <span  class="math">\(x_j\sim q\)</span>.</p></li>
+
+<li><p>Calculate</p></li>
+</ol>
+
+<p><span  class="math">\[
+   \mathbb{E}_p[f]\approx \frac{1}{N}\sum_{j=1}^N f(x_j)\frac{p(x_j)}{q(x_j)}\ .
+   \]</span></p>
+
+<p>This <span  class="math">\(\frac{p(x_j)}{q(x_j)}\)</span> multiplier is the <em>importance weight</em>. To get some intuition for this, suppose that in some region <span  class="math">\(q\)</span> is twice as large as <span  class="math">\(p\)</span>. Because we sampled from <span  class="math">\(q\)</span> instead of <span  class="math">\(p\)</span>, we'll have twice as many points in that region as we should. But the importance weight in that region is <span  class="math">\(^1\!/_2\)</span>, so this cancels out the effects of oversampling.</p>
+
+<h2 id="some-minor-adjustments">Some minor adjustments</h2>
+
+<p>The previous section gave a simplified description of the classical goal of importance sampling. But it's not very usable as-is.</p>
+
+<p>First, especially when working in high dimensions, it's common for probability densities to span many orders of magnitude. To avoid <em>underflow</em> (treating nonzero values as zero), we usually prefer to work with log-densities. So let's define</p>
+
+<p><span  class="math">\[
+\ell(x) = \log p(x) - \log q(x)\ .
+\]</span></p>
+
+<p>Second, there's an implicit assumption above that we start out with a single <span  class="math">\(f\)</span> of interest. What if we don't yet have such an <span  class="math">\(f\)</span>? Or what if our goal is more general?</p>
+
+<p>For example, a <em>sequential importance sampling</em> used in particle filters uses (log-)importance-weighted samples as a discrete approximation for a distribution of interest. This allows efficient computation of distributions that could be intractable to reason about directly.</p>
+
+<p>Motivated by this, our approach will involve sampling from taking a sample of <span  class="math">\(x_j\)</span> values from <span  class="math">\(q\)</span> , computing the log-weights <span  class="math">\(\ell(x_j)\)</span>, and then using these <span  class="math">\((x_j, \ell(x_j))\)</span> pairs to reason about <span  class="math">\(p\)</span>. This is exactly our goal: <em>use <span  class="math">\(\ell\)</span>-weighted samples from <span  class="math">\(q\)</span> to reason about <span  class="math">\(p\)</span></em>.</p>
+
+<h2 id="variational-inference">Variational inference</h2>
+
+<p>All <span  class="math">\(q\)</span>s are not created equal. If we're trying to find a <span  class="math">\(q\)</span> that's a good approximation to <span  class="math">\(p\)</span>, what criteria should we use?</p>
+
+<p>Since we're using <span  class="math">\(\ell\)</span>-weighted samples from <span  class="math">\(q\)</span> to reason about <span  class="math">\(p\)</span> (and since we already know the answer), it's helpful to understand what could lead to a value <span  class="math">\(\ell(x)\)</span> being large. From the definition <span  class="math">\(\ell(x) = \log p(x) - \log q(x)\)</span>, we can see that this requires <span  class="math">\(p(x)\)</span> to be large, and <span  class="math">\(q(x)\)</span> to be small.</p>
+
+<p>Now, we could try to make <span  class="math">\(p(x)\)</span> <em>really</em> large, by concentrating <span  class="math">\(q\)</span> near its peak. But that would make <span  class="math">\(q\)</span> large as well. At a point we hit diminishing returns. Similarly, making <span  class="math">\(q(x)\)</span> <em>really</em> small would require spreading it over a wide range. But most of that range would have small <span  class="math">\(p(x)\)</span> values, again coming to hurt us at some point. These two concerns work in tension with each other, so maximizing <span  class="math">\(\ell\)</span> requires balancing them.</p>
+
+<p>Why would large values of <span  class="math">\(\ell\)</span> be a good thing? It comes down to a matter of efficiency. Say we're computing an expected value, and we could choose between one heavy point or lots of redundant light ones with the same total weight. The computation is the same, except that <em>we have to pay for all those extra points</em>. Actually, we have to pay twice: Once for the extra sampling cost, and again for the extra evaluation cost. And if there's <em>no</em> redundancy of this sort (<em>i.e.</em>, the light points are widely distributed), most computations will be overwhelmed by the effect of heavier points.</p>
+
+<p>All in all, the &quot;right&quot; thing to do in this context is to try to make <span  class="math">\(\ell\)</span> large, specifically to maximize its expected value:</p>
+
+<p><span  class="math">\[
+\mathbb{E}_q[\ell] \approx \frac{1}{N}\sum_{j=1}^N \left[ \log p(x_j) - \log q(x_j) \right]
+\]</span></p>
+
+<p>[The <span  class="math">\(\mathbb{E}_q\)</span> notation just means &quot;draw random values from <span  class="math">\(q\)</span> and find the average&quot;.]</p>
+
+<p>Though we came to it from a completely different angle than you'll usually see, this quantity we've just described is the primary value of interest in variational inference, the <em>evidence lower bound</em> or <em>&quot;ELBO&quot;</em>:</p>
+
+<p><span  class="math">\[
+\text{ELBO}=\mathbb{E}_q[\ell]
+\]</span></p>
+
+<p>So the whole game with variational inference boils down to <em>finding a good approximation <span  class="math">\(q\)</span> by choosing the one that maximizes the ELBO.</em></p>
+
+<h2 id="maximizing-the-elbo">Maximizing the ELBO</h2>
+
+<p>We finally have the tools we need to describe the main idea of this post, <em>variational importance sampling</em>. <strong>This algorithm is a work in progress. Though anecdotally promising, its convergence properties are not yet known.</strong></p>
+
+<p>As of June 2019 I've not seen this idea in the literature; I'll update this post if I learn of previous work in this area. Anyway, here's the fundamental idea:</p>
+
+<p><em>Iteratively sample <span  class="math">\(q\)</span>, use <span  class="math">\(e^\ell\)</span> to weight the samples, and use those weights to refit <span  class="math">\(q\)</span></em></p>
+
+<p>In Julia-like pseudocode, it looks like this:</p>
+<div class="highlight"><pre class="chroma"><code class="language-julia" data-lang="julia"><span class="k">for</span> <span class="n">iter</span> <span class="kp">in</span> <span class="mi">1</span><span class="o">:</span><span class="n">numiters</span>
+	<span class="n">x</span> <span class="o">=</span> <span class="n">rand</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">N</span><span class="p">)</span>
+	<span class="n">ℓ</span> <span class="o">=</span> <span class="n">logpdf</span><span class="p">(</span><span class="n">p</span><span class="p">,</span><span class="n">x</span><span class="p">)</span> <span class="o">-</span> <span class="n">logpdf</span><span class="p">(</span><span class="n">q</span><span class="p">,</span><span class="n">x</span><span class="p">)</span>
+	<span class="n">q</span> <span class="o">=</span> <span class="n">fit</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">exp</span><span class="p">(</span><span class="n">ℓ</span> <span class="o">-</span> <span class="n">maximum</span><span class="p">(</span><span class="n">ℓ</span><span class="p">))</span> <span class="o">+</span> <span class="mi">1</span><span class="o">/</span><span class="n">N</span><span class="p">)</span>
+<span class="k">end</span></code></pre></div>
+<p>There are a couple of aspects of this worth some extra discussion.</p>
+
+<p>First, we've assumed the existence of a <code>fit</code> method that allows weights. This puts another constraint on the available choices for <code>q</code>, but this method is commonly available for distributions in Julia's <a href="https://github.com/JuliaStats/Distributions.jl"><code>Distributions.jl</code></a>.</p>
+
+<p>Second, <code>exp(ℓ - maximum(ℓ))</code> is a vector with a maximum of one. This helps avoid overflow, which is much more dangerous than underflow, and acts as a fast pseudo-normalization in preparation for what comes next.</p>
+
+<p>Finally, about that <span  class="math">\(^1\!/_N\)</span>... If our sample is dominated by just a few points, a given iteration could &quot;zoom in&quot; much too far, or lose identifiability. So we add <span  class="math">\(^1\!/_N\)</span> in a similar spirit to  <a href="https://en.wikipedia.org/wiki/Additive_smoothing">Laplace smoothing</a>.</p>
+
+<p>It's convenient to think of this as effectively fitting the models from two samples that happen to share the same points, but have different weights. The first has weights of <code>exp(ℓ - maximum(ℓ))</code>, so the maximum is one, and the total weight is anywhere between 1 and <span  class="math">\(N\)</span>. The second sample involves the same points, but each has a weight of <span  class="math">\(^1\!/_N\)</span>, so the total weight is one.</p>
+
+<p>If the <span  class="math">\(\ell_j\)</span> are all the same, they'll still be the same after adding <span  class="math">\(^1\!/_N\)</span>. Refitting will have very little effect (only noise).  Maybe this is just by chance, in which case the next round of samples will get to take another crack at it. Or, maybe we've reached convergence.</p>
+
+<p>At the other extreme, maybe we end up with one <span  class="math">\(\ell_j=1\)</span>, with all others underflowing. In this case, this one point (now effectively the entirety of the &quot;first sample&quot;) is taken to have a total weight equal to the entire &quot;second sample&quot;. The result of adding the two &quot;samples&quot; is then halfway between the one extraordinary point we have found, and the full sample from the previous round.</p>
+
+<p>There may be approaches much better than the above <span  class="math">\(^1\!/_N\)</span> trick, and the optimal update might depend on characteristics of the chosen variational family. Again, this is ongoing work.</p>
+
+<h2 id="statistical-inference">Statistical inference</h2>
+
+<p>To this point, we've been talking about sampling <span  class="math">\(x\)</span>. Sure, the name doesn't really matter, and this or any variational inference method can be used for this general problem of approximating a distribution. But there's at least a connotation that we're interested in sampling <em>data</em>. In fact, that's not usually the case; we've swept under the rug what is by far the most common application of variational inference, namely <em>Bayesian inference</em>.</p>
+
+<p>In a Bayesian context, our <span  class="math">\(p\)</span> is not a distribution over data, but rather a &quot;posterior&quot; distribution over <em>parameters</em>. Instead of taking a parameter and giving a way to evaluate data, it takes data and gives a way to evaluate parameters. Going  &quot;backward&quot; is the whole point. As you might expect, sampling from <span  class="math">\(p\)</span> is hard, and is really <em>the</em> problem of Bayesian inference.</p>
+
+<p>Let's consider a simple example. Say we have a collection of <span  class="math">\((x_j, y_j)\)</span> pairs. Given the <span  class="math">\(x_j\)</span>s, we might model the <span  class="math">\(y_j\)</span>s as being produced like this:</p>
+
+<p><span  class="math">\[
+\begin{aligned}
+α &∼ \text{Normal}(0,1) \\
+β &∼ \text{Normal}(0,2) \\
+\hat{y}_j &= α + β x_j \\
+y_j &∼ \text{Normal}(\hat{y}_j, 1)
+\end{aligned}
+\]</span></p>
+
+<p>The posterior distribution <span  class="math">\((\alpha, \beta| x, y)\)</span> plays the role of <span  class="math">\(p\)</span>. As above, we're not allowed to used <span  class="math">\(p\)</span> to generate a sample (that's too expensive). All we can use it for is to <em>evaluate proposals</em>. So we could write it like this:</p>
+<div class="highlight"><pre class="chroma"><code class="language-julia" data-lang="julia"><span class="k">function</span> <span class="n">logp</span><span class="p">(</span><span class="n">α</span><span class="p">,</span><span class="n">β</span><span class="p">)</span>
+    <span class="n">ℓp</span> <span class="o">=</span> <span class="mf">0.0</span>
+    <span class="n">ℓp</span> <span class="o">+=</span> <span class="n">logpdf</span><span class="p">(</span><span class="n">Normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span> <span class="n">α</span><span class="p">)</span>
+    <span class="n">ℓp</span> <span class="o">+=</span> <span class="n">logpdf</span><span class="p">(</span><span class="n">Normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">),</span> <span class="n">β</span><span class="p">)</span>
+    <span class="n">yhat</span> <span class="o">=</span> <span class="n">α</span> <span class="o">.+</span> <span class="n">β</span> <span class="o">.*</span> <span class="n">x</span>
+    <span class="n">ℓp</span> <span class="o">+=</span> <span class="n">sum</span><span class="p">(</span><span class="n">logpdf</span><span class="o">.</span><span class="p">(</span><span class="n">Normal</span><span class="o">.</span><span class="p">(</span><span class="n">yhat</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">y</span><span class="p">)</span> <span class="p">)</span>
+    <span class="k">return</span> <span class="n">ℓp</span>
+<span class="k">end</span></code></pre></div>
+<p><strong>This is not efficient!!</strong> For real-world use we'd have lots of data, and would probably want to be sure to do the <code>sum</code> in parallel. I've done zero performance tuning, on any of this. Fortunately, Julia is fast enough that performance tuning is just gravy :)</p>
+
+<h2 id="an-aside">An aside</h2>
+
+<p>Before we get to <span  class="math">\(q\)</span>, we need to mention something strange about <span  class="math">\(p\)</span>. In the above implementation of <code>logp</code>, the arguments are both <code>Real</code>. But we'd really like to be able to pass it a pair of vectors, and avoid rewriting the whole thing.</p>
+
+<p>Julia is great with <a href="https://docs.julialang.org/en/v1/manual/arrays/index.html#Broadcasting-1">broadcasting</a>, so we could just call <code>logp.(α_vec, β_vec)</code> and be done with it. But the difficulty goes beyond Julia.</p>
+
+<p>Having to work &quot;up a dimension&quot; is one of the things like makes Bayesian inference hard. We can never just talk about a value, but instead about a distribution of values.</p>
+
+<p>Fredrik Bagge Carlson's <a href="https://github.com/baggepinnen/MonteCarloMeasurements.jl">MonteCarloMeasurements.jl</a> is a big help with this. You can pass around a cloud of <code>Particles</code> as if it's just a number, and most of the bookkeeping is taken care of for you. You even get a free performance boost!</p>
+
+<p>Anyway, here's the code for the inference loop:</p>
+<div class="highlight"><pre class="chroma"><code class="language-julia" data-lang="julia"><span class="k">function</span> <span class="n">runInference</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">logp</span><span class="p">)</span>
+    <span class="n">N</span> <span class="o">=</span> <span class="mi">1000</span> 
+
+    <span class="c"># initialize q</span>
+    <span class="n">q</span> <span class="o">=</span> <span class="n">MvNormal</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mf">100000.0</span><span class="p">)</span> <span class="c"># Really this would be fit from a sample from the prior</span>
+    <span class="n">α</span><span class="p">,</span><span class="n">β</span> <span class="o">=</span> <span class="n">Particles</span><span class="p">(</span><span class="n">N</span><span class="p">,</span><span class="n">q</span><span class="p">)</span>
+    <span class="n">m</span> <span class="o">=</span> <span class="n">asmatrix</span><span class="p">(</span><span class="n">α</span><span class="p">,</span><span class="n">β</span><span class="p">)</span>
+    <span class="n">ℓ</span> <span class="o">=</span> <span class="n">sum</span><span class="p">(</span><span class="n">logp</span><span class="p">(</span><span class="n">α</span><span class="p">,</span><span class="n">β</span><span class="p">))</span> <span class="o">-</span> <span class="n">Particles</span><span class="p">(</span><span class="n">logpdf</span><span class="p">(</span><span class="n">q</span><span class="p">,</span><span class="n">m</span><span class="p">))</span>
+
+    <span class="n">numiters</span> <span class="o">=</span> <span class="mi">60</span>
+    <span class="n">elbo</span> <span class="o">=</span> <span class="kt">Vector</span><span class="p">{</span><span class="kt">Float64</span><span class="p">}(</span><span class="n">undef</span><span class="p">,</span> <span class="n">numiters</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">j</span> <span class="kp">in</span> <span class="mi">1</span><span class="o">:</span><span class="n">numiters</span>
+        <span class="n">α</span><span class="p">,</span><span class="n">β</span> <span class="o">=</span> <span class="n">Particles</span><span class="p">(</span><span class="n">N</span><span class="p">,</span><span class="n">q</span><span class="p">)</span>
+        <span class="n">m</span> <span class="o">=</span> <span class="n">asmatrix</span><span class="p">(</span><span class="n">α</span><span class="p">,</span><span class="n">β</span><span class="p">)</span>
+        <span class="n">ℓ</span> <span class="o">=</span> <span class="n">logp</span><span class="p">(</span><span class="n">α</span><span class="p">,</span><span class="n">β</span><span class="p">)</span> <span class="o">-</span> <span class="n">Particles</span><span class="p">(</span><span class="n">logpdf</span><span class="p">(</span><span class="n">q</span><span class="p">,</span><span class="n">m</span><span class="p">))</span>
+        <span class="n">elbo</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">mean</span><span class="p">(</span><span class="n">ℓ</span><span class="p">)</span> 
+        <span class="n">ss</span> <span class="o">=</span> <span class="n">suffstats</span><span class="p">(</span><span class="n">MvNormal</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span>  <span class="n">exp</span><span class="p">(</span><span class="n">ℓ</span> <span class="o">-</span> <span class="n">maximum</span><span class="p">(</span><span class="n">ℓ</span><span class="p">))</span><span class="o">.</span><span class="n">particles</span> <span class="o">.+</span> <span class="mi">1</span><span class="o">/</span><span class="n">N</span><span class="p">)</span>
+        <span class="n">q</span> <span class="o">=</span> <span class="n">fit_mle</span><span class="p">(</span><span class="n">MvNormal</span><span class="p">,</span> <span class="n">ss</span><span class="p">)</span>
+    <span class="k">end</span>
+    <span class="p">(</span><span class="n">α</span><span class="p">,</span><span class="n">β</span><span class="p">,</span><span class="n">q</span><span class="p">,</span><span class="n">ℓ</span><span class="p">,</span><span class="n">elbo</span><span class="p">)</span>
+<span class="k">end</span></code></pre></div>
+<p>There's still a little bit of converting between representations, notably the little <code>asmatrix</code> helper function, for a matrix representation of a tuple of particles:</p>
+<div class="highlight"><pre class="chroma"><code class="language-julia" data-lang="julia"><span class="n">asmatrix</span><span class="p">(</span><span class="n">ps</span><span class="o">...</span><span class="p">)</span> <span class="o">=</span> <span class="kt">Matrix</span><span class="p">([</span><span class="n">ps</span><span class="o">...</span><span class="p">])</span><span class="err">&#39;</span></code></pre></div>
+<p>Still, for a first pass, I'm pretty happy with it.</p>
+
+<p>The data were generated from <code>(α=3,β=4)</code>. Here are the final inferred values:</p>
+<div class="highlight"><pre class="chroma"><code class="language-julia" data-lang="julia"><span class="n">julia</span><span class="o">&gt;</span> <span class="nd">@show</span> <span class="n">α</span> <span class="n">β</span> <span class="n">ℓ</span><span class="p">;</span>
+<span class="n">α</span> <span class="o">=</span> <span class="mf">2.98</span> <span class="n">±</span> <span class="mf">0.1</span>
+<span class="n">β</span> <span class="o">=</span> <span class="mf">4.0</span> <span class="n">±</span> <span class="mf">0.11</span>
+<span class="n">ℓ</span> <span class="o">=</span> <span class="o">-</span><span class="mf">151.0</span> <span class="n">±</span> <span class="mf">0.055</span></code></pre></div>
+<p>This shows a posterior standard deviation of around 0.1 for both <span  class="math">\(\alpha\)</span> and <span  class="math">\(\beta\)</span>. We also still have access to the underlying particles, in case we'd like bivariate scatter plots, or anything else we're interested in.</p>
+
+<p>Let's see how things went with convergence:</p>
+
+<p><figure><img src="neg-elbo.svg" alt="negative-elbo"></figure></p>
+
+<p>Note that the <span  class="math">\(y\)</span>-axis is on a log scale. At least for this simple example, we see an exponential rate of convergence!</p>
+
+<p>I'm planning to integrate this into <a href="https://github.com/cscherrer/Soss.jl">Soss.jl</a>. Until then, if you'd like to try this ofr yourself, you should be able to copy and paste <a href="https://gist.github.com/cscherrer/72062a3b9f264a328f00159d84a61b98">this gist</a> into any REPL for Julia 1.1.1 or above.</p>
+
+<p><em>The description here of variational inference is not rigorous, but is intended to build intuition in the context of importance sampling. For a more thorough discussion, see <a href="https://arxiv.org/abs/1601.00670">Blei et al (2016)</a>.</em></p>
+
+
+        
+          <div class="blog-tags">
+            
+              <a href="https://cscherrer.github.io/tags/bayes/">bayes</a>&nbsp;
+            
+              <a href="https://cscherrer.github.io/tags/soss/">Soss</a>&nbsp;
+            
+              <a href="https://cscherrer.github.io/tags/julia/">julia</a>&nbsp;
+            
+          </div>
+        
+
+        
+
+        
+      </article>
+
+      
+        <ul class="pager blog-pager">
+          
+            <li class="previous">
+              <a href="https://cscherrer.github.io/post/soss/" data-toggle="tooltip" data-placement="top" title="Julia for Probabilistic Metaprogramming">&larr; Previous Post</a>
+            </li>
+          
+          
+        </ul>
+      
+
+
+      
+        
+        
+      
+
+    </div>
+  </div>
+</div>
+
+    <footer>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        <ul class="list-inline text-center footer-links">
+          
+              <li>
+                <a href="mailto:chad.scherrer@gmail.com" title="Email me">
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fas fa-envelope fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+                <a href="https://plus.google.com/&#43;chad.scherrer" title="Google&#43;">
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-google-plus fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+                <a href="https://github.com/cscherrer" title="GitHub">
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-github fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+                <a href="https://twitter.com/@ChadScherrer" title="Twitter">
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-twitter fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+                <a href="https://reddit.com/u/cscherrer" title="Reddit">
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-reddit-alien fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+                <a href="https://linkedin.com/in/chadscherrer" title="LinkedIn">
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-linkedin fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+                <a href="https://stackoverflow.com/users/488124/chad-scherrer" title="StackOverflow">
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-stack-overflow fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+          
+          <li>
+            <a href="" title="RSS">
+              <span class="fa-stack fa-lg">
+                <i class="fas fa-circle fa-stack-2x"></i>
+                <i class="fas fa-rss fa-stack-1x fa-inverse"></i>
+              </span>
+            </a>
+          </li>
+          
+        </ul>
+        <p class="credits copyright text-muted">
+          
+            
+              <a href="cscherrer.github.io">Chad Scherrer</a>
+            
+          
+
+          &nbsp;&bull;&nbsp;&copy;
+          
+            2019
+          
+
+          
+            &nbsp;&bull;&nbsp;
+            <a href="https://cscherrer.github.io">Chad Scherrer</a>
+          
+        </p>
+        
+        <p class="credits theme-by text-muted">
+          <a href="http://gohugo.io">Hugo v0.55.6</a> powered &nbsp;&bull;&nbsp; Theme by <a href="http://deanattali.com/beautiful-jekyll/">Beautiful Jekyll</a> adapted to <a href="https://github.com/halogenica/beautifulhugo">Beautiful Hugo</a>
+          
+        </p>
+      </div>
+    </div>
+  </div>
+</footer><script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.js" integrity="sha384-K3vbOmF2BtaVai+Qk37uypf7VrgBubhQreNQe9aGsz9lB63dIFiQVlJbr92dw2Lx" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/contrib/auto-render.min.js" integrity="sha384-kmZOZB5ObwgQnS/DuDg6TScgOiWWBiVt0plIRkZCmE6rDZGrEOQeHM5PcHi+nyqe" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ=" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+<script src="https://cscherrer.github.io/js/main.js"></script><script> renderMathInElement(document.body); </script><script src="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe.min.js" integrity="sha384-QELNnmcmU8IR9ZAykt67vGr9/rZJdHbiWi64V88fCPaOohUlHCqUD/unNN0BXSqy" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe-ui-default.min.js" integrity="sha384-m67o7SkQ1ALzKZIFh4CiTA8tmadaujiTa9Vu+nqPSwDOqHrDmxLezTdFln8077+q" crossorigin="anonymous"></script><script src="https://cscherrer.github.io/js/load-photoswipe.js"></script>
+
+
+
+
+
+
+
+
+
+  </body>
+</html>
+
