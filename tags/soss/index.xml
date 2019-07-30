@@ -22,5 +22,16 @@
 Importance sampling Importance sampling aims to make it easy to compute expected values. Say we have a distribution \(p\), and we&#39;d like to compute the average of some function \(f\) of the distribution (or equivalently, the expected value of a &amp;quot;push-forward along \(f\)&amp;quot;).</description>
     </item>
     
+    <item>
+      <title>Soss.jl: Design Plans for Spring 2019</title>
+      <link>https://cscherrer.github.io/post/soss-update/</link>
+      <pubDate>Sun, 27 Jan 2019 07:35:51 -0800</pubDate>
+      <author>chad.scherrer@gmail.com (Chad Scherrer)</author>
+      <guid>https://cscherrer.github.io/post/soss-update/</guid>
+      <description>If you&#39;ve followed my work recently, you&#39;ve probably heard of my probabilistic programming system Soss.jl. I recently had the pleasure of presenting these ideas at PyData Miami:
+ [N.B. Above is supposed to be an embedded copy of my slides from PyData Miami. I can see it from Chrome, but not Firefox. Very weird. ]
+In April I&#39;ll begin another &amp;quot;passion quarter&amp;quot; (essentially a sabbatical) and hope to really push this work forward.</description>
+    </item>
+    
   </channel>
 </rss>

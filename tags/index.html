@@ -10,9 +10,9 @@
   <title>Overview of all pages with tags, ordered by tag - Chad Scherrer</title>
   <meta property="og:title" content="Overview of all pages with tags, ordered by tag" />
   <meta name="twitter:title" content="Overview of all pages with tags, ordered by tag" />
-  <meta name="description" content="A full overview of all pages with tags, ordered by tag, such as: bayes, python, pymc3, julia, pyro, soss, and variational-inference">
-  <meta property="og:description" content="A full overview of all pages with tags, ordered by tag, such as: bayes, python, pymc3, julia, pyro, soss, and variational-inference">
-  <meta name="twitter:description" content="A full overview of all pages with tags, ordered by tag, such as: bayes, python, pymc3, julia, pyro, soss, and variational-inference">
+  <meta name="description" content="A full overview of all pages with tags, ordered by tag, such as: bayes, python, julia, pymc3, soss, pyro, and variational-inference">
+  <meta property="og:description" content="A full overview of all pages with tags, ordered by tag, such as: bayes, python, julia, pymc3, soss, pyro, and variational-inference">
+  <meta name="twitter:description" content="A full overview of all pages with tags, ordered by tag, such as: bayes, python, julia, pymc3, soss, pyro, and variational-inference">
   <meta name="author" content="Chad Scherrer"/><script type="application/ld+json">
 {
     "@context": "http://schema.org",
@@ -38,7 +38,6 @@
 <meta property="og:url" content="https://cscherrer.github.io/tags/" />
 <meta property="og:type" content="website" />
 <meta property="og:site_name" content="Chad Scherrer" />
-
   <meta name="twitter:title" content="Tags" />
   <meta name="twitter:card" content="summary" />
   <meta name="twitter:site" content="@@ChadScherrer" />
@@ -52,9 +51,11 @@
   <meta property="og:site_name" content="Chad Scherrer" />
 
   <meta name="generator" content="Hugo 0.55.6" />
-  <link rel="alternate" href="https://cscherrer.github.io/index.xml" type="application/rss+xml" title="Chad Scherrer"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css" integrity="sha384-9eLZqc9ds8eNjO3TmqPeYcDj8n+Qfa4nuSiGYa6DjLNcv9BtN69ZIulL9+8CqC9Y" crossorigin="anonymous">
+  <link rel="alternate" href="https://cscherrer.github.io/index.xml" type="application/rss+xml" title="Chad Scherrer">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css" integrity="sha384-9eLZqc9ds8eNjO3TmqPeYcDj8n+Qfa4nuSiGYa6DjLNcv9BtN69ZIulL9+8CqC9Y" crossorigin="anonymous">
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous"><link rel="stylesheet" href="https://cscherrer.github.io/css/main.css" /><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" />
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cscherrer.github.io/css/main.css" /><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" />
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" /><link rel="stylesheet" href="https://cscherrer.github.io/css/syntax.css" /><link rel="stylesheet" href="https://cscherrer.github.io/css/codeblock.css" /><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe.min.css" integrity="sha384-h/L2W9KefUClHWaty3SLE5F/qvc4djlyR4qY3NUV5HGQBBW7stbcfff1+I/vmsHh" crossorigin="anonymous">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/default-skin/default-skin.min.css" integrity="sha384-iD0dNku6PYSIQLyfTOpB06F2KCZJAKLOThS5HRe8b3ibhdEQ6eKsFf/EeFxdOt5R" crossorigin="anonymous">
 
@@ -211,7 +212,7 @@
                 <div class="panel-heading" role="tab" id="headerbayes">
                   <h4 class="panel-title">
                       bayes
-                    <span class="badge">6</span>
+                    <span class="badge">7</span>
                   </h4>
                 </div>
             </a>
@@ -222,6 +223,8 @@
                 <div class="list-group">
                   
                     <a href="https://cscherrer.github.io/post/variational-importance-sampling/" class="list-group-item">Variational Importance Sampling</a>
+                  
+                    <a href="https://cscherrer.github.io/post/soss-update/" class="list-group-item">Soss.jl: Design Plans for Spring 2019</a>
                   
                     <a href="https://cscherrer.github.io/post/soss/" class="list-group-item">Julia for Probabilistic Metaprogramming</a>
                   
@@ -267,6 +270,32 @@
           </div>
         
           <div class="panel panel-default">
+            <a class="collapsed" role="button" data-toggle="collapse" data-target="#collapsejulia" data-parent="#accordion" aria-expanded="false" aria-controls="collapsejulia">
+                <div class="panel-heading" role="tab" id="headerjulia">
+                  <h4 class="panel-title">
+                      julia
+                    <span class="badge">3</span>
+                  </h4>
+                </div>
+            </a>
+            <div id="collapsejulia" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingjulia">
+              <div class="panel-body">
+                <a href="https://cscherrer.github.io/tags/julia/" class="list-group-item view-all">
+                View all</a>
+                <div class="list-group">
+                  
+                    <a href="https://cscherrer.github.io/post/variational-importance-sampling/" class="list-group-item">Variational Importance Sampling</a>
+                  
+                    <a href="https://cscherrer.github.io/post/soss-update/" class="list-group-item">Soss.jl: Design Plans for Spring 2019</a>
+                  
+                    <a href="https://cscherrer.github.io/post/soss/" class="list-group-item">Julia for Probabilistic Metaprogramming</a>
+                  
+                </div>
+              </div>
+            </div>
+          </div>
+        
+          <div class="panel panel-default">
             <a class="collapsed" role="button" data-toggle="collapse" data-target="#collapsepymc3" data-parent="#accordion" aria-expanded="false" aria-controls="collapsepymc3">
                 <div class="panel-heading" role="tab" id="headerpymc3">
                   <h4 class="panel-title">
@@ -293,23 +322,23 @@
           </div>
         
           <div class="panel panel-default">
-            <a class="collapsed" role="button" data-toggle="collapse" data-target="#collapsejulia" data-parent="#accordion" aria-expanded="false" aria-controls="collapsejulia">
-                <div class="panel-heading" role="tab" id="headerjulia">
+            <a class="collapsed" role="button" data-toggle="collapse" data-target="#collapsesoss" data-parent="#accordion" aria-expanded="false" aria-controls="collapsesoss">
+                <div class="panel-heading" role="tab" id="headersoss">
                   <h4 class="panel-title">
-                      julia
+                      soss
                     <span class="badge">2</span>
                   </h4>
                 </div>
             </a>
-            <div id="collapsejulia" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingjulia">
+            <div id="collapsesoss" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingsoss">
               <div class="panel-body">
-                <a href="https://cscherrer.github.io/tags/julia/" class="list-group-item view-all">
+                <a href="https://cscherrer.github.io/tags/soss/" class="list-group-item view-all">
                 View all</a>
                 <div class="list-group">
                   
                     <a href="https://cscherrer.github.io/post/variational-importance-sampling/" class="list-group-item">Variational Importance Sampling</a>
                   
-                    <a href="https://cscherrer.github.io/post/soss/" class="list-group-item">Julia for Probabilistic Metaprogramming</a>
+                    <a href="https://cscherrer.github.io/post/soss-update/" class="list-group-item">Soss.jl: Design Plans for Spring 2019</a>
                   
                 </div>
               </div>
@@ -332,28 +361,6 @@
                 <div class="list-group">
                   
                     <a href="https://cscherrer.github.io/post/pyro/" class="list-group-item">A Prelude to Pyro</a>
-                  
-                </div>
-              </div>
-            </div>
-          </div>
-        
-          <div class="panel panel-default">
-            <a class="collapsed" role="button" data-toggle="collapse" data-target="#collapsesoss" data-parent="#accordion" aria-expanded="false" aria-controls="collapsesoss">
-                <div class="panel-heading" role="tab" id="headersoss">
-                  <h4 class="panel-title">
-                      soss
-                    <span class="badge">1</span>
-                  </h4>
-                </div>
-            </a>
-            <div id="collapsesoss" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingsoss">
-              <div class="panel-body">
-                <a href="https://cscherrer.github.io/tags/soss/" class="list-group-item view-all">
-                View all</a>
-                <div class="list-group">
-                  
-                    <a href="https://cscherrer.github.io/post/variational-importance-sampling/" class="list-group-item">Variational Importance Sampling</a>
                   
                 </div>
               </div>
@@ -453,7 +460,9 @@
               </li>
           
           <li>
-            <a href="/tags/index.xml" title="RSS">
+            
+            <a href="https://cscherrer.github.io/tags/index.xml" title="RSS">
+            
               <span class="fa-stack fa-lg">
                 <i class="fas fa-circle fa-stack-2x"></i>
                 <i class="fas fa-rss fa-stack-1x fa-inverse"></i>
@@ -487,14 +496,16 @@
       </div>
     </div>
   </div>
-</footer><script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.js" integrity="sha384-K3vbOmF2BtaVai+Qk37uypf7VrgBubhQreNQe9aGsz9lB63dIFiQVlJbr92dw2Lx" crossorigin="anonymous"></script>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.js" integrity="sha384-K3vbOmF2BtaVai+Qk37uypf7VrgBubhQreNQe9aGsz9lB63dIFiQVlJbr92dw2Lx" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/contrib/auto-render.min.js" integrity="sha384-kmZOZB5ObwgQnS/DuDg6TScgOiWWBiVt0plIRkZCmE6rDZGrEOQeHM5PcHi+nyqe" crossorigin="anonymous"></script>
 <script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ=" crossorigin="anonymous"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
-
-<script src="https://cscherrer.github.io/js/main.js"></script><script> renderMathInElement(document.body); </script><script src="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe.min.js" integrity="sha384-QELNnmcmU8IR9ZAykt67vGr9/rZJdHbiWi64V88fCPaOohUlHCqUD/unNN0BXSqy" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe-ui-default.min.js" integrity="sha384-m67o7SkQ1ALzKZIFh4CiTA8tmadaujiTa9Vu+nqPSwDOqHrDmxLezTdFln8077+q" crossorigin="anonymous"></script><script src="https://cscherrer.github.io/js/load-photoswipe.js"></script>
-
+<script src="https://cscherrer.github.io/js/main.js"></script><script> renderMathInElement(document.body); </script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe.min.js" integrity="sha384-QELNnmcmU8IR9ZAykt67vGr9/rZJdHbiWi64V88fCPaOohUlHCqUD/unNN0BXSqy" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe-ui-default.min.js" integrity="sha384-m67o7SkQ1ALzKZIFh4CiTA8tmadaujiTa9Vu+nqPSwDOqHrDmxLezTdFln8077+q" crossorigin="anonymous"></script>
+<script src="https://cscherrer.github.io/js/load-photoswipe.js"></script>
 
 
 
