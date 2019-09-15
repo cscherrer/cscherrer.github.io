@@ -13,15 +13,6 @@
     
     
     <item>
-      <title>Soss</title>
-      <link>https://cscherrer.github.io/tags/soss/</link>
-      <pubDate>Sat, 29 Jun 2019 18:53:45 -0700</pubDate>
-      <author>chad.scherrer@gmail.com (Chad Scherrer)</author>
-      <guid>https://cscherrer.github.io/tags/soss/</guid>
-      <description></description>
-    </item>
-    
-    <item>
       <title>bayes</title>
       <link>https://cscherrer.github.io/tags/bayes/</link>
       <pubDate>Sat, 29 Jun 2019 18:53:45 -0700</pubDate>
@@ -36,6 +27,15 @@
       <pubDate>Sat, 29 Jun 2019 18:53:45 -0700</pubDate>
       <author>chad.scherrer@gmail.com (Chad Scherrer)</author>
       <guid>https://cscherrer.github.io/tags/julia/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Soss</title>
+      <link>https://cscherrer.github.io/tags/soss/</link>
+      <pubDate>Sat, 29 Jun 2019 18:53:45 -0700</pubDate>
+      <author>chad.scherrer@gmail.com (Chad Scherrer)</author>
+      <guid>https://cscherrer.github.io/tags/soss/</guid>
       <description></description>
     </item>
     

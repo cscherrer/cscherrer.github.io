@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="en" itemscope itemtype="http://schema.org/WebPage">
+  <head>
+    
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+
+  <title>Fast and Flexible Probabilistic Programming with Soss.jl - Chad Scherrer</title>
+  <meta property="og:title" content="Fast and Flexible Probabilistic Programming with Soss.jl" />
+  <meta name="twitter:title" content="Fast and Flexible Probabilistic Programming with Soss.jl" />
+  <meta name="description" content="A few months ago, Colin Carroll posted A Tour of Probabilistic Programming Language APIs, where he compared the APIs of a variety of probabilistic programming languages (PPLs) using this model:
+\[ \begin{aligned} p ( \mathbf { w } ) & \sim \mathcal { N } \left( \mathbf { 0 } , I _ { 5 } \right) \\ p ( \mathbf { y } | X , \mathbf { w } ) & \sim \mathcal { N } \left( X \mathbf { w } , 0.">
+  <meta property="og:description" content="A few months ago, Colin Carroll posted A Tour of Probabilistic Programming Language APIs, where he compared the APIs of a variety of probabilistic programming languages (PPLs) using this model:
+\[ \begin{aligned} p ( \mathbf { w } ) & \sim \mathcal { N } \left( \mathbf { 0 } , I _ { 5 } \right) \\ p ( \mathbf { y } | X , \mathbf { w } ) & \sim \mathcal { N } \left( X \mathbf { w } , 0.">
+  <meta name="twitter:description" content="A few months ago, Colin Carroll posted A Tour of Probabilistic Programming Language APIs, where he compared the APIs of a variety of probabilistic programming languages (PPLs) using this model:
+\[ …">
+  <meta name="author" content="Chad Scherrer"/><script type="application/ld+json">
+{
+    "@context": "http://schema.org",
+    "@type": "WebSite",
+    "name": "Chad Scherrer",
+    
+    "url": "https:\/\/cscherrer.github.io"
+}
+</script><script type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "@type": "Organization",
+  "name": "",
+  "url": "https:\/\/cscherrer.github.io"
+  
+  
+  
+  
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [{
+        "@type": "ListItem",
+        "position": 1,
+        "item": {
+          "@id": "https:\/\/cscherrer.github.io",
+          "name": "home"
+        }
+    },{
+        "@type": "ListItem",
+        "position": 3,
+        "item": {
+          "@id": "https:\/\/cscherrer.github.io\/post\/fast-flexible-probprog\/",
+          "name": "Fast and flexible probabilistic programming with soss.jl"
+        }
+    }]
+}
+</script><script type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "@type": "Article",
+  "author": {
+    "name" : "Chad Scherrer"
+  },
+  "headline": "Fast and Flexible Probabilistic Programming with Soss.jl",
+  "description" : "A few months ago, Colin Carroll posted A Tour of Probabilistic Programming Language APIs, where he compared the APIs of a variety of probabilistic programming languages (PPLs) using this model:\n\\[ \\begin{aligned} p ( \\mathbf { w } ) \x26 \\sim \\mathcal { N } \\left( \\mathbf { 0 } , I _ { 5 } \\right) \\\\ p ( \\mathbf { y } | X , \\mathbf { w } ) \x26 \\sim \\mathcal { N } \\left( X \\mathbf { w } , 0.",
+  "inLanguage" : "en",
+  "wordCount":  1121 ,
+  "datePublished" : "2019-09-14T16:21:50",
+  "dateModified" : "2019-09-14T16:21:50",
+  "image" : "https:\/\/cscherrer.github.io",
+  "keywords" : [ "" ],
+  "mainEntityOfPage" : "https:\/\/cscherrer.github.io\/post\/fast-flexible-probprog\/",
+  "publisher" : {
+    "@type": "Organization",
+    "name" : "https:\/\/cscherrer.github.io",
+    "logo" : {
+        "@type" : "ImageObject",
+        "url" : "https:\/\/cscherrer.github.io",
+        "height" :  60 ,
+        "width" :  60
+    }
+  }
+}
+</script>
+
+<meta property="og:title" content="Fast and Flexible Probabilistic Programming with Soss.jl" />
+<meta property="og:description" content="A few months ago, Colin Carroll posted A Tour of Probabilistic Programming Language APIs, where he compared the APIs of a variety of probabilistic programming languages (PPLs) using this model:
+\[ \begin{aligned} p ( \mathbf { w } ) & \sim \mathcal { N } \left( \mathbf { 0 } , I _ { 5 } \right) \\ p ( \mathbf { y } | X , \mathbf { w } ) & \sim \mathcal { N } \left( X \mathbf { w } , 0.">
+<meta property="og:url" content="https://cscherrer.github.io/post/fast-flexible-probprog/" />
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="Chad Scherrer" />
+
+  <meta name="twitter:title" content="Fast and Flexible Probabilistic Programming with Soss.jl" />
+  <meta name="twitter:description" content="A few months ago, Colin Carroll posted A Tour of Probabilistic Programming Language APIs, where he compared the APIs of a variety of probabilistic programming languages (PPLs) using this model:
+\[ …">
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:site" content="@@ChadScherrer" />
+  <meta name="twitter:creator" content="@@ChadScherrer" />
+  <link href='https://cscherrer.github.io/img/favicon.ico' rel='icon' type='image/x-icon'/>
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:site" content="@@ChadScherrer" />
+  <meta name="twitter:creator" content="@@ChadScherrer" />
+  <meta property="og:url" content="https://cscherrer.github.io/post/fast-flexible-probprog/" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Chad Scherrer" />
+
+  <meta name="generator" content="Hugo 0.57.2" />
+  <link rel="alternate" href="https://cscherrer.github.io/index.xml" type="application/rss+xml" title="Chad Scherrer"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css" integrity="sha384-9eLZqc9ds8eNjO3TmqPeYcDj8n+Qfa4nuSiGYa6DjLNcv9BtN69ZIulL9+8CqC9Y" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous"><link rel="stylesheet" href="https://cscherrer.github.io/css/main.css" /><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" /><link rel="stylesheet" href="https://cscherrer.github.io/css/syntax.css" /><link rel="stylesheet" href="https://cscherrer.github.io/css/codeblock.css" /><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe.min.css" integrity="sha384-h/L2W9KefUClHWaty3SLE5F/qvc4djlyR4qY3NUV5HGQBBW7stbcfff1+I/vmsHh" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/default-skin/default-skin.min.css" integrity="sha384-iD0dNku6PYSIQLyfTOpB06F2KCZJAKLOThS5HRe8b3ibhdEQ6eKsFf/EeFxdOt5R" crossorigin="anonymous">
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-114923902-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-114923902-1');
+</script>
+
+
+
+
+
+  </head>
+  <body>
+    <nav class="navbar navbar-default navbar-fixed-top navbar-custom">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#main-navbar">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="https://cscherrer.github.io">Chad Scherrer</a>
+    </div>
+
+    <div class="collapse navbar-collapse" id="main-navbar">
+      <ul class="nav navbar-nav navbar-right">
+        
+          
+            <li>
+              <a title="Blog" href="/">Blog</a>
+            </li>
+          
+        
+          
+            <li>
+              <a title="Tags" href="/tags">Tags</a>
+            </li>
+          
+        
+
+        
+
+        
+      </ul>
+    </div>
+
+    
+
+  </div>
+</nav>
+
+
+
+
+    
+
+
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+<div class="pswp__bg"></div>
+
+<div class="pswp__scroll-wrap">
+    
+    <div class="pswp__container">
+      <div class="pswp__item"></div>
+      <div class="pswp__item"></div>
+      <div class="pswp__item"></div>
+    </div>
+    
+    <div class="pswp__ui pswp__ui--hidden">
+    <div class="pswp__top-bar">
+      
+      <div class="pswp__counter"></div>
+      <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+      <button class="pswp__button pswp__button--share" title="Share"></button>
+      <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+      <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+      
+      
+      <div class="pswp__preloader">
+        <div class="pswp__preloader__icn">
+          <div class="pswp__preloader__cut">
+            <div class="pswp__preloader__donut"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+      <div class="pswp__share-tooltip"></div>
+    </div>
+    <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+    </button>
+    <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+    </button>
+    <div class="pswp__caption">
+      <div class="pswp__caption__center"></div>
+    </div>
+    </div>
+    </div>
+</div>
+
+
+  
+  
+  
+
+
+
+
+
+
+  
+
+  <header class="header-section ">
+    
+    <div class="intro-header no-img">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+            <div class="post-heading">
+              
+                <h1>Fast and Flexible Probabilistic Programming with Soss.jl</h1>
+              
+              
+              
+              
+                <span class="post-meta">
+  
+  
+  <i class="fas fa-calendar"></i>&nbsp;Posted on September 14, 2019
+  
+  
+    &nbsp;|&nbsp;<i class="fas fa-clock"></i>&nbsp;6&nbsp;minutes
+  
+  
+  
+    &nbsp;|&nbsp;<i class="fas fa-user"></i>&nbsp;Chad Scherrer
+  
+  
+</span>
+
+
+              
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+
+    
+<div class="container" role="main">
+  <div class="row">
+    <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+      <article role="main" class="blog-post">
+        <p>A few months ago, <a href="https://colindcarroll.com/">Colin Carroll</a> posted <a href="https://colcarroll.github.io/ppl-api/"><em>A Tour of Probabilistic Programming Language APIs</em></a>, where he compared the APIs of a variety of probabilistic programming languages (PPLs) using this model:</p>
+
+<p><span  class="math">\[
+\begin{aligned} p ( \mathbf { w } ) & \sim \mathcal { N } \left( \mathbf { 0 } , I _ { 5 } \right) \\ p ( \mathbf { y } | X , \mathbf { w } ) & \sim \mathcal { N } \left( X \mathbf { w } , 0.1 I _ { 100 } \right) \end{aligned}
+\]</span></p>
+
+<p><a href="https://github.com/cscherrer/Soss.jl">Soss.jl</a> has really been picking up steam lately with a big boost from Taine Zhao's <a href="https://github.com/thautwarm/GeneralizedGenerated.jl">generalized generated functions</a> for staged compilation. And thanks to Colin's work, we have a handy Rosetta Stone to other PPLs. So let's implement this and explore a bit.</p>
+
+<h1 id="defining-the-model">Defining the Model</h1>
+
+<p>Here we go!</p>
+<div class="highlight"><pre class="chroma"><code class="language-julia" data-lang="julia"><span class="n">cc</span> <span class="o">=</span> <span class="nd">@model</span> <span class="n">X</span> <span class="k">begin</span>
+    <span class="n">w</span> <span class="o">~</span> <span class="n">Normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span> <span class="o">|&gt;</span> <span class="n">iid</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+    <span class="n">Xw</span> <span class="o">=</span> <span class="n">X</span> <span class="o">*</span> <span class="n">w</span> 
+    <span class="n">y</span> <span class="o">~</span> <span class="n">For</span><span class="p">(</span><span class="mi">1</span><span class="o">:</span><span class="mi">100</span><span class="p">)</span> <span class="k">do</span> <span class="n">j</span>
+        <span class="n">Normal</span><span class="p">(</span><span class="n">Xw</span><span class="p">[</span><span class="n">j</span><span class="p">],</span><span class="mf">0.1</span><span class="p">)</span>
+    <span class="k">end</span>
+<span class="k">end</span><span class="p">;</span></code></pre></div>
+<p>If you've done some probabilistic programming, this may look a little strange. In most PPLs, you'd see the observed data passed in as an argument. But in Soss, <strong>the model has no reference to the data!</strong></p>
+
+<p>There are a few problems with the more common approach:</p>
+
+<ul>
+<li>It conflates data with hyperparameters,</li>
+<li>It makes dependencies much less clear, and</li>
+<li>It forces an early commitment to which variables are observed, greatly reducing flexibility.</li>
+</ul>
+
+<p>In Soss, a model is written more like a standard function. From the model definition above, replacing each <code>v ~ dist</code> with <code>v = rand(dist)</code> already gets us very close to standard Julia code that can be executed.</p>
+
+<p>Before we get too far ahead of ourselves, let's step through the <code>cc</code> model in some detail.</p>
+
+<p>First, just like a function, we have any arguments, in this case the design matrix <code>X</code>. We could have chosen to put this in the body as well, and not require any arguments.</p>
+
+<p>Next we have the body of the model, which is comprised of a set of <code>Statements</code>. The <code>cc</code> model has three statements.</p>
+
+<ol>
+<li><p>For <code>w</code>, the &quot;<code>~</code>&quot; indicates it's a random variable, with its distribution following. <code>iid</code> is a statistical term that means <a href="https://en.wikipedia.org/wiki/Independent_and_identically_distributed_random_variables"><em>independent and identically distributed</em></a>. So <code>w</code> will be a <code>Vector</code>, with each component drawn from a <code>Normal(0,1)</code> distribution.</p></li>
+
+<li><p>Next <code>Xw</code> is declared in an <code>Assign</code> statement. There's nothing too unusual here; it's just like an <code>=</code> in most languages.</p></li>
+
+<li><p>Finally, we have another <code>Sample</code> for <code>y</code> in the form of a <code>For</code> block. This is similar to <code>iid</code>, but allows the distribution to vary as a function of the index.</p></li>
+</ol>
+
+<p>We could optionally have a <code>return</code> statement. Because we don't, the model will return a named tuple, with a slot for each <code>Sample</code> or <code>Assign</code> statement.</p>
+
+<h1 id="applying-the-model">Applying the Model</h1>
+
+<p>Above I said models are function-like. So what do we get when we fill in the arguments?</p>
+<div class="highlight"><pre class="chroma"><code class="language-julia" data-lang="julia"><span class="n">julia</span><span class="o">&gt;</span> <span class="n">X0</span> <span class="o">=</span> <span class="n">randn</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span><span class="mi">5</span><span class="p">);</span>
+
+<span class="n">julia</span><span class="o">&gt;</span> <span class="n">cc</span><span class="p">(</span><span class="n">X</span><span class="o">=</span><span class="n">X0</span><span class="p">)</span>
+<span class="n">Joint</span> <span class="n">Distribution</span>
+    <span class="n">Bound</span> <span class="n">arguments</span><span class="o">:</span> <span class="p">[</span><span class="n">X</span><span class="p">]</span>
+    <span class="n">Variables</span><span class="o">:</span> <span class="p">[</span><span class="n">w</span><span class="p">,</span> <span class="n">Xw</span><span class="p">,</span> <span class="n">y</span><span class="p">]</span>
+
+<span class="nd">@model</span> <span class="n">X</span> <span class="k">begin</span>
+    <span class="n">w</span> <span class="o">~</span> <span class="n">Normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="o">|&gt;</span> <span class="n">iid</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+    <span class="n">Xw</span> <span class="o">=</span> <span class="n">X</span> <span class="o">*</span> <span class="n">w</span>
+    <span class="n">y</span> <span class="o">~</span> <span class="n">For</span><span class="p">(</span><span class="mi">1</span><span class="o">:</span><span class="mi">100</span><span class="p">)</span> <span class="k">do</span> <span class="n">j</span>
+        <span class="n">Normal</span><span class="p">(</span><span class="n">Xw</span><span class="p">[</span><span class="n">j</span><span class="p">],</span> <span class="mf">0.1</span><span class="p">)</span>
+    <span class="k">end</span>
+<span class="k">end</span></code></pre></div>
+<p>&quot;Distribution&quot;? Yep. <code>cc(X=X0)</code> is a distribution just like <code>Normal(0,1)</code> is. And just as we would expect with a distribution, we can sample from it:</p>
+<div class="highlight"><pre class="chroma"><code class="language-julia" data-lang="julia"><span class="n">julia</span><span class="o">&gt;</span> <span class="n">obs</span> <span class="o">=</span> <span class="n">rand</span><span class="p">(</span><span class="n">cc</span><span class="p">(</span><span class="n">X</span><span class="o">=</span><span class="n">X0</span><span class="p">))</span>
+<span class="p">(</span><span class="n">X</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="mf">0.8272484544396099</span> <span class="o">-</span><span class="mf">0.03646389219747102</span> <span class="n">…</span> <span class="mf">0.9375627860961913</span> <span class="o">-</span><span class="mf">0.804611104845261</span><span class="p">;</span> <span class="o">-</span><span class="mf">0.6202176685874693</span> <span class="mf">0.7053793384222113</span> <span class="n">…</span> <span class="mf">0.014361484078182381</span> <span class="o">-</span><span class="mf">0.3737011074670588</span><span class="p">;</span> <span class="n">…</span> <span class="p">;</span> <span class="o">-</span><span class="mf">2.8061148816772663</span> <span class="mf">0.9815626536629464</span> <span class="n">…</span> <span class="o">-</span><span class="mf">0.8081310261204893</span> <span class="o">-</span><span class="mf">0.5775062378122593</span><span class="p">;</span> <span class="o">-</span><span class="mf">0.006294543353902432</span> <span class="o">-</span><span class="mf">0.26016341761264344</span> <span class="n">…</span> <span class="o">-</span><span class="mf">2.132236712504989</span> <span class="mf">0.0128466239738442</span><span class="p">],</span> <span class="n">Xw</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="mf">2.221565537313942</span><span class="p">,</span> <span class="o">-</span><span class="mf">2.1520058746385304</span><span class="p">,</span> <span class="o">-</span><span class="mf">2.1293094342311103</span><span class="p">,</span> <span class="mf">2.941188972024378</span><span class="p">,</span> <span class="mf">0.9375034196035377</span><span class="p">,</span> <span class="mf">4.714386942469174</span><span class="p">,</span> <span class="mf">6.287025102610045</span><span class="p">,</span> <span class="mf">1.7702590639999833</span><span class="p">,</span> <span class="mf">7.6596956428829674</span><span class="p">,</span> <span class="mf">0.35806372731922104</span>  <span class="n">…</span>  <span class="mf">1.5771365203011163</span><span class="p">,</span> <span class="mf">1.2979668403687703</span><span class="p">,</span> <span class="mf">2.19230613396396</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.1871741199543733</span><span class="p">,</span> <span class="mf">4.175965213223754</span><span class="p">,</span> <span class="mf">4.014878023176152</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.5222101908555612</span><span class="p">,</span> <span class="mf">5.00462751766363</span><span class="p">,</span> <span class="o">-</span><span class="mf">2.4025174019374136</span><span class="p">,</span> <span class="mf">5.6428099448628455</span><span class="p">],</span> <span class="n">w</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.7298700914411173</span><span class="p">,</span> <span class="o">-</span><span class="mf">2.6773826574609143</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.03040032089651461</span><span class="p">,</span> <span class="o">-</span><span class="mf">2.324302227817693</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.6091581898700535</span><span class="p">],</span> <span class="n">y</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="mf">2.077911721314273</span><span class="p">,</span> <span class="o">-</span><span class="mf">2.161650284487506</span><span class="p">,</span> <span class="o">-</span><span class="mf">2.0906144035641847</span><span class="p">,</span> <span class="mf">2.9433241681835</span><span class="p">,</span> <span class="mf">0.952057361034113</span><span class="p">,</span> <span class="mf">4.694415215318885</span><span class="p">,</span> <span class="mf">6.392498728047622</span><span class="p">,</span> <span class="mf">1.6900865159917597</span><span class="p">,</span> <span class="mf">7.625515407370478</span><span class="p">,</span> <span class="mf">0.2417023002430837</span>  <span class="n">…</span>  <span class="mf">1.6578734475509114</span><span class="p">,</span> <span class="mf">1.2888603774507226</span><span class="p">,</span> <span class="mf">2.212452426932563</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.156288447328179</span><span class="p">,</span> <span class="mf">4.108958690520445</span><span class="p">,</span> <span class="mf">4.014541785531511</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.5235177431156618</span><span class="p">,</span> <span class="mf">4.9852474365678425</span><span class="p">,</span> <span class="o">-</span><span class="mf">2.4759738971855128</span><span class="p">,</span> <span class="mf">5.70482453218249</span><span class="p">])</span></code></pre></div>
+<h1 id="conditioning-on-observed-data">Conditioning on Observed Data</h1>
+
+<p>Now that we have our fake data, we need to sample from the posterior distribution. For continuous parameters, the general best practice is to start with <a href="https://arxiv.org/abs/1701.02434"><em>Hamiltonian Monte Carlo</em></a>. In Julia, there are two main implementations of this: Tamas Papp's <a href="https://github.com/tpapp/DynamicHMC.jl">DynamicHMC.jl</a>, and <a href="https://github.com/TuringLang/AdvancedHMC.jl">AdvancedHMC.jl</a> from the Turing.jl team (notably Kai Xu and Hong Ge). There are some trade-offs between these, but I've done more testing with the former, so let's go with that for now.</p>
+
+<p>For HMC, we'll need to specify a joint distribution (remember, that's just the model applied to some arguments) and data to condition on. It's convenient to pipe this into the <code>particles</code> helper function:</p>
+<div class="highlight"><pre class="chroma"><code class="language-julia" data-lang="julia"><span class="n">julia</span><span class="o">&gt;</span> <span class="n">post</span> <span class="o">=</span> <span class="n">dynamicHMC</span><span class="p">(</span><span class="n">cc</span><span class="p">(</span><span class="n">X</span><span class="o">=</span><span class="n">X0</span><span class="p">),</span> <span class="p">(</span><span class="n">y</span><span class="o">=</span><span class="n">obs</span><span class="o">.</span><span class="n">y</span><span class="p">,))</span> <span class="o">|&gt;</span> <span class="n">particles</span><span class="p">;</span>
+
+<span class="n">julia</span><span class="o">&gt;</span> <span class="n">post</span><span class="o">.</span><span class="n">w</span>
+<span class="mi">5</span><span class="o">-</span><span class="n">element</span> <span class="kt">Array</span><span class="p">{</span><span class="n">Particles</span><span class="p">{</span><span class="kt">Float64</span><span class="p">,</span><span class="mi">1000</span><span class="p">},</span><span class="mi">1</span><span class="p">}</span><span class="o">:</span>
+  <span class="mf">0.721</span> <span class="n">±</span> <span class="mf">0.011</span>  
+ <span class="o">-</span><span class="mf">2.68</span> <span class="n">±</span> <span class="mf">0.011</span>   
+ <span class="o">-</span><span class="mf">0.0383</span> <span class="n">±</span> <span class="mf">0.0098</span>
+ <span class="o">-</span><span class="mf">2.32</span> <span class="n">±</span> <span class="mf">0.0087</span>  
+ <span class="o">-</span><span class="mf">0.611</span> <span class="n">±</span> <span class="mf">0.011</span>  </code></pre></div>
+<p><code>Particles</code> are from Fredrik Bagge Carlson's <a href="https://github.com/baggepinnen/MonteCarloMeasurements.jl">`MonteCarloMeasurements.jl</a> library, and make the result much more concise. Conveniently, there's no data loss here; the summarization is only in how it's displayed. <code>Particles</code> support componentwise operations as if each was just a floating-point value. This has great benefits for easily working with the results of an analysis.</p>
+
+<h1 id="the-posterior-predictive-distribution">The Posterior Predictive Distribution</h1>
+
+<p>Earlier I said that the body of a model is a <em>set</em> of statements. No, not a sequence, it's a set. Well, a <a href="https://en.wikipedia.org/wiki/Partially_ordered_set"><em>partially ordered set</em></a>.</p>
+
+<p>Soss understands variable dependencies. In fact, the order of statements chosen by the user is immediately discarded. All computations, even &quot;displaying&quot; the model to user, are done in terms of <a href="https://en.wikipedia.org/wiki/Topological_sorting"><em>topological ordering</em></a> of the variables, relative to their dependencies.</p>
+
+<p>This representation is very simple from a programming languages perspective, and we may extend it in the future. But even as it is, the representation is convenient for model transformations. Since we now have samples from the poseterior over <code>w</code>, we can build a new model conditioning on it:</p>
+<div class="highlight"><pre class="chroma"><code class="language-julia" data-lang="julia"><span class="n">julia</span><span class="o">&gt;</span> <span class="n">pred</span> <span class="o">=</span> <span class="n">predictive</span><span class="p">(</span><span class="n">cc</span><span class="p">,</span> <span class="o">:</span><span class="n">w</span><span class="p">)</span>
+<span class="nd">@model</span> <span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">w</span><span class="p">)</span> <span class="k">begin</span>
+    <span class="n">Xw</span> <span class="o">=</span> <span class="n">X</span> <span class="o">*</span> <span class="n">w</span>
+    <span class="n">y</span> <span class="o">~</span> <span class="n">For</span><span class="p">(</span><span class="mi">1</span><span class="o">:</span><span class="mi">100</span><span class="p">)</span> <span class="k">do</span> <span class="n">j</span>
+        <span class="n">Normal</span><span class="p">(</span><span class="n">Xw</span><span class="p">[</span><span class="n">j</span><span class="p">],</span> <span class="mf">0.1</span><span class="p">)</span>
+    <span class="k">end</span>
+<span class="k">end</span></code></pre></div>
+<p>[Alternatively, we could just use <code>dynanamicHMC</code> again. But &quot;forward&quot; computation is much cheaper, and we'll have better effective sample size.]</p>
+
+<p>We're finally ready to set up our posterior predictive check. This takes a bit of maneuvering, so it's one thing we'll try to smooth out in future releases. Here's the code:</p>
+<div class="highlight"><pre class="chroma"><code class="language-julia" data-lang="julia"><span class="n">ppc</span> <span class="o">=</span> <span class="n">mapslices</span><span class="p">(</span><span class="kt">Matrix</span><span class="p">(</span><span class="n">post</span><span class="o">.</span><span class="n">w</span><span class="p">),</span><span class="n">dims</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span> <span class="k">do</span> <span class="n">w</span>
+    <span class="n">rand</span><span class="p">(</span><span class="n">pred</span><span class="p">(</span><span class="n">X</span><span class="o">=</span><span class="n">X0</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="n">w</span><span class="p">))</span><span class="o">.</span><span class="n">y</span>
+<span class="k">end</span> <span class="o">|&gt;</span> <span class="n">Particles</span></code></pre></div>
+<p><code>Matrix(post.w)</code> is a 1000×5 matrix. We feed each row into the predictive model, generate a random sample, and retrieve the <code>y</code> component, before finally aggregating the whole thing back into <code>Particles</code>.</p>
+
+<p>If the model is fit well, <code>obs.y</code> should be uniform along the quantiles of the posterior predictive distribution. To check this requires looking at</p>
+<div class="highlight"><pre class="chroma"><code class="language-julia" data-lang="julia"><span class="n">q</span> <span class="o">=</span> <span class="n">mean</span><span class="o">.</span><span class="p">(</span><span class="n">y0</span> <span class="o">.&gt;</span> <span class="n">ppc</span><span class="p">)</span></code></pre></div>
+<h1 id="epilogue">Epilogue</h1>
+
+<p>Things are moving really fast, and there are lots of other things I haven't mentioned yet, like</p>
+
+<ul>
+<li>First-class models</li>
+<li>Lifting distributions to models</li>
+<li>Markov chain combinators</li>
+<li>Multiple imputation</li>
+<li>Normalizing Flows with <a href="https://github.com/TuringLang/Bijectors.jl">Bijectors.jl</a></li>
+<li>Deep learning with <a href="https://fluxml.ai/">Flux</a></li>
+<li>Integration with <a href="https://github.com/TuringLang/Turing.jl">Turing</a> and <a href="https://github.com/probcomp/Gen">Gen</a></li>
+</ul>
+
+
+        
+
+        
+
+        
+      </article>
+
+      
+        <ul class="pager blog-pager">
+          
+            <li class="previous">
+              <a href="https://cscherrer.github.io/post/variational-importance-sampling/" data-toggle="tooltip" data-placement="top" title="Variational Importance Sampling">&larr; Previous Post</a>
+            </li>
+          
+          
+        </ul>
+      
+
+
+      
+        
+        
+      
+
+    </div>
+  </div>
+</div>
+
+    <footer>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        <ul class="list-inline text-center footer-links">
+          
+              <li>
+                <a href="mailto:chad.scherrer@gmail.com" title="Email me">
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fas fa-envelope fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+                <a href="https://plus.google.com/&#43;chad.scherrer" title="Google&#43;">
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-google-plus fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+                <a href="https://github.com/cscherrer" title="GitHub">
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-github fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+                <a href="https://twitter.com/@ChadScherrer" title="Twitter">
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-twitter fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+                <a href="https://reddit.com/u/cscherrer" title="Reddit">
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-reddit-alien fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+                <a href="https://linkedin.com/in/chadscherrer" title="LinkedIn">
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-linkedin fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+                <a href="https://stackoverflow.com/users/488124/chad-scherrer" title="StackOverflow">
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-stack-overflow fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+          
+          <li>
+            <a href="" title="RSS">
+              <span class="fa-stack fa-lg">
+                <i class="fas fa-circle fa-stack-2x"></i>
+                <i class="fas fa-rss fa-stack-1x fa-inverse"></i>
+              </span>
+            </a>
+          </li>
+          
+        </ul>
+        <p class="credits copyright text-muted">
+          
+            
+              <a href="cscherrer.github.io">Chad Scherrer</a>
+            
+          
+
+          &nbsp;&bull;&nbsp;&copy;
+          
+            2019
+          
+
+          
+            &nbsp;&bull;&nbsp;
+            <a href="https://cscherrer.github.io">Chad Scherrer</a>
+          
+        </p>
+        
+        <p class="credits theme-by text-muted">
+          <a href="http://gohugo.io">Hugo v0.57.2</a> powered &nbsp;&bull;&nbsp; Theme by <a href="http://deanattali.com/beautiful-jekyll/">Beautiful Jekyll</a> adapted to <a href="https://github.com/halogenica/beautifulhugo">Beautiful Hugo</a>
+          
+        </p>
+      </div>
+    </div>
+  </div>
+</footer><script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.js" integrity="sha384-K3vbOmF2BtaVai+Qk37uypf7VrgBubhQreNQe9aGsz9lB63dIFiQVlJbr92dw2Lx" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/contrib/auto-render.min.js" integrity="sha384-kmZOZB5ObwgQnS/DuDg6TScgOiWWBiVt0plIRkZCmE6rDZGrEOQeHM5PcHi+nyqe" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ=" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+<script src="https://cscherrer.github.io/js/main.js"></script><script> renderMathInElement(document.body); </script><script src="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe.min.js" integrity="sha384-QELNnmcmU8IR9ZAykt67vGr9/rZJdHbiWi64V88fCPaOohUlHCqUD/unNN0BXSqy" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe-ui-default.min.js" integrity="sha384-m67o7SkQ1ALzKZIFh4CiTA8tmadaujiTa9Vu+nqPSwDOqHrDmxLezTdFln8077+q" crossorigin="anonymous"></script><script src="https://cscherrer.github.io/js/load-photoswipe.js"></script>
+
+
+
+
+
+
+
+
+
+  </body>
+</html>
+

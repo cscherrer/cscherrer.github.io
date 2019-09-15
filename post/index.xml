@@ -7,10 +7,20 @@
     <generator>Hugo -- gohugo.io</generator>
     <managingEditor>chad.scherrer@gmail.com (Chad Scherrer)</managingEditor>
     <webMaster>chad.scherrer@gmail.com (Chad Scherrer)</webMaster>
-    <lastBuildDate>Sat, 29 Jun 2019 18:53:45 -0700</lastBuildDate>
+    <lastBuildDate>Sat, 14 Sep 2019 16:21:50 -0700</lastBuildDate>
     
 	<atom:link href="https://cscherrer.github.io/post/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Fast and Flexible Probabilistic Programming with Soss.jl</title>
+      <link>https://cscherrer.github.io/post/fast-flexible-probprog/</link>
+      <pubDate>Sat, 14 Sep 2019 16:21:50 -0700</pubDate>
+      <author>chad.scherrer@gmail.com (Chad Scherrer)</author>
+      <guid>https://cscherrer.github.io/post/fast-flexible-probprog/</guid>
+      <description>A few months ago, Colin Carroll posted A Tour of Probabilistic Programming Language APIs, where he compared the APIs of a variety of probabilistic programming languages (PPLs) using this model:
+\[ \begin{aligned} p ( \mathbf { w } ) &amp; \sim \mathcal { N } \left( \mathbf { 0 } , I _ { 5 } \right) \\ p ( \mathbf { y } | X , \mathbf { w } ) &amp; \sim \mathcal { N } \left( X \mathbf { w } , 0.</description>
+    </item>
     
     <item>
       <title>Variational Importance Sampling</title>
@@ -40,7 +50,7 @@ There&#39;s a lot of &amp;quot;divide this sum by that sum&amp;quot;, without mu
       <author>chad.scherrer@gmail.com (Chad Scherrer)</author>
       <guid>https://cscherrer.github.io/post/soss-update/</guid>
       <description>If you&#39;ve followed my work recently, you&#39;ve probably heard of my probabilistic programming system Soss.jl. I recently had the pleasure of presenting these ideas at PyData Miami:
- [N.B. Above is supposed to be an embedded copy of my slides from PyData Miami. I can see it from Chrome, but not Firefox. Very weird. ]
+[N.B. Above is supposed to be an embedded copy of my slides from PyData Miami. I can see it from Chrome, but not Firefox. Very weird. ]
 In April I&#39;ll begin another &amp;quot;passion quarter&amp;quot; (essentially a sabbatical) and hope to really push this work forward.</description>
     </item>
     
